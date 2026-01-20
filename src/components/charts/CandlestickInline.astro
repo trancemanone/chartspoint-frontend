@@ -1,0 +1,476 @@
+---
+/**
+ * CandlestickInline.astro
+ *
+ * Compact, inline candlestick pattern visualization designed to embed
+ * within article paragraphs. Floats right in RTL layout allowing text
+ * to wrap around it.
+ *
+ * Features:
+ * - Compact 60-80px dimensions for inline embedding
+ * - Dark navy gradient container with teal accent border
+ * - Simplified SVG candlestick drawings
+ * - Optional pattern name label
+ * - Float right in RTL layout for text wrapping
+ * - Fade-in animation on scroll
+ * - Fully accessible with ARIA labels
+ *
+ * Dimensions:
+ * - Single candle: 60px x 60px
+ * - Double candle: 100px x 60px
+ * - Triple candle: 140px x 60px
+ *
+ * @example
+ * <CandlestickInline pattern="hammer" showLabel={true} />
+ */
+
+import type { PatternType, PatternConfig } from './index';
+import { PATTERN_CONFIGS } from './index';
+
+export interface Props {
+  /** Pattern identifier */
+  pattern: PatternType;
+  /** Show pattern name label below SVG */
+  showLabel?: boolean;
+  /** Additional CSS classes */
+  class?: string;
+  /** Size variant */
+  size?: 'sm' | 'md';
+}
+
+const { pattern, showLabel = false, class: className = '', size = 'md' } = Astro.props;
+
+const config = PATTERN_CONFIGS[pattern];
+
+// Determine dimensions based on pattern type
+const getDimensions = (type: 'single' | 'double' | 'triple', size: 'sm' | 'md') => {
+  const sizeMultiplier = size === 'sm' ? 0.75 : 1;
+  switch (type) {
+    case 'single':
+      return { width: 60 * sizeMultiplier, height: 60 * sizeMultiplier, viewBox: '0 0 60 60' };
+    case 'double':
+      return { width: 100 * sizeMultiplier, height: 60 * sizeMultiplier, viewBox: '0 0 100 60' };
+    case 'triple':
+      return { width: 140 * sizeMultiplier, height: 60 * sizeMultiplier, viewBox: '0 0 140 60' };
+    default:
+      return { width: 60 * sizeMultiplier, height: 60 * sizeMultiplier, viewBox: '0 0 60 60' };
+  }
+};
+
+const dimensions = config ? getDimensions(config.type, size) : getDimensions('single', size);
+
+// Signal colors for border accent
+const signalBorderColors = {
+  bullish: 'rgba(16, 185, 129, 0.4)',
+  bearish: 'rgba(239, 68, 68, 0.4)',
+  neutral: 'rgba(148, 163, 184, 0.4)',
+};
+
+const borderColor = config ? signalBorderColors[config.signal] : signalBorderColors.neutral;
+---
+
+<div
+  class:list={[
+    'candlestick-inline',
+    `candlestick-inline--${config?.type || 'single'}`,
+    className
+  ]}
+  style={`--inline-border-color: ${borderColor};`}
+  data-pattern={pattern}
+  role="img"
+  aria-label={`${config?.nameAr || pattern} - ${config?.nameEn || ''}`}
+>
+  <div class="candlestick-inline__svg-wrapper">
+    <svg
+      class="candlestick-inline__svg"
+      viewBox={dimensions.viewBox}
+      width={dimensions.width}
+      height={dimensions.height}
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <defs>
+        <!-- Gradients for candle fills -->
+        <linearGradient id={`inline-bull-${pattern}`} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#10B981"/>
+          <stop offset="100%" stop-color="#059669"/>
+        </linearGradient>
+        <linearGradient id={`inline-bear-${pattern}`} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#EF4444"/>
+          <stop offset="100%" stop-color="#DC2626"/>
+        </linearGradient>
+        <linearGradient id={`inline-neutral-${pattern}`} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#94A3B8"/>
+          <stop offset="100%" stop-color="#64748B"/>
+        </linearGradient>
+      </defs>
+
+      <!-- ═══════════════════════════════════════════════════════════════
+           SINGLE CANDLE PATTERNS (viewbox: 60x60)
+           Body: 12px wide, centered at x=24 (24 to 36)
+           ═══════════════════════════════════════════════════════════════ -->
+
+      {pattern === 'doji' && (
+        <g class="inline-candles">
+          <line x1="30" y1="8" x2="30" y2="52" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="24" y="28" width="12" height="4" fill={`url(#inline-neutral-${pattern})`} rx="1"/>
+        </g>
+      )}
+
+      {pattern === 'hammer' && (
+        <g class="inline-candles">
+          <line x1="30" y1="12" x2="30" y2="52" stroke="#10B981" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="24" y="12" width="12" height="14" fill={`url(#inline-bull-${pattern})`} rx="1"/>
+        </g>
+      )}
+
+      {pattern === 'hanging-man' && (
+        <g class="inline-candles">
+          <line x1="30" y1="12" x2="30" y2="52" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="24" y="12" width="12" height="14" fill={`url(#inline-bear-${pattern})`} rx="1"/>
+        </g>
+      )}
+
+      {pattern === 'shooting-star' && (
+        <g class="inline-candles">
+          <line x1="30" y1="8" x2="30" y2="48" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="24" y="34" width="12" height="14" fill={`url(#inline-bear-${pattern})`} rx="1"/>
+        </g>
+      )}
+
+      {pattern === 'marubozu-bullish' && (
+        <g class="inline-candles">
+          <rect x="24" y="10" width="12" height="40" fill={`url(#inline-bull-${pattern})`} rx="1"/>
+        </g>
+      )}
+
+      {pattern === 'marubozu-bearish' && (
+        <g class="inline-candles">
+          <rect x="24" y="10" width="12" height="40" fill={`url(#inline-bear-${pattern})`} rx="1"/>
+        </g>
+      )}
+
+      <!-- ═══════════════════════════════════════════════════════════════
+           DOUBLE CANDLE PATTERNS (viewbox: 100x60)
+           Candle 1 center: x=30
+           Candle 2 center: x=70
+           ═══════════════════════════════════════════════════════════════ -->
+
+      {pattern === 'engulfing-bullish' && (
+        <g class="inline-candles">
+          <!-- Small bearish -->
+          <line x1="30" y1="18" x2="30" y2="38" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="24" y="22" width="12" height="12" fill={`url(#inline-bear-${pattern})`} rx="1"/>
+          <!-- Large bullish -->
+          <line x1="70" y1="10" x2="70" y2="50" stroke="#10B981" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="64" y="14" width="12" height="32" fill={`url(#inline-bull-${pattern})`} rx="1"/>
+        </g>
+      )}
+
+      {pattern === 'engulfing-bearish' && (
+        <g class="inline-candles">
+          <!-- Small bullish -->
+          <line x1="30" y1="22" x2="30" y2="42" stroke="#10B981" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="24" y="26" width="12" height="12" fill={`url(#inline-bull-${pattern})`} rx="1"/>
+          <!-- Large bearish -->
+          <line x1="70" y1="10" x2="70" y2="50" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="64" y="14" width="12" height="32" fill={`url(#inline-bear-${pattern})`} rx="1"/>
+        </g>
+      )}
+
+      {pattern === 'harami-bullish' && (
+        <g class="inline-candles">
+          <!-- Large bearish -->
+          <line x1="30" y1="8" x2="30" y2="52" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="24" y="12" width="12" height="36" fill={`url(#inline-bear-${pattern})`} rx="1"/>
+          <!-- Small bullish inside -->
+          <line x1="70" y1="22" x2="70" y2="38" stroke="#10B981" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="64" y="24" width="12" height="12" fill={`url(#inline-bull-${pattern})`} rx="1"/>
+        </g>
+      )}
+
+      {pattern === 'harami-bearish' && (
+        <g class="inline-candles">
+          <!-- Large bullish -->
+          <line x1="30" y1="8" x2="30" y2="52" stroke="#10B981" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="24" y="12" width="12" height="36" fill={`url(#inline-bull-${pattern})`} rx="1"/>
+          <!-- Small bearish inside -->
+          <line x1="70" y1="22" x2="70" y2="38" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="64" y="24" width="12" height="12" fill={`url(#inline-bear-${pattern})`} rx="1"/>
+        </g>
+      )}
+
+      {pattern === 'tweezer-top' && (
+        <g class="inline-candles">
+          <!-- Bullish -->
+          <line x1="30" y1="12" x2="30" y2="40" stroke="#10B981" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="24" y="18" width="12" height="18" fill={`url(#inline-bull-${pattern})`} rx="1"/>
+          <!-- Bearish with same top -->
+          <line x1="70" y1="12" x2="70" y2="44" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="64" y="16" width="12" height="22" fill={`url(#inline-bear-${pattern})`} rx="1"/>
+          <!-- Resistance line -->
+          <line x1="14" y1="12" x2="86" y2="12" stroke="#d5a035" stroke-width="1" stroke-dasharray="3,2" opacity="0.7"/>
+        </g>
+      )}
+
+      {pattern === 'tweezer-bottom' && (
+        <g class="inline-candles">
+          <!-- Bearish -->
+          <line x1="30" y1="20" x2="30" y2="48" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="24" y="24" width="12" height="18" fill={`url(#inline-bear-${pattern})`} rx="1"/>
+          <!-- Bullish with same bottom -->
+          <line x1="70" y1="16" x2="70" y2="48" stroke="#10B981" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="64" y="22" width="12" height="22" fill={`url(#inline-bull-${pattern})`} rx="1"/>
+          <!-- Support line -->
+          <line x1="14" y1="48" x2="86" y2="48" stroke="#d5a035" stroke-width="1" stroke-dasharray="3,2" opacity="0.7"/>
+        </g>
+      )}
+
+      <!-- ═══════════════════════════════════════════════════════════════
+           TRIPLE CANDLE PATTERNS (viewbox: 140x60)
+           Candle 1 center: x=28
+           Candle 2 center: x=70
+           Candle 3 center: x=112
+           ═══════════════════════════════════════════════════════════════ -->
+
+      {pattern === 'morning-star' && (
+        <g class="inline-candles">
+          <!-- Large bearish -->
+          <line x1="28" y1="8" x2="28" y2="32" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="22" y="10" width="12" height="18" fill={`url(#inline-bear-${pattern})`} rx="1"/>
+          <!-- Small star (doji) -->
+          <line x1="70" y1="34" x2="70" y2="48" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="64" y="38" width="12" height="4" fill={`url(#inline-neutral-${pattern})`} rx="1"/>
+          <!-- Large bullish -->
+          <line x1="112" y1="14" x2="112" y2="38" stroke="#10B981" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="106" y="16" width="12" height="18" fill={`url(#inline-bull-${pattern})`} rx="1"/>
+        </g>
+      )}
+
+      {pattern === 'evening-star' && (
+        <g class="inline-candles">
+          <!-- Large bullish -->
+          <line x1="28" y1="28" x2="28" y2="52" stroke="#10B981" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="22" y="32" width="12" height="18" fill={`url(#inline-bull-${pattern})`} rx="1"/>
+          <!-- Small star (doji) -->
+          <line x1="70" y1="12" x2="70" y2="26" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="64" y="18" width="12" height="4" fill={`url(#inline-neutral-${pattern})`} rx="1"/>
+          <!-- Large bearish -->
+          <line x1="112" y1="22" x2="112" y2="46" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="106" y="24" width="12" height="18" fill={`url(#inline-bear-${pattern})`} rx="1"/>
+        </g>
+      )}
+
+      {pattern === 'three-white-soldiers' && (
+        <g class="inline-candles">
+          <!-- First bullish (lowest) -->
+          <line x1="28" y1="36" x2="28" y2="52" stroke="#10B981" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="22" y="38" width="12" height="12" fill={`url(#inline-bull-${pattern})`} rx="1"/>
+          <!-- Second bullish (middle) -->
+          <line x1="70" y1="24" x2="70" y2="40" stroke="#10B981" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="64" y="26" width="12" height="12" fill={`url(#inline-bull-${pattern})`} rx="1"/>
+          <!-- Third bullish (highest) -->
+          <line x1="112" y1="12" x2="112" y2="28" stroke="#10B981" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="106" y="14" width="12" height="12" fill={`url(#inline-bull-${pattern})`} rx="1"/>
+        </g>
+      )}
+
+      {pattern === 'three-black-crows' && (
+        <g class="inline-candles">
+          <!-- First bearish (highest) -->
+          <line x1="28" y1="8" x2="28" y2="24" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="22" y="10" width="12" height="12" fill={`url(#inline-bear-${pattern})`} rx="1"/>
+          <!-- Second bearish (middle) -->
+          <line x1="70" y1="20" x2="70" y2="36" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="64" y="22" width="12" height="12" fill={`url(#inline-bear-${pattern})`} rx="1"/>
+          <!-- Third bearish (lowest) -->
+          <line x1="112" y1="32" x2="112" y2="48" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="106" y="34" width="12" height="12" fill={`url(#inline-bear-${pattern})`} rx="1"/>
+        </g>
+      )}
+    </svg>
+  </div>
+
+  {showLabel && config && (
+    <span class="candlestick-inline__label">{config.nameAr}</span>
+  )}
+</div>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════════
+     CANDLESTICK INLINE COMPONENT STYLES
+     Compact, badge-like visualization for inline embedding
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .candlestick-inline {
+    /* Float left in RTL context (appears on right side) */
+    float: left;
+    margin: 0 0 16px 16px;
+
+    /* Compact dimensions */
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+
+    /* Premium dark container */
+    padding: 10px;
+    background: linear-gradient(135deg, #102941 0%, #0A1628 100%);
+    border: 1px solid var(--inline-border-color, rgba(20, 184, 166, 0.3));
+    border-radius: 10px;
+
+    /* Subtle shadow and depth */
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+    /* Animation */
+    opacity: 0;
+    transform: translateY(8px);
+    animation: inlineFadeIn 0.5s ease-out forwards;
+    animation-play-state: paused;
+
+    /* Isolation for proper stacking */
+    isolation: isolate;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Size variants */
+  .candlestick-inline--single {
+    min-width: 80px;
+  }
+
+  .candlestick-inline--double {
+    min-width: 120px;
+  }
+
+  .candlestick-inline--triple {
+    min-width: 160px;
+  }
+
+  /* SVG wrapper */
+  .candlestick-inline__svg-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
+  }
+
+  .candlestick-inline__svg {
+    display: block;
+  }
+
+  /* Pattern name label */
+  .candlestick-inline__label {
+    font-family: 'Noto Kufi Arabic', system-ui, sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    white-space: nowrap;
+    padding-top: 2px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+  }
+
+  /* Fade-in animation */
+  @keyframes inlineFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Play animation when in view */
+  .candlestick-inline.in-view {
+    animation-play-state: running;
+  }
+
+  /* Hover enhancement */
+  .candlestick-inline:hover {
+    border-color: rgba(20, 184, 166, 0.6);
+    box-shadow:
+      0 6px 16px rgba(0, 0, 0, 0.35),
+      0 0 20px rgba(20, 184, 166, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  /* Clear float after inline patterns */
+  .candlestick-inline + p::after,
+  .candlestick-inline + h3::after,
+  .candlestick-inline + h4::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .candlestick-inline {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 640px) {
+    .candlestick-inline {
+      float: none;
+      margin: 16px auto;
+      display: flex;
+    }
+  }
+</style>
+
+<script>
+  /**
+   * Intersection Observer for scroll-triggered animations
+   * Animations start when the inline pattern enters the viewport
+   */
+  document.addEventListener('DOMContentLoaded', () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const inlinePatterns = document.querySelectorAll('.candlestick-inline');
+
+    if (prefersReducedMotion) {
+      // Show all immediately if user prefers reduced motion
+      inlinePatterns.forEach((el) => {
+        el.classList.add('in-view');
+      });
+      return;
+    }
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in-view');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          root: null,
+          rootMargin: '0px 0px -30px 0px',
+          threshold: 0.1,
+        }
+      );
+
+      inlinePatterns.forEach((el) => {
+        observer.observe(el);
+      });
+    } else {
+      // Fallback for older browsers
+      inlinePatterns.forEach((el) => {
+        el.classList.add('in-view');
+      });
+    }
+  });
+</script>

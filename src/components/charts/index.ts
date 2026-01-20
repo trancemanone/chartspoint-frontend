@@ -16,6 +16,9 @@
 // Main pattern visualization component
 export { default as CandlestickPattern } from './CandlestickPattern.astro';
 
+// Compact inline pattern visualization for embedding in article text
+export { default as CandlestickInline } from './CandlestickInline.astro';
+
 // Grid layout for multiple patterns
 export { default as CandlestickPatternGrid } from './CandlestickPatternGrid.astro';
 
@@ -270,4 +273,100 @@ export function getPatternsBySignal(signal: SignalType): PatternType[] {
  */
 export function getPatternConfig(pattern: PatternType): PatternConfig {
   return PATTERN_CONFIGS[pattern];
+}
+
+/**
+ * Arabic pattern name to pattern type mapping
+ * Used for content processing to detect pattern mentions and inject inline visualizations
+ *
+ * Maps both exact Arabic names and common variations/aliases
+ */
+export const ARABIC_PATTERN_NAMES: Record<string, PatternType> = {
+  // Single Candle Patterns
+  'المطرقة': 'hammer',
+  'نموذج المطرقة': 'hammer',
+  'Hammer': 'hammer',
+
+  'الرجل المعلق': 'hanging-man',
+  'الرجل المشنوق': 'hanging-man',
+  'نموذج الرجل المعلق': 'hanging-man',
+  'Hanging Man': 'hanging-man',
+
+  'النجم الساقط': 'shooting-star',
+  'الشهاب': 'shooting-star',
+  'نموذج الشهاب': 'shooting-star',
+  'Shooting Star': 'shooting-star',
+
+  'دوجي': 'doji',
+  'شمعة دوجي': 'doji',
+  'نموذج دوجي': 'doji',
+  'Doji': 'doji',
+
+  'ماروبوزو': 'marubozu-bullish',
+  'ماروبوزو صاعد': 'marubozu-bullish',
+  'ماروبوزو هابط': 'marubozu-bearish',
+  'Marubozu': 'marubozu-bullish',
+
+  // Double Candle Patterns
+  'الابتلاع الصعودي': 'engulfing-bullish',
+  'نموذج الابتلاع الصعودي': 'engulfing-bullish',
+  'Bullish Engulfing': 'engulfing-bullish',
+
+  'الابتلاع الهبوطي': 'engulfing-bearish',
+  'نموذج الابتلاع الهبوطي': 'engulfing-bearish',
+  'Bearish Engulfing': 'engulfing-bearish',
+
+  'هارامي صعودي': 'harami-bullish',
+  'نموذج هارامي الصعودي': 'harami-bullish',
+  'Bullish Harami': 'harami-bullish',
+
+  'هارامي هبوطي': 'harami-bearish',
+  'نموذج هارامي الهبوطي': 'harami-bearish',
+  'Bearish Harami': 'harami-bearish',
+
+  'القمم المتساوية': 'tweezer-top',
+  'قمة الملقط': 'tweezer-top',
+  'Tweezer Top': 'tweezer-top',
+
+  'القيعان المتساوية': 'tweezer-bottom',
+  'قاع الملقط': 'tweezer-bottom',
+  'Tweezer Bottom': 'tweezer-bottom',
+
+  // Triple Candle Patterns
+  'نجمة الصباح': 'morning-star',
+  'نموذج نجمة الصباح': 'morning-star',
+  'Morning Star': 'morning-star',
+
+  'نجمة المساء': 'evening-star',
+  'نموذج نجمة المساء': 'evening-star',
+  'Evening Star': 'evening-star',
+
+  'ثلاثة جنود بيض': 'three-white-soldiers',
+  'الجنود الثلاثة البيض': 'three-white-soldiers',
+  'Three White Soldiers': 'three-white-soldiers',
+
+  'ثلاثة غربان سود': 'three-black-crows',
+  'الغربان الثلاثة السود': 'three-black-crows',
+  'Three Black Crows': 'three-black-crows',
+};
+
+/**
+ * Get pattern type from Arabic name
+ * Returns undefined if no match found
+ */
+export function getPatternFromArabicName(name: string): PatternType | undefined {
+  // Try exact match first
+  if (ARABIC_PATTERN_NAMES[name]) {
+    return ARABIC_PATTERN_NAMES[name];
+  }
+
+  // Try case-insensitive match for English names
+  const lowerName = name.toLowerCase();
+  for (const [key, value] of Object.entries(ARABIC_PATTERN_NAMES)) {
+    if (key.toLowerCase() === lowerName) {
+      return value;
+    }
+  }
+
+  return undefined;
 }

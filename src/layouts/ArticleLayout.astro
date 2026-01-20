@@ -25,9 +25,14 @@ import RelatedArticles from '@components/content/RelatedArticles.astro';
 import CandlestickShowcase from '@components/charts/CandlestickShowcase.astro';
 import type { Article, TOCItem } from '@lib/types';
 import { PILLAR_NAMES_AR, CLUSTER_NAMES_AR } from '@lib/content-structure';
+import { ARABIC_PATTERN_NAMES, type PatternType } from '@components/charts/index';
+import { generateInlineCandlestickHtml } from '@lib/candlestick-inline-html';
 
 // Special article slugs that need custom visual components
 const CANDLESTICK_ARTICLE_SLUG = 'japanese-candlestick-patterns';
+
+// Flag to enable inline pattern injection for candlestick article
+const ENABLE_INLINE_PATTERNS = true;
 
 export interface Props {
   article: Article;
@@ -88,8 +93,47 @@ function processContent(content: string): string {
   });
 }
 
+/**
+ * Inject inline candlestick pattern visualizations into content
+ * Detects h3 headings containing pattern names and injects the inline SVG after them
+ */
+function injectInlinePatterns(content: string): string {
+  // Track which patterns have been injected to avoid duplicates
+  const injectedPatterns = new Set<string>();
+
+  // Process h3 headings to inject inline patterns
+  return content.replace(/<h3([^>]*)>([\s\S]*?)<\/h3>/gi, (match, attrs, innerHtml) => {
+    const plainText = innerHtml.replace(/<[^>]*>/g, '').trim();
+    if (!plainText) return match;
+
+    // Check if heading contains a pattern name
+    let detectedPattern: PatternType | undefined;
+    for (const [name, patternType] of Object.entries(ARABIC_PATTERN_NAMES)) {
+      if (plainText.includes(name) && !injectedPatterns.has(patternType)) {
+        detectedPattern = patternType as PatternType;
+        injectedPatterns.add(patternType);
+        break;
+      }
+    }
+
+    if (detectedPattern) {
+      const inlineHtml = generateInlineCandlestickHtml(detectedPattern, true);
+      // Inject the inline pattern after the h3 heading
+      // Wrap in a container div to ensure proper float behavior
+      return `${match}\n<div class="candlestick-inline-wrapper">${inlineHtml}</div>`;
+    }
+
+    return match;
+  });
+}
+
 const tocItems = extractTOC(article.content);
-const processedContent = processContent(article.content);
+
+// Process content: add IDs, then inject inline patterns for candlestick article
+let processedContent = processContent(article.content);
+if (ENABLE_INLINE_PATTERNS && article.slug === CANDLESTICK_ARTICLE_SLUG) {
+  processedContent = injectInlinePatterns(processedContent);
+}
 
 // Pillar color classes for visual hierarchy
 const pillarColorMap: Record<string, { border: string; bg: string; text: string; badge: string }> = {
@@ -413,7 +457,8 @@ const breadcrumbSchema = JSON.stringify({
             </div>
 
             <!-- Candlestick Patterns Visual Showcase (for specific article) -->
-            {article.slug === CANDLESTICK_ARTICLE_SLUG && (
+            <!-- NOTE: Disabled when inline patterns are enabled - patterns now embedded in text -->
+            {article.slug === CANDLESTICK_ARTICLE_SLUG && !ENABLE_INLINE_PATTERNS && (
               <section class="mt-12 -mx-4 sm:-mx-6 lg:-mx-8">
                 <CandlestickShowcase />
               </section>
@@ -517,6 +562,142 @@ const breadcrumbSchema = JSON.stringify({
     .article-content :global(ol > li)::before {
       print-color-adjust: exact;
       -webkit-print-color-adjust: exact;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     INLINE CANDLESTICK PATTERN STYLES
+     Compact visualizations that embed within article text
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  /* Wrapper for proper float clearing */
+  .article-content :global(.candlestick-inline-wrapper) {
+    overflow: hidden;
+    clear: both;
+  }
+
+  /* Main inline component */
+  .article-content :global(.candlestick-inline) {
+    /* Float left in RTL context (appears on right side) */
+    float: left;
+    margin: 0 0 20px 20px;
+
+    /* Compact dimensions */
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+
+    /* Premium dark container */
+    padding: 12px;
+    background: linear-gradient(135deg, #102941 0%, #0A1628 100%);
+    border: 1px solid var(--inline-border-color, rgba(20, 184, 166, 0.3));
+    border-radius: 12px;
+
+    /* Subtle shadow and depth */
+    box-shadow:
+      0 4px 16px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+    /* Animation */
+    opacity: 0;
+    transform: translateY(8px);
+    animation: inlineFadeIn 0.5s ease-out forwards;
+    animation-play-state: paused;
+
+    /* Isolation for proper stacking */
+    isolation: isolate;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Size variants */
+  .article-content :global(.candlestick-inline--single) {
+    min-width: 84px;
+  }
+
+  .article-content :global(.candlestick-inline--double) {
+    min-width: 124px;
+  }
+
+  .article-content :global(.candlestick-inline--triple) {
+    min-width: 164px;
+  }
+
+  /* SVG wrapper */
+  .article-content :global(.candlestick-inline__svg-wrapper) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
+  }
+
+  .article-content :global(.candlestick-inline__svg) {
+    display: block;
+  }
+
+  /* Pattern name label */
+  .article-content :global(.candlestick-inline__label) {
+    font-family: 'Noto Kufi Arabic', system-ui, sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    white-space: nowrap;
+    padding-top: 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+  }
+
+  /* Fade-in animation */
+  @keyframes inlineFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Play animation when in view */
+  .article-content :global(.candlestick-inline.in-view) {
+    animation-play-state: running;
+  }
+
+  /* Hover enhancement */
+  .article-content :global(.candlestick-inline:hover) {
+    border-color: rgba(20, 184, 166, 0.6);
+    box-shadow:
+      0 6px 20px rgba(0, 0, 0, 0.35),
+      0 0 24px rgba(20, 184, 166, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  /* Mobile: center inline patterns instead of float */
+  @media (max-width: 640px) {
+    .article-content :global(.candlestick-inline) {
+      float: none;
+      margin: 20px auto;
+      display: flex;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .article-content :global(.candlestick-inline) {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Print: hide inline patterns */
+  @media print {
+    .article-content :global(.candlestick-inline),
+    .article-content :global(.candlestick-inline-wrapper) {
+      display: none;
     }
   }
 </style>
@@ -627,5 +808,39 @@ const breadcrumbSchema = JSON.stringify({
         history.pushState(null, '', href);
       });
     });
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Inline Candlestick Patterns: Scroll-Triggered Animation
+    // ─────────────────────────────────────────────────────────────────────────
+    const inlinePatterns = articleContent.querySelectorAll('.candlestick-inline');
+
+    if (inlinePatterns.length > 0) {
+      if (!prefersReducedMotion && 'IntersectionObserver' in window) {
+        const inlineObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+                inlineObserver.unobserve(entry.target);
+              }
+            });
+          },
+          {
+            root: null,
+            rootMargin: '0px 0px -30px 0px',
+            threshold: 0.1,
+          }
+        );
+
+        inlinePatterns.forEach((pattern) => {
+          inlineObserver.observe(pattern);
+        });
+      } else {
+        // Fallback: show all inline patterns immediately
+        inlinePatterns.forEach((pattern) => {
+          pattern.classList.add('in-view');
+        });
+      }
+    }
   });
 </script>

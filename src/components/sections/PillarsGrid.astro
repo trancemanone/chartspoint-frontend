@@ -1,0 +1,234 @@
+---
+/**
+ * PillarsGrid Component - 4 Pillars Navigation Grid
+ *
+ * ChartsPoint homepage section showcasing all 4 content pillars:
+ * - Basics (أساسيات) - Blue
+ * - Indicators (المؤشرات) - Orange
+ * - Tools (الأدوات) - Green
+ * - Tactics (الاستراتيجيات) - Purple
+ *
+ * Per Vision Document:
+ * "قسم واضح لكل Pillar"
+ * "كل قسم: وصف فقري قصير (ليس بطاقات تسويقية) + رابط واحد إلى Hub الصفحة"
+ *
+ * Optimized for Arabic readers ages 40-70 with WCAG AAA compliance.
+ */
+
+import { PILLARS } from '../../lib/types';
+
+// Pillar card definitions with icons and educational descriptions
+const pillars = [
+  {
+    ...PILLARS.basics,
+    href: '/basics',
+    description: 'أساسيات قراءة الشارت وأنماط الشموع اليابانية وحركة السعر. البداية الصحيحة لفهم التحليل الفني.',
+    iconPath: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253',
+    ctaLabel: 'ابدأ من الأساسيات',
+  },
+  {
+    ...PILLARS.indicators,
+    href: '/indicators',
+    description: 'المؤشرات الفنية من RSI إلى MACD وبولينجر باندز. كيف تعمل، ومتى تفشل، وكيف تقرأها بشكل صحيح.',
+    iconPath: 'M2 12c1.5-3 3-6 4.5-3s3 6 4.5 3 3-6 4.5-3 3 6 4.5 3',
+    ctaLabel: 'افهم المؤشرات',
+  },
+  {
+    ...PILLARS.tools,
+    href: '/tools',
+    description: 'الحاسبات والأدوات العملية: حاسبة حجم المركز، نسب المخاطرة، والأدوات التحليلية المفيدة.',
+    iconPath: 'M4 6h16M4 12h8m-8 6h16M16 12v0m0 4v0m0-8v0',
+    ctaLabel: 'استكشف الأدوات',
+  },
+  {
+    ...PILLARS.tactics,
+    href: '/tactics',
+    description: 'استراتيجيات التداول وإدارة المخاطر. كيف تبني نظامك الخاص وتحمي رأس مالك قبل التفكير في الأرباح.',
+    iconPath: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
+    ctaLabel: 'تعلّم إدارة المخاطر',
+  },
+];
+
+// Color mapping for each pillar
+const pillarColors: Record<string, { bg: string; text: string; border: string; iconBg: string }> = {
+  basics: {
+    bg: 'bg-basics-50',
+    text: 'text-basics-600',
+    border: 'border-basics-500',
+    iconBg: 'bg-basics-100',
+  },
+  indicators: {
+    bg: 'bg-indicators-50',
+    text: 'text-indicators-600',
+    border: 'border-indicators-500',
+    iconBg: 'bg-indicators-100',
+  },
+  tools: {
+    bg: 'bg-tools-50',
+    text: 'text-tools-600',
+    border: 'border-tools-500',
+    iconBg: 'bg-tools-100',
+  },
+  tactics: {
+    bg: 'bg-tactics-50',
+    text: 'text-tactics-600',
+    border: 'border-tactics-500',
+    iconBg: 'bg-tactics-100',
+  },
+};
+---
+
+<section
+  id="pillars"
+  class="pillars-section py-16 lg:py-24"
+  aria-labelledby="pillars-heading"
+>
+  <div class="container mx-auto px-4 lg:px-6">
+    <!-- Section Header -->
+    <div class="section-header text-center mb-12 lg:mb-16">
+      <h2 id="pillars-heading" class="section-title font-heading text-h2-mobile md:text-h2-desktop text-navy-900 mb-4">
+        المحتوى التعليمي
+      </h2>
+      <p class="section-subtitle text-body-lg text-slate-600 max-w-2xl mx-auto">
+        أربعة مسارات متكاملة لفهم التحليل الفني من الألف إلى الياء. ابدأ من أي نقطة تناسب مستواك.
+      </p>
+    </div>
+
+    <!-- Pillars Grid -->
+    <div class="pillars-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+      {pillars.map((pillar) => {
+        const colors = pillarColors[pillar.slug];
+        return (
+          <article
+            class={`pillar-card group relative bg-white rounded-lg border border-slate-200 p-6 transition-all duration-200 hover:shadow-card-hover hover:-translate-y-1 ${colors.border} border-t-[3px]`}
+          >
+            <!-- Icon -->
+            <div class={`pillar-icon w-14 h-14 rounded-xl ${colors.iconBg} ${colors.text} flex items-center justify-center mb-5`}>
+              <svg
+                class="w-7 h-7"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d={pillar.iconPath} />
+              </svg>
+            </div>
+
+            <!-- Content -->
+            <h3 class="pillar-title font-heading text-xl font-bold text-navy-900 mb-3">
+              {pillar.nameAr}
+            </h3>
+
+            <p class="pillar-description text-slate-600 text-[0.9375rem] leading-relaxed mb-5">
+              {pillar.description}
+            </p>
+
+            <!-- CTA Link -->
+            <a
+              href={pillar.href}
+              class={`pillar-link inline-flex items-center gap-2 font-medium text-[0.9375rem] ${colors.text} transition-all duration-200 group-hover:gap-3`}
+              aria-label={`${pillar.ctaLabel} - ${pillar.nameAr}`}
+            >
+              <span>{pillar.ctaLabel}</span>
+              <svg
+                class="w-5 h-5 rotate-180 transition-transform duration-200"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+
+            <!-- Hover overlay for click area -->
+            <a
+              href={pillar.href}
+              class="absolute inset-0 rounded-lg"
+              aria-hidden="true"
+              tabindex="-1"
+            ></a>
+          </article>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════════
+     SECTION STYLES
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .pillars-section {
+    background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     SECTION HEADER - H2 Underline System
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .section-title {
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    right: 0;
+    width: 60%;
+    height: 3px;
+    background: linear-gradient(90deg, #d5a035 0%, transparent 100%);
+    border-radius: 2px;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     PILLAR CARD STYLES
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .pillar-card {
+    position: relative;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04), 0 4px 16px rgba(15, 23, 42, 0.04);
+  }
+
+  .pillar-card:focus-within {
+    outline: none;
+    box-shadow: 0 0 0 3px white, 0 0 0 6px theme('colors.gold.500');
+  }
+
+  .pillar-card:hover .pillar-icon {
+    transform: scale(1.05);
+  }
+
+  .pillar-icon {
+    transition: transform 0.2s ease;
+  }
+
+  /* Link hover animation */
+  .pillar-link svg {
+    transition: transform 0.2s ease;
+  }
+
+  .pillar-card:hover .pillar-link svg {
+    transform: rotate(180deg) translateX(4px);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     REDUCED MOTION
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .pillar-card,
+    .pillar-icon,
+    .pillar-link svg {
+      transition: none;
+    }
+  }
+</style>

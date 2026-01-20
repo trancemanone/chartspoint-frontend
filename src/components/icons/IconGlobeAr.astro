@@ -1,0 +1,38 @@
+---
+/**
+ * IconGlobeAr - Arabic globe
+ * Represents Arabic-first platform and regional focus
+ * 24x24 grid, 1.75px stroke for readability (ages 40-70)
+ */
+interface Props {
+  class?: string;
+  size?: number;
+  strokeWidth?: number;
+}
+
+const { class: className = '', size = 24, strokeWidth = 1.75 } = Astro.props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={className}
+  width={size}
+  height={size}
+  aria-hidden="true"
+>
+  <!-- Globe circle -->
+  <circle cx="12" cy="12" r="10" />
+
+  <!-- Latitude lines -->
+  <path d="M2 12h20" />
+  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+
+  <!-- Arabic region highlight (Middle East area) -->
+  <ellipse cx="14" cy="10" rx="3" ry="2" opacity="0.5" stroke-dasharray="2 1" />
+</svg>

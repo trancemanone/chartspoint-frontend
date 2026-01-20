@@ -1,0 +1,316 @@
+---
+/**
+ * About Page - من نحن
+ *
+ * Enhanced about page with hero, trust icons, and methodology sections.
+ * Designed for institutional fintech with premium Arabic aesthetics.
+ */
+
+import StaticPageLayoutEnhanced from '@layouts/StaticPageLayoutEnhanced.astro';
+import TrustIconGrid from '@components/static/TrustIconGrid.astro';
+import CalloutBox from '@components/static/CalloutBox.astro';
+
+// Page metadata
+const title = 'من نحن';
+const description = 'تعرف على تشارتس بوينت - منصة التحليل الفني للمتداول العربي. نقدم محتوى تعليمي موثوق لمساعدتك في فهم حركة الأسعار.';
+const heroSubtitle = 'نحو فهم أعمق لكيفية تحرك الأسعار، ولماذا تفشل الإشارات، وكيف يدير المتداولون المخاطر قبل التفكير في الأرباح.';
+
+// Trust items
+const trustItems = [
+  {
+    icon: 'methodology' as const,
+    title: 'منهجية علمية',
+    description: 'نعتمد على مصادر موثوقة ومراجع أكاديمية في كل ما نقدمه من محتوى تعليمي.'
+  },
+  {
+    icon: 'education' as const,
+    title: 'تركيز تعليمي',
+    description: 'هدفنا الأول هو التعليم وبناء المعرفة، لا الترويج لمنصات أو وسطاء.'
+  },
+  {
+    icon: 'transparency' as const,
+    title: 'شفافية كاملة',
+    description: 'نفصح بوضوح عن أي علاقات تجارية أو روابط إحالة في محتوانا.'
+  },
+  {
+    icon: 'expertise' as const,
+    title: 'خبرة متخصصة',
+    description: 'فريقنا يمتلك خبرة عملية في الأسواق المالية والتحليل الفني.'
+  },
+  {
+    icon: 'independence' as const,
+    title: 'استقلالية تامة',
+    description: 'قراراتنا التحريرية مستقلة تمامًا عن أي ضغوط تجارية.'
+  },
+  {
+    icon: 'shield' as const,
+    title: 'حماية المستثمر',
+    description: 'نضع مصلحة القارئ أولًا ونحذر من المخاطر بوضوح وصراحة.'
+  }
+];
+
+// Breadcrumbs
+const breadcrumbs = [
+  { label: 'الرئيسية', href: '/' },
+  { label: 'من نحن', href: '/about', current: true },
+];
+---
+
+<StaticPageLayoutEnhanced
+  title={title}
+  description={description}
+  heroSubtitle={heroSubtitle}
+  variant="about"
+  breadcrumbs={breadcrumbs}
+  showReadingTime={false}
+  showLastUpdated={false}
+>
+  <div class="max-w-4xl mx-auto">
+
+    <!-- Mission Section -->
+    <section class="about-section">
+      <div class="about-card">
+        <h2 class="about-section__title">
+          <span class="about-section__title-text">رسالتنا</span>
+        </h2>
+        <div class="about-prose">
+          <p>
+            تشارتس بوينت منصة تعليمية متخصصة في التحليل الفني للمتداول العربي. نؤمن بأن الفهم العميق لحركة الأسعار هو الأساس الذي يُبنى عليه أي قرار تداول ناجح.
+          </p>
+          <p>
+            نركز على تقديم محتوى تعليمي عالي الجودة يغطي أساسيات التحليل الفني، المؤشرات الفنية، أدوات الرسم البياني، واستراتيجيات التداول المختلفة.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trust Icons Grid -->
+    <TrustIconGrid items={trustItems} title="لماذا تثق بنا" />
+
+    <!-- Editorial Approach -->
+    <section class="about-section">
+      <div class="about-card">
+        <h2 class="about-section__title">
+          <span class="about-section__title-text">منهجنا التحريري</span>
+        </h2>
+        <div class="about-prose">
+          <h3>مراجعة المحتوى</h3>
+          <p>
+            كل مقال يمر بعملية مراجعة صارمة تشمل التحقق من دقة المعلومات، وضوح الشرح، وملاءمة المحتوى للقارئ العربي.
+          </p>
+
+          <h3>المصادر والمراجع</h3>
+          <p>
+            نعتمد على مصادر موثوقة تشمل الكتب الأكاديمية، الأبحاث المنشورة، والمراجع المعترف بها في مجال التحليل الفني.
+          </p>
+
+          <h3>التحديث المستمر</h3>
+          <p>
+            نراجع محتوانا بشكل دوري لضمان مواكبته للتطورات في مجال التداول والتحليل الفني.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Important Notice -->
+    <CalloutBox variant="warning" title="إخلاء مسؤولية">
+      <p>
+        المحتوى المقدم في تشارتس بوينت هو لأغراض تعليمية فقط ولا يُعد نصيحة مالية أو استثمارية. التداول في الأسواق المالية ينطوي على مخاطر قد تؤدي لخسارة رأس المال.
+      </p>
+    </CalloutBox>
+
+    <!-- Contact Section -->
+    <section class="about-section">
+      <div class="about-card about-card--contact">
+        <div class="about-contact">
+          <div class="about-contact__content">
+            <h2 class="about-contact__title">تواصل معنا</h2>
+            <p class="about-contact__text">
+              نرحب بأسئلتكم واقتراحاتكم. تواصلوا معنا لأي استفسار أو اقتراح لتحسين المحتوى.
+            </p>
+          </div>
+          <a href="/contact" class="about-contact__button">
+            صفحة التواصل
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"/>
+              <path d="m12 5 7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</StaticPageLayoutEnhanced>
+
+<style>
+  .about-section {
+    margin-bottom: 3rem;
+  }
+
+  .about-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow:
+      0 2px 8px rgba(15, 23, 42, 0.04),
+      0 4px 16px rgba(15, 23, 42, 0.04);
+  }
+
+  @media (min-width: 768px) {
+    .about-card {
+      padding: 2.5rem 3rem;
+    }
+  }
+
+  .about-section__title {
+    position: relative;
+    margin: 0 0 1.5rem;
+    padding-bottom: 1rem;
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #102A43;
+  }
+
+  @media (min-width: 768px) {
+    .about-section__title {
+      font-size: 1.75rem;
+      margin-bottom: 2rem;
+    }
+  }
+
+  .about-section__title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(
+      to left,
+      #d5a035 0%,
+      #d5a035 20%,
+      #E2E8F0 20%,
+      transparent 100%
+    );
+    border-radius: 2px;
+  }
+
+  /* Prose styling */
+  .about-prose {
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    color: #334155;
+  }
+
+  @media (min-width: 768px) {
+    .about-prose {
+      font-size: 1.125rem;
+    }
+  }
+
+  .about-prose p {
+    margin: 0 0 1.25rem;
+  }
+
+  .about-prose p:last-child {
+    margin-bottom: 0;
+  }
+
+  .about-prose h3 {
+    position: relative;
+    margin: 2rem 0 1rem;
+    padding-right: 1rem;
+    font-family: var(--font-heading);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1a3a5c;
+  }
+
+  .about-prose h3::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0.2em;
+    bottom: 0.2em;
+    width: 4px;
+    background: linear-gradient(to bottom, #d5a035, #b8892a);
+    border-radius: 2px;
+  }
+
+  .about-prose h3:first-child {
+    margin-top: 0;
+  }
+
+  /* Contact card */
+  .about-card--contact {
+    background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+  }
+
+  .about-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .about-contact {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .about-contact__title {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #102A43;
+  }
+
+  .about-contact__text {
+    margin: 0;
+    font-size: 1rem;
+    color: #64748B;
+  }
+
+  .about-contact__button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    color: #102941;
+    background: linear-gradient(135deg, #e8bc5a 0%, #d5a035 100%);
+    border-radius: 0.625rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(213, 160, 53, 0.25);
+    white-space: nowrap;
+  }
+
+  .about-contact__button:hover {
+    background: linear-gradient(135deg, #d5a035 0%, #b8892a 100%);
+    box-shadow: 0 4px 12px rgba(213, 160, 53, 0.35);
+    transform: translateY(-1px);
+  }
+
+  .about-contact__button svg {
+    transform: rotate(180deg); /* RTL */
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .about-contact__button {
+      transition: none;
+    }
+
+    .about-contact__button:hover {
+      transform: none;
+    }
+  }
+</style>

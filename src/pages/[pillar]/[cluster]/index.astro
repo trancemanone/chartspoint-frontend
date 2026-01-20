@@ -1,0 +1,109 @@
+---
+/**
+ * Dynamic Cluster Index Page
+ *
+ * Shows all articles in a specific cluster.
+ * URL: /{pillar}/{cluster}/
+ */
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { getPostsByCluster, transformToArticle } from '@lib/wordpress';
+import { CLUSTERS, PILLARS, type PillarSlug } from '@lib/types';
+import { CLUSTER_NAMES_AR, PILLAR_NAMES_AR } from '@lib/content-structure';
+
+export async function getStaticPaths() {
+  return CLUSTERS.map((cluster) => ({
+    params: {
+      pillar: cluster.pillar,
+      cluster: cluster.slug,
+    },
+    props: {
+      clusterData: cluster,
+      pillarData: PILLARS[cluster.pillar],
+    },
+  }));
+}
+
+const { pillar, cluster } = Astro.params;
+const { clusterData, pillarData } = Astro.props;
+
+// Fetch articles for this cluster
+const postsResponse = await getPostsByCluster(cluster as string, 50);
+const articles = postsResponse.data.map(transformToArticle);
+
+const pageTitle = `${clusterData.nameAr} | ${pillarData.nameAr}`;
+const pageDescription = `تعلم ${clusterData.nameAr} - دليل شامل ومقالات متخصصة في ${pillarData.nameAr}`;
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  pillar={pillar as PillarSlug}
+>
+  <section class="min-h-screen py-16 px-4">
+    <div class="container mx-auto max-w-6xl">
+      <!-- Breadcrumbs -->
+      <nav class="mb-8 text-sm text-slate-600">
+        <ol class="flex items-center gap-2 flex-wrap">
+          <li><a href="/" class="hover:text-blue-600">الرئيسية</a></li>
+          <li class="text-slate-400">/</li>
+          <li><a href={`/${pillar}/`} class="hover:text-blue-600">{PILLAR_NAMES_AR[pillar as string]}</a></li>
+          <li class="text-slate-400">/</li>
+          <li class="font-medium text-navy-900">{clusterData.nameAr}</li>
+        </ol>
+      </nav>
+
+      <!-- Cluster Header -->
+      <header class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-navy-900 mb-4">
+          {clusterData.nameAr}
+        </h1>
+        <p class="text-xl text-slate-600 max-w-2xl mx-auto">
+          {pageDescription}
+        </p>
+        <div class="mt-4 w-24 h-1 mx-auto rounded-full" style={`background-color: ${pillarData.color}`}></div>
+      </header>
+
+      <!-- Articles Grid -->
+      {articles.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {articles.map((article) => (
+            <a
+              href={`/${article.pillar}/${article.cluster}/${article.slug}/`}
+              class="block bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow overflow-hidden border border-slate-100"
+            >
+              {article.featuredImage && (
+                <img
+                  src={article.featuredImage.url}
+                  alt={article.featuredImage.alt}
+                  class="w-full h-48 object-cover"
+                  loading="lazy"
+                />
+              )}
+              <div class="p-6">
+                <h2 class="text-xl font-semibold text-navy-900 mb-2 line-clamp-2">
+                  {article.title}
+                </h2>
+                <p class="text-slate-600 text-sm line-clamp-3 mb-4">
+                  {article.excerpt}
+                </p>
+                <div class="flex items-center gap-4 text-sm text-slate-500">
+                  <span>{article.readingTime} دقائق للقراءة</span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-16 bg-slate-50 rounded-xl">
+          <p class="text-slate-600 text-lg">
+            لا توجد مقالات في هذا القسم حالياً. سيتم إضافة المحتوى قريباً.
+          </p>
+          <a href={`/${pillar}/`} class="inline-block mt-4 text-blue-600 hover:underline">
+            العودة إلى {PILLAR_NAMES_AR[pillar as string]}
+          </a>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>

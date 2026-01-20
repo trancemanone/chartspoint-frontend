@@ -1,0 +1,270 @@
+---
+/**
+ * BackToTop.astro
+ * Back to top button component for CHARTSPOINT fintech platform
+ *
+ * Features:
+ * - Fixed position at bottom-left (RTL aware)
+ * - Shows after scrolling past threshold
+ * - Smooth scroll to top
+ * - Navy brand styling
+ * - Accessible with proper ARIA labels
+ * - 56px touch target for accessibility
+ * - Optimized performance with passive scroll listener
+ * - Optimized for users aged 40-70
+ */
+
+export interface Props {
+  /** Scroll threshold in pixels before showing button */
+  threshold?: number;
+  /** Scroll behavior: smooth or instant */
+  behavior?: 'smooth' | 'instant';
+  /** Button position */
+  position?: 'bottom-left' | 'bottom-right';
+  /** Vertical offset from bottom (in rem) */
+  offsetBottom?: number;
+  /** Horizontal offset from side (in rem) */
+  offsetSide?: number;
+  /** Accessible label */
+  ariaLabel?: string;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  threshold = 400,
+  behavior = 'smooth',
+  position = 'bottom-left', // RTL: appears on left
+  offsetBottom = 2,
+  offsetSide = 2,
+  ariaLabel = 'العودة للأعلى',
+  class: className = '',
+} = Astro.props;
+---
+
+<button
+  type="button"
+  class={`back-to-top ${className}`}
+  style={`bottom: ${offsetBottom}rem; ${position === 'bottom-left' ? `left: ${offsetSide}rem;` : `right: ${offsetSide}rem;`}`}
+  data-back-to-top
+  data-threshold={threshold}
+  data-behavior={behavior}
+  aria-label={ariaLabel}
+>
+  <svg
+    class="back-to-top__icon"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <polyline points="18 15 12 9 6 15"/>
+  </svg>
+</button>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════════
+     BACK TO TOP BUTTON
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .back-to-top {
+    position: fixed;
+    z-index: var(--z-sticky, 200);
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #102941;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 4px 14px rgba(16, 41, 65, 0.25);
+    cursor: pointer;
+
+    /* Hidden state */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(16px);
+    transition:
+      opacity 0.3s ease,
+      visibility 0s linear 0.3s,
+      transform 0.3s ease,
+      background-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  /* Visible state */
+  .back-to-top.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition:
+      opacity 0.3s ease,
+      visibility 0s linear 0s,
+      transform 0.3s ease,
+      background-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  /* Hover state */
+  .back-to-top:hover {
+    background-color: #1a3a5c;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(16, 41, 65, 0.35);
+  }
+
+  /* Active state */
+  .back-to-top:active {
+    transform: translateY(0);
+  }
+
+  /* Focus state */
+  .back-to-top:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 4px #FFFFFF,
+      0 0 0 8px rgba(213, 160, 53, 0.6),
+      0 4px 14px rgba(16, 41, 65, 0.25);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     ICON
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .back-to-top__icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     RESPONSIVE
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media (max-width: 640px) {
+    .back-to-top {
+      width: 48px;
+      height: 48px;
+    }
+
+    .back-to-top__icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     REDUCED MOTION
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .back-to-top {
+      transition: none;
+      transform: none;
+    }
+
+    .back-to-top.is-visible {
+      transform: none;
+    }
+
+    .back-to-top:hover {
+      transform: none;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     PRINT STYLES
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media print {
+    .back-to-top {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  /**
+   * Back to Top Controller
+   * Shows/hides button based on scroll position and handles click
+   */
+
+  class BackToTopController {
+    private button: HTMLElement;
+    private threshold: number;
+    private behavior: ScrollBehavior;
+    private ticking: boolean = false;
+
+    constructor(button: HTMLElement) {
+      this.button = button;
+      this.threshold = parseInt(button.dataset.threshold || '400', 10);
+      this.behavior = (button.dataset.behavior || 'smooth') as ScrollBehavior;
+
+      this.init();
+    }
+
+    private init(): void {
+      // Scroll handler
+      window.addEventListener('scroll', () => this.onScroll(), { passive: true });
+
+      // Click handler
+      this.button.addEventListener('click', () => this.scrollToTop());
+
+      // Initial check
+      this.updateVisibility();
+    }
+
+    private onScroll(): void {
+      if (!this.ticking) {
+        requestAnimationFrame(() => {
+          this.updateVisibility();
+          this.ticking = false;
+        });
+        this.ticking = true;
+      }
+    }
+
+    private updateVisibility(): void {
+      if (window.scrollY > this.threshold) {
+        this.button.classList.add('is-visible');
+      } else {
+        this.button.classList.remove('is-visible');
+      }
+    }
+
+    private scrollToTop(): void {
+      window.scrollTo({
+        top: 0,
+        behavior: this.behavior,
+      });
+
+      // Focus the top of the page for keyboard users
+      const mainContent = document.querySelector('main') || document.body;
+      mainContent.setAttribute('tabindex', '-1');
+      mainContent.focus({ preventScroll: true });
+      mainContent.removeAttribute('tabindex');
+    }
+  }
+
+  // Initialize
+  function initBackToTop(): void {
+    const buttons = document.querySelectorAll<HTMLElement>('[data-back-to-top]');
+    buttons.forEach((button) => {
+      new BackToTopController(button);
+    });
+  }
+
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBackToTop);
+  } else {
+    initBackToTop();
+  }
+
+  // Re-initialize on Astro page transitions
+  document.addEventListener('astro:page-load', initBackToTop);
+</script>

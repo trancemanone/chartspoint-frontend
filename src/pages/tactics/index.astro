@@ -1,6 +1,6 @@
 ---
 /**
- * Tactics Pillar Index Page
+ * Tactics Pillar Index Page - Institutional Fintech Design
  *
  * Strategy Application pillar for ChartsPoint
  * Clusters: trend-tactics, reversion, intraday, risk
@@ -9,12 +9,38 @@
 
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { PILLARS, CLUSTERS } from '@lib/types';
+import { getPostsByPillar, transformToArticle } from '@lib/wordpress';
 
 const pillar = PILLARS.tactics;
 const clusters = CLUSTERS.filter(c => c.pillar === 'tactics');
 
-const pageTitle = pillar.nameAr;
-const pageDescription = pillar.description;
+// Fetch articles for this pillar
+let articles: any[] = [];
+try {
+  const postsResponse = await getPostsByPillar('tactics', 6);
+  articles = postsResponse.data.map(transformToArticle);
+} catch (error) {
+  console.error('Error fetching tactics posts:', error);
+}
+
+// Cluster descriptions
+const clusterDescriptions: Record<string, string> = {
+  'trend-tactics': 'استراتيجيات تتبع الاتجاه والتداول مع الترند',
+  'reversion': 'استراتيجيات الارتداد والتداول العكسي',
+  'intraday': 'استراتيجيات التداول اليومي وقصير المدى',
+  'risk': 'إدارة المخاطر وحماية رأس المال',
+};
+
+// Cluster icons
+const clusterIcons: Record<string, string> = {
+  'trend-tactics': 'M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941',
+  'reversion': 'M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5',
+  'intraday': 'M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z',
+  'risk': 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
+};
+
+const pageTitle = `${pillar.nameAr} | ChartsPoint`;
+const pageDescription = `${pillar.description} - استراتيجيات التداول وإدارة المخاطر`;
 ---
 
 <BaseLayout
@@ -22,43 +48,261 @@ const pageDescription = pillar.description;
   description={pageDescription}
   pillar="tactics"
 >
-  <section class="min-h-screen py-16 px-4">
-    <div class="container mx-auto max-w-6xl">
-      <!-- Pillar Header -->
-      <header class="text-center mb-12">
-        <h1 class="text-4xl md:text-5xl font-bold text-navy-900 mb-4">
+  <!-- Premium Hero Section -->
+  <section class="pillar-hero relative overflow-hidden py-20 lg:py-28 bg-gradient-to-br from-[#1A0F26] via-[#2D1B3D] to-[#3D2752]">
+    <!-- Background Effects -->
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[100px] opacity-50" style="background: rgba(139, 92, 246, 0.15);"></div>
+      <div class="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-[80px] opacity-30" style="background: rgba(139, 92, 246, 0.1);"></div>
+    </div>
+
+    <!-- Grid Pattern -->
+    <div class="absolute inset-0 opacity-[0.03]">
+      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="grid-tactics" width="60" height="60" patternUnits="userSpaceOnUse">
+            <path d="M 60 0 L 0 0 0 60" fill="none" stroke="white" stroke-width="0.5" opacity="0.6"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#grid-tactics)"/>
+      </svg>
+    </div>
+
+    <div class="container mx-auto px-4 lg:px-6 relative z-10">
+      <!-- Breadcrumbs -->
+      <nav class="mb-8" aria-label="Breadcrumb">
+        <ol class="flex items-center gap-2 text-white/60 text-sm">
+          <li>
+            <a href="/" class="hover:text-white/90 transition-colors">الرئيسية</a>
+          </li>
+          <li class="flex items-center gap-2">
+            <svg class="w-4 h-4 rotate-180 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+            <span class="text-white font-medium">{pillar.nameAr}</span>
+          </li>
+        </ol>
+      </nav>
+
+      <div class="max-w-4xl">
+        <!-- Pillar Icon -->
+        <div class="w-16 h-16 bg-tactics-500/20 backdrop-blur-sm rounded-xl flex items-center justify-center mb-6 border border-tactics-500/30">
+          <svg class="w-8 h-8 text-tactics-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+        </div>
+
+        <!-- Title -->
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 font-heading">
           {pillar.nameAr}
         </h1>
-        <p class="text-xl text-slate-600 max-w-2xl mx-auto">
+
+        <!-- Description -->
+        <p class="text-xl md:text-2xl text-white/75 leading-relaxed mb-8 max-w-3xl">
           {pillar.description}
         </p>
-        <div class="mt-4 w-24 h-1 mx-auto rounded-full" style={`background-color: ${pillar.color}`}></div>
-      </header>
 
-      <!-- Clusters Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {clusters.map(cluster => (
+        <!-- Stats -->
+        <div class="flex flex-wrap gap-6">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 bg-white/10 backdrop-blur-sm rounded-lg flex items-center justify-center border border-white/10">
+              <svg class="w-5 h-5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            </div>
+            <div>
+              <span class="text-2xl font-bold text-white">{clusters.length}</span>
+              <span class="text-white/60 text-base mr-2">مجموعات</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 bg-white/10 backdrop-blur-sm rounded-lg flex items-center justify-center border border-white/10">
+              <svg class="w-5 h-5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <div>
+              <span class="text-2xl font-bold text-white">{articles.length}+</span>
+              <span class="text-white/60 text-base mr-2">مقالات</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wave Transition -->
+    <div class="absolute bottom-0 left-0 right-0">
+      <svg viewBox="0 0 1440 80" fill="none" class="w-full h-auto" preserveAspectRatio="none">
+        <path d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,20 1440,40 L1440,80 L0,80 Z" fill="#F8FAFC"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Clusters Section -->
+  <section class="py-16 lg:py-24 bg-slate-50">
+    <div class="container mx-auto px-4 lg:px-6">
+      <div class="section-header text-center mb-12">
+        <h2 class="section-title font-heading text-3xl md:text-4xl font-bold text-navy-900 mb-4">
+          استراتيجيات التداول
+        </h2>
+        <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+          تعلم بناء استراتيجيتك الخاصة وإدارة المخاطر بفعالية
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        {clusters.map((cluster) => (
           <a
             href={`/tactics/${cluster.slug}/`}
-            class="block p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow border-r-4"
-            style={`border-color: ${pillar.color}`}
+            class="cluster-card group relative bg-white rounded-xl border border-slate-200 p-6 lg:p-8 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
           >
-            <h2 class="text-xl font-semibold text-navy-900 mb-2">
-              {cluster.nameAr}
-            </h2>
-            <p class="text-slate-600">
-              استكشف مقالات {cluster.nameAr}
-            </p>
+            <!-- Accent Bar -->
+            <div class="absolute top-0 right-0 w-1 h-full bg-tactics-500 rounded-tr-xl rounded-br-xl"></div>
+
+            <div class="flex items-start gap-5">
+              <!-- Icon -->
+              <div class="w-14 h-14 bg-tactics-50 rounded-xl flex items-center justify-center flex-shrink-0 border border-tactics-100 transition-all duration-300 group-hover:bg-tactics-100 group-hover:scale-105">
+                <svg class="w-7 h-7 text-tactics-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d={clusterIcons[cluster.slug] || clusterIcons['risk']} />
+                </svg>
+              </div>
+
+              <div class="flex-1">
+                <h3 class="text-xl font-bold text-navy-900 mb-2 font-heading group-hover:text-tactics-700 transition-colors">
+                  {cluster.nameAr}
+                </h3>
+                <p class="text-slate-600 text-[0.9375rem] leading-relaxed mb-4">
+                  {clusterDescriptions[cluster.slug] || `استكشف مقالات ${cluster.nameAr}`}
+                </p>
+
+                <!-- CTA -->
+                <span class="inline-flex items-center gap-2 text-tactics-600 font-medium text-sm transition-all duration-200 group-hover:gap-3">
+                  <span>استكشف المحتوى</span>
+                  <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </span>
+              </div>
+            </div>
           </a>
         ))}
       </div>
+    </div>
+  </section>
 
-      <!-- Placeholder Notice -->
-      <div class="mt-12 p-6 bg-purple-50 rounded-xl text-center">
-        <p class="text-purple-800">
-          هذه صفحة مؤقتة. سيتم إضافة المحتوى قريباً.
-        </p>
+  <!-- Risk Warning Section -->
+  <section class="py-12 bg-white">
+    <div class="container mx-auto px-4 lg:px-6">
+      <div class="max-w-3xl mx-auto p-6 rounded-xl bg-yellow-50 border border-yellow-200">
+        <div class="flex items-start gap-4">
+          <svg class="w-6 h-6 flex-shrink-0 text-yellow-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <div>
+            <h3 class="font-bold text-yellow-800 mb-2">تنبيه مهم حول الاستراتيجيات</h3>
+            <p class="text-yellow-700 text-sm leading-relaxed">
+              الاستراتيجيات المشروحة هنا تعليمية فقط ولا تمثل توصيات تداول. أي استراتيجية قد تفشل، وإدارة المخاطر هي الأهم. لا تتداول بأموال لا تستطيع تحمل خسارتها.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
+
+  <!-- Recent Articles -->
+  {articles.length > 0 && (
+    <section class="py-16 lg:py-24 bg-slate-50">
+      <div class="container mx-auto px-4 lg:px-6">
+        <div class="section-header text-center mb-12">
+          <h2 class="section-title font-heading text-3xl md:text-4xl font-bold text-navy-900 mb-4">
+            أحدث المقالات
+          </h2>
+          <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+            مقالات تعليمية حديثة في الاستراتيجيات
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {articles.slice(0, 6).map((article) => (
+            <a
+              href={`/${article.pillar}/${article.cluster}/${article.slug}/`}
+              class="article-card group bg-white rounded-xl border border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+            >
+              {article.featuredImage && (
+                <div class="aspect-[16/10] overflow-hidden">
+                  <img
+                    src={article.featuredImage.url}
+                    alt={article.featuredImage.alt || article.title}
+                    class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                </div>
+              )}
+              <div class="p-5">
+                <h3 class="font-heading text-lg font-bold text-navy-900 mb-2 line-clamp-2 group-hover:text-tactics-700 transition-colors">
+                  {article.title}
+                </h3>
+                {article.excerpt && (
+                  <p class="text-slate-600 text-sm line-clamp-2 mb-4">
+                    {article.excerpt}
+                  </p>
+                )}
+                <div class="flex items-center justify-between text-sm text-slate-500">
+                  <span class="flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    {article.readingTime} دقائق
+                  </span>
+                  <span class="text-tactics-600 font-medium group-hover:text-tactics-700">
+                    اقرأ المزيد
+                  </span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
 </BaseLayout>
+
+<style>
+  .section-title {
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    right: 0;
+    width: 60%;
+    height: 3px;
+    background: linear-gradient(90deg, #8B5CF6 0%, transparent 100%);
+    border-radius: 2px;
+  }
+
+  .cluster-card:focus-visible,
+  .article-card:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px white, 0 0 0 6px #8B5CF6;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cluster-card,
+    .article-card {
+      transition: none;
+    }
+
+    .cluster-card:hover,
+    .article-card:hover {
+      transform: none;
+    }
+
+    .article-card:hover img {
+      transform: none;
+    }
+  }
+</style>

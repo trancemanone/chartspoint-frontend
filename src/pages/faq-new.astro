@@ -1,0 +1,161 @@
+---
+/**
+ * FAQ Page - الأسئلة الشائعة
+ *
+ * Enhanced FAQ page with category tabs, search, and accordion.
+ * Schema.org FAQPage markup for SEO.
+ */
+
+import StaticPageLayoutEnhanced from '@layouts/StaticPageLayoutEnhanced.astro';
+import FAQSection from '@components/static/FAQSection.astro';
+
+// Page metadata
+const title = 'الأسئلة الشائعة';
+const description = 'الأسئلة الشائعة حول تشارتس بوينت ومحتواها التعليمي. اعثر على إجابات لاستفساراتك الأكثر شيوعًا.';
+const heroSubtitle = 'نجيب على أكثر الأسئلة شيوعًا حول منصتنا ومحتوانا التعليمي.';
+
+// Breadcrumbs
+const breadcrumbs = [
+  { label: 'الرئيسية', href: '/' },
+  { label: 'الأسئلة الشائعة', href: '/faq', current: true },
+];
+
+// FAQ Categories
+const categories = [
+  { id: 'general', label: 'عام' },
+  { id: 'content', label: 'المحتوى' },
+  { id: 'trading', label: 'التداول' },
+  { id: 'technical', label: 'تقني' },
+];
+
+// FAQ Items
+const faqs = [
+  // General
+  {
+    question: 'ما هو موقع تشارتس بوينت؟',
+    answer: '<p>تشارتس بوينت منصة تعليمية متخصصة في التحليل الفني للمتداول العربي. نقدم محتوى تعليمي شامل يغطي أساسيات التحليل الفني، المؤشرات الفنية، أدوات الرسم البياني، واستراتيجيات التداول المختلفة.</p>',
+    category: 'general'
+  },
+  {
+    question: 'هل تقدمون نصائح استثمارية أو توصيات تداول؟',
+    answer: '<p><strong>لا.</strong> تشارتس بوينت منصة تعليمية بحتة. جميع المحتوى المقدم لأغراض تعليمية فقط ولا يُعد نصيحة مالية أو استثمارية. ننصح دائمًا باستشارة مستشار مالي مرخص قبل اتخاذ أي قرار استثماري.</p>',
+    category: 'general'
+  },
+  {
+    question: 'هل المحتوى مجاني؟',
+    answer: '<p>نعم، جميع المحتوى التعليمي على تشارتس بوينت متاح مجانًا. نؤمن بأن التعليم المالي الأساسي يجب أن يكون متاحًا للجميع.</p>',
+    category: 'general'
+  },
+  {
+    question: 'كيف تحققون الدخل من الموقع؟',
+    answer: '<p>نحقق الدخل من خلال عدة مصادر تشمل الروابط التابعة (affiliate) لمنصات التداول والإعلانات المحدودة. نفصح دائمًا عن أي علاقات تجارية بشكل واضح. يمكنك قراءة المزيد في صفحة <a href="/how-we-make-money">كيف نحقق الدخل</a>.</p>',
+    category: 'general'
+  },
+
+  // Content
+  {
+    question: 'كيف يتم اختيار وإعداد المحتوى؟',
+    answer: '<p>يتم إعداد المحتوى من قبل فريق متخصص يعتمد على مصادر موثوقة ومراجع أكاديمية. كل مقال يمر بعملية مراجعة للتأكد من دقة المعلومات ووضوح الشرح.</p>',
+    category: 'content'
+  },
+  {
+    question: 'هل يمكنني اقتراح موضوع جديد؟',
+    answer: '<p>بالتأكيد! نرحب باقتراحات المحتوى من قرائنا. يمكنك إرسال اقتراحاتك عبر <a href="/contact">صفحة التواصل</a> وسننظر فيها بعناية.</p>',
+    category: 'content'
+  },
+  {
+    question: 'كم مرة يتم تحديث المحتوى؟',
+    answer: '<p>نضيف محتوى جديد بشكل منتظم ونراجع المحتوى القائم دوريًا لضمان دقته ومواكبته للتطورات في مجال التداول والتحليل الفني.</p>',
+    category: 'content'
+  },
+  {
+    question: 'هل يمكنني مشاركة المحتوى؟',
+    answer: '<p>نعم، يمكنك مشاركة روابط مقالاتنا. نطلب فقط الإشارة إلى المصدر (تشارتس بوينت) عند الاقتباس من محتوانا.</p>',
+    category: 'content'
+  },
+
+  // Trading
+  {
+    question: 'ما هو التحليل الفني؟',
+    answer: '<p>التحليل الفني هو دراسة حركة الأسعار التاريخية باستخدام الرسوم البيانية والمؤشرات الفنية للتنبؤ بالتحركات المستقبلية. يعتمد على مبدأ أن السعر يعكس جميع المعلومات المتاحة وأن التاريخ يميل للتكرار.</p><p>يمكنك البدء بقراءة <a href="/basics/intro">أساسيات التحليل الفني</a>.</p>',
+    category: 'trading'
+  },
+  {
+    question: 'ما الفرق بين التحليل الفني والتحليل الأساسي؟',
+    answer: '<p>التحليل الفني يركز على دراسة حركة الأسعار والرسوم البيانية، بينما التحليل الأساسي يركز على دراسة البيانات المالية والاقتصادية للشركات والأسواق. كثير من المتداولين يجمعون بين الأسلوبين.</p>',
+    category: 'trading'
+  },
+  {
+    question: 'ما أفضل مؤشر فني للمبتدئين؟',
+    answer: '<p>لا يوجد "أفضل" مؤشر، لكن ننصح المبتدئين بالبدء بفهم المتوسطات المتحركة (Moving Averages) ومؤشر القوة النسبية (RSI) كونها من أكثر المؤشرات استخدامًا وسهولة في الفهم. زر قسم <a href="/indicators">المؤشرات الفنية</a> للمزيد.</p>',
+    category: 'trading'
+  },
+  {
+    question: 'هل التداول مناسب للجميع؟',
+    answer: '<p>التداول ليس مناسبًا للجميع. ينطوي على مخاطر عالية قد تؤدي لخسارة رأس المال. يجب أن يكون لديك فهم جيد للمخاطر، وأن لا تتداول بأموال لا يمكنك تحمل خسارتها. نوصي بشدة بالتعلم الجيد والتدرب على حساب تجريبي قبل التداول بأموال حقيقية.</p>',
+    category: 'trading'
+  },
+
+  // Technical
+  {
+    question: 'كيف يمكنني التواصل معكم؟',
+    answer: '<p>يمكنك التواصل معنا عبر <a href="/contact">نموذج التواصل</a> أو عبر واتساب. نرد على جميع الرسائل خلال 24-48 ساعة عمل.</p>',
+    category: 'technical'
+  },
+  {
+    question: 'هل يمكنني الاشتراك في نشرة بريدية؟',
+    answer: '<p>نعم، يمكنك الاشتراك في نشرتنا البريدية للحصول على أحدث المقالات والتحديثات. نرسل النشرة مرة أو مرتين شهريًا فقط، ولن نزعجك برسائل كثيرة.</p>',
+    category: 'technical'
+  },
+  {
+    question: 'كيف أبلّغ عن خطأ في المحتوى؟',
+    answer: '<p>نرحب بالتنبيه على أي أخطاء. يرجى إرسال تفاصيل الخطأ ورابط الصفحة عبر <a href="/contact">نموذج التواصل</a> واختيار "تصحيح معلومة" كموضوع الرسالة.</p>',
+    category: 'technical'
+  },
+  {
+    question: 'هل الموقع متوافق مع الهواتف؟',
+    answer: '<p>نعم، الموقع مصمم ليعمل بشكل ممتاز على جميع الأجهزة بما في ذلك الهواتف الذكية والأجهزة اللوحية وأجهزة الكمبيوتر.</p>',
+    category: 'technical'
+  },
+];
+---
+
+<StaticPageLayoutEnhanced
+  title={title}
+  description={description}
+  heroSubtitle={heroSubtitle}
+  variant="faq"
+  breadcrumbs={breadcrumbs}
+  showReadingTime={false}
+  showLastUpdated={false}
+>
+  <div class="max-w-4xl mx-auto">
+    <div class="faq-container">
+      <FAQSection
+        faqs={faqs}
+        categories={categories}
+        showSearch={true}
+        showCTA={true}
+        ctaLink="/contact"
+      />
+    </div>
+  </div>
+</StaticPageLayoutEnhanced>
+
+<style>
+  .faq-container {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow:
+      0 2px 8px rgba(15, 23, 42, 0.04),
+      0 4px 16px rgba(15, 23, 42, 0.04);
+  }
+
+  @media (min-width: 768px) {
+    .faq-container {
+      padding: 2.5rem 3rem;
+    }
+  }
+</style>

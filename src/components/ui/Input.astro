@@ -1,0 +1,406 @@
+---
+/**
+ * Input.astro
+ * Premium form input component for CHARTSPOINT fintech platform
+ *
+ * Features:
+ * - Multiple input types: text, email, password, tel, number, search
+ * - Built-in label and helper text
+ * - Error state with accessible error messages
+ * - Icon support (leading/trailing)
+ * - Full RTL support
+ * - WCAG AAA accessibility (48px+ touch targets, 18px+ font)
+ * - Optimized for users aged 40-70
+ */
+
+export interface Props {
+  /** Input type */
+  type?: 'text' | 'email' | 'password' | 'tel' | 'number' | 'search' | 'url';
+  /** Input name attribute */
+  name: string;
+  /** Input ID (required for label association) */
+  id: string;
+  /** Label text */
+  label?: string;
+  /** Placeholder text */
+  placeholder?: string;
+  /** Helper text below input */
+  helperText?: string;
+  /** Error message (shows error state when provided) */
+  error?: string;
+  /** Required field */
+  required?: boolean;
+  /** Disabled state */
+  disabled?: boolean;
+  /** Read-only state */
+  readonly?: boolean;
+  /** Current value */
+  value?: string | number;
+  /** Minimum value (for number inputs) */
+  min?: number;
+  /** Maximum value (for number inputs) */
+  max?: number;
+  /** Step value (for number inputs) */
+  step?: number;
+  /** Minimum length */
+  minlength?: number;
+  /** Maximum length */
+  maxlength?: number;
+  /** Pattern for validation */
+  pattern?: string;
+  /** Autocomplete attribute */
+  autocomplete?: string;
+  /** Force LTR direction (for emails, URLs, numbers) */
+  forceLtr?: boolean;
+  /** Input size variant */
+  size?: 'md' | 'lg';
+  /** Full width */
+  fullWidth?: boolean;
+  /** Additional CSS classes for container */
+  class?: string;
+}
+
+const {
+  type = 'text',
+  name,
+  id,
+  label,
+  placeholder,
+  helperText,
+  error,
+  required = false,
+  disabled = false,
+  readonly = false,
+  value,
+  min,
+  max,
+  step,
+  minlength,
+  maxlength,
+  pattern,
+  autocomplete,
+  forceLtr = false,
+  size = 'md',
+  fullWidth = true,
+  class: className = '',
+} = Astro.props;
+
+// Determine if LTR should be forced based on type
+const shouldForceLtr = forceLtr || ['email', 'url', 'tel', 'number'].includes(type);
+
+// Build container classes
+const containerClasses = [
+  'input-container',
+  fullWidth && 'input-container--full-width',
+  error && 'input-container--error',
+  disabled && 'input-container--disabled',
+  className,
+].filter(Boolean).join(' ');
+
+// Build input classes
+const inputClasses = [
+  'input',
+  `input--${size}`,
+  error && 'input--error',
+].filter(Boolean).join(' ');
+
+// Generate unique IDs for helper/error text
+const helperId = helperText ? `${id}-helper` : undefined;
+const errorId = error ? `${id}-error` : undefined;
+const describedBy = [helperId, errorId].filter(Boolean).join(' ') || undefined;
+---
+
+<div class={containerClasses}>
+  {/* Label */}
+  {label && (
+    <label for={id} class="input__label">
+      {label}
+      {required && <span class="input__required" aria-hidden="true">*</span>}
+    </label>
+  )}
+
+  {/* Input Wrapper */}
+  <div class="input__wrapper">
+    {/* Leading Icon Slot */}
+    <span class="input__icon input__icon--leading">
+      <slot name="icon-leading" />
+    </span>
+
+    {/* Input Element */}
+    <input
+      type={type}
+      name={name}
+      id={id}
+      class={inputClasses}
+      placeholder={placeholder}
+      required={required}
+      disabled={disabled}
+      readonly={readonly}
+      value={value}
+      min={min}
+      max={max}
+      step={step}
+      minlength={minlength}
+      maxlength={maxlength}
+      pattern={pattern}
+      autocomplete={autocomplete}
+      dir={shouldForceLtr ? 'ltr' : undefined}
+      aria-invalid={error ? 'true' : undefined}
+      aria-describedby={describedBy}
+    />
+
+    {/* Trailing Icon Slot */}
+    <span class="input__icon input__icon--trailing">
+      <slot name="icon-trailing" />
+    </span>
+  </div>
+
+  {/* Helper Text */}
+  {helperText && !error && (
+    <p id={helperId} class="input__helper">
+      {helperText}
+    </p>
+  )}
+
+  {/* Error Message */}
+  {error && (
+    <p id={errorId} class="input__error" role="alert">
+      <svg class="input__error-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+      </svg>
+      {error}
+    </p>
+  )}
+</div>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════════
+     INPUT CONTAINER
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .input-container--full-width {
+    width: 100%;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     LABEL
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .input__label {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #102941;
+    line-height: 1.5;
+  }
+
+  .input__required {
+    color: #B91C1C;
+    margin-right: 0.25rem;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     INPUT WRAPPER (for icons)
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .input__wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     INPUT ELEMENT
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .input {
+    width: 100%;
+    background-color: #FFFFFF;
+    border: 2px solid #E2E8F0;
+    border-radius: 0.5rem;
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    line-height: 1.5;
+    color: #0F172A;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  /* Size: MD (default) */
+  .input--md {
+    min-height: 56px;
+    padding: 1rem 1.25rem;
+  }
+
+  /* Size: LG */
+  .input--lg {
+    min-height: 64px;
+    padding: 1.25rem 1.5rem;
+    font-size: 1.25rem;
+  }
+
+  /* Placeholder */
+  .input::placeholder {
+    color: #94A3B8;
+    font-style: normal;
+  }
+
+  /* Hover */
+  .input:hover:not(:focus):not(:disabled):not(:read-only) {
+    border-color: #CBD5E1;
+  }
+
+  /* Focus */
+  .input:focus {
+    outline: none;
+    border-color: #d5a035;
+    box-shadow: 0 0 0 3px rgba(213, 160, 53, 0.2);
+  }
+
+  /* Error */
+  .input--error {
+    border-color: #B91C1C;
+  }
+
+  .input--error:focus {
+    border-color: #B91C1C;
+    box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.15);
+  }
+
+  /* Disabled */
+  .input:disabled {
+    background-color: #F8FAFC;
+    color: #94A3B8;
+    cursor: not-allowed;
+  }
+
+  /* Read-only */
+  .input:read-only {
+    background-color: #F8FAFC;
+    cursor: default;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     ICONS
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .input__icon {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    color: #94A3B8;
+  }
+
+  .input__icon :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .input__icon--leading {
+    right: 1.25rem;
+  }
+
+  .input__icon--trailing {
+    left: 1.25rem;
+  }
+
+  /* Adjust input padding when icons are present */
+  .input__wrapper:has(.input__icon--leading:not(:empty)) .input {
+    padding-right: 3.5rem;
+  }
+
+  .input__wrapper:has(.input__icon--trailing:not(:empty)) .input {
+    padding-left: 3.5rem;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     HELPER TEXT
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .input__helper {
+    font-size: 1rem;
+    color: #64748B;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     ERROR MESSAGE
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .input__error {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    color: #B91C1C;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .input__error-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     SEARCH INPUT TYPE
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     NUMBER INPUT TYPE
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .input[type="number"] {
+    font-feature-settings: 'tnum';
+    font-variant-numeric: tabular-nums;
+  }
+
+  .input[type="number"]::-webkit-inner-spin-button,
+  .input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     REDUCED MOTION
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .input {
+      transition: none;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     PRINT STYLES
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media print {
+    .input {
+      border: 1px solid #CBD5E1;
+      box-shadow: none;
+    }
+  }
+</style>

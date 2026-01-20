@@ -1,0 +1,559 @@
+---
+/**
+ * How We Make Money Page - كيف نحقق الدخل
+ *
+ * Transparency page explaining monetization methods.
+ * Builds trust through clear disclosure.
+ */
+
+import StaticPageLayoutEnhanced from '@layouts/StaticPageLayoutEnhanced.astro';
+import CalloutBox from '@components/static/CalloutBox.astro';
+
+// Page metadata
+const title = 'كيف نحقق الدخل';
+const description = 'تعرف على كيفية تمويل موقع تشارتس بوينت وسياستنا في الإفصاح عن العلاقات التجارية والروابط التابعة.';
+const heroSubtitle = 'الشفافية قيمة أساسية لدينا. نؤمن بحقك في معرفة كيف نمول عملنا.';
+const lastModified = '2024-01-12';
+
+// Breadcrumbs
+const breadcrumbs = [
+  { label: 'الرئيسية', href: '/' },
+  { label: 'كيف نحقق الدخل', href: '/how-we-make-money', current: true },
+];
+---
+
+<StaticPageLayoutEnhanced
+  title={title}
+  description={description}
+  heroSubtitle={heroSubtitle}
+  lastModified={lastModified}
+  variant="about"
+  breadcrumbs={breadcrumbs}
+  showReadingTime={true}
+  showLastUpdated={true}
+>
+  <div class="max-w-3xl mx-auto">
+
+    <!-- Trust Banner -->
+    <CalloutBox variant="tip" title="التزامنا تجاهك">
+      <p>
+        <strong>قراراتنا التحريرية مستقلة تمامًا عن مصادر الدخل.</strong> لا نقبل أي تأثير على المحتوى مقابل المال، ونفصح دائمًا عن أي علاقة تجارية.
+      </p>
+    </CalloutBox>
+
+    <!-- Main Content Card -->
+    <article class="money-card">
+
+      <!-- How We Generate Revenue -->
+      <section class="money-section">
+        <h2 class="money-section__title">مصادر الدخل</h2>
+        <p>
+          نحقق الدخل من خلال عدة مصادر تتيح لنا الاستمرار في تقديم محتوى تعليمي مجاني وعالي الجودة:
+        </p>
+
+        <div class="revenue-grid">
+          <!-- Affiliate Links -->
+          <div class="revenue-item">
+            <div class="revenue-item__icon revenue-item__icon--affiliate">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+              </svg>
+            </div>
+            <h3 class="revenue-item__title">الروابط التابعة (Affiliate)</h3>
+            <p class="revenue-item__text">
+              عندما تسجل في منصة وسيط عبر روابطنا، قد نحصل على عمولة من الوسيط. هذا لا يزيد التكلفة عليك.
+            </p>
+            <span class="revenue-item__badge">المصدر الرئيسي</span>
+          </div>
+
+          <!-- Advertising -->
+          <div class="revenue-item">
+            <div class="revenue-item__icon revenue-item__icon--ads">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <line x1="9" y1="9" x2="15" y2="15"/>
+                <line x1="15" y1="9" x2="9" y2="15"/>
+              </svg>
+            </div>
+            <h3 class="revenue-item__title">الإعلانات</h3>
+            <p class="revenue-item__text">
+              نعرض إعلانات محدودة ومختارة بعناية. نرفض الإعلانات المضللة أو المشبوهة.
+            </p>
+            <span class="revenue-item__badge revenue-item__badge--secondary">مصدر ثانوي</span>
+          </div>
+
+          <!-- Sponsored Content -->
+          <div class="revenue-item">
+            <div class="revenue-item__icon revenue-item__icon--sponsored">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="12" y1="18" x2="12" y2="12"/>
+                <line x1="9" y1="15" x2="15" y2="15"/>
+              </svg>
+            </div>
+            <h3 class="revenue-item__title">المحتوى الممول</h3>
+            <p class="revenue-item__text">
+              نادرًا ما ننشر محتوى ممول، ونفصح عنه بوضوح. يخضع لنفس معايير الجودة التحريرية.
+            </p>
+            <span class="revenue-item__badge revenue-item__badge--secondary">نادر</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- How We Handle Affiliates -->
+      <section class="money-section">
+        <h2 class="money-section__title">كيف نتعامل مع الروابط التابعة</h2>
+
+        <div class="principle-list">
+          <div class="principle-item">
+            <div class="principle-item__number">1</div>
+            <div class="principle-item__content">
+              <h3>الإفصاح الواضح</h3>
+              <p>نضع تنبيهًا واضحًا في أي صفحة تحتوي على روابط تابعة. لا نخفي علاقاتنا التجارية.</p>
+            </div>
+          </div>
+
+          <div class="principle-item">
+            <div class="principle-item__number">2</div>
+            <div class="principle-item__content">
+              <h3>التقييم المستقل</h3>
+              <p>تقييماتنا ومراجعاتنا مبنية على معايير موضوعية، بغض النظر عن وجود علاقة تابعة.</p>
+            </div>
+          </div>
+
+          <div class="principle-item">
+            <div class="principle-item__number">3</div>
+            <div class="principle-item__content">
+              <h3>لا تأثير على المحتوى</h3>
+              <p>وجود علاقة تابعة لا يؤثر على ما نكتبه أو نوصي به. المصلحة التعليمية أولًا.</p>
+            </div>
+          </div>
+
+          <div class="principle-item">
+            <div class="principle-item__number">4</div>
+            <div class="principle-item__content">
+              <h3>لا تكلفة إضافية</h3>
+              <p>استخدامك لروابطنا التابعة لا يزيد أي تكلفة عليك. العمولة يدفعها الوسيط.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- What We DON'T Do -->
+      <section class="money-section">
+        <h2 class="money-section__title">ما لا نفعله أبدًا</h2>
+
+        <div class="dont-list">
+          <div class="dont-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="15" y1="9" x2="9" y2="15"/>
+              <line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+            <span>لا نبيع بياناتك الشخصية</span>
+          </div>
+          <div class="dont-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="15" y1="9" x2="9" y2="15"/>
+              <line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+            <span>لا نقبل مقابل مادي للتوصية بوسيط معين</span>
+          </div>
+          <div class="dont-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="15" y1="9" x2="9" y2="15"/>
+              <line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+            <span>لا نروج لمنصات غير مرخصة أو مشبوهة</span>
+          </div>
+          <div class="dont-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="15" y1="9" x2="9" y2="15"/>
+              <line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+            <span>لا نخفي الروابط التابعة أو نموهها</span>
+          </div>
+          <div class="dont-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="15" y1="9" x2="9" y2="15"/>
+              <line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+            <span>لا نقدم نصائح استثمارية شخصية مقابل المال</span>
+          </div>
+          <div class="dont-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="15" y1="9" x2="9" y2="15"/>
+              <line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+            <span>لا نضحي بجودة المحتوى من أجل الربح</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Editorial Independence -->
+      <section class="money-section">
+        <h2 class="money-section__title">الاستقلالية التحريرية</h2>
+
+        <CalloutBox variant="info">
+          <p>
+            فريقنا التحريري يعمل بشكل مستقل تمامًا عن فريق الشراكات التجارية. لا يعرف الكُتّاب والمحررون ما إذا كانت هناك علاقة تابعة مع أي منصة يكتبون عنها.
+          </p>
+        </CalloutBox>
+
+        <p>
+          هذا الفصل يضمن أن تقييماتنا ومراجعاتنا تعكس تجربة المستخدم الحقيقية وليس المصلحة المالية.
+        </p>
+      </section>
+
+      <!-- Why This Matters -->
+      <section class="money-section">
+        <h2 class="money-section__title">لماذا هذه الشفافية مهمة</h2>
+        <p>
+          نؤمن بأن الثقة هي أساس العلاقة بيننا وبين قرائنا. عندما نكون صادقين حول كيفية تمويلنا:
+        </p>
+        <ul>
+          <li>يمكنك تقييم توصياتنا بشكل أفضل</li>
+          <li>تعرف أننا لا نخفي شيئًا عنك</li>
+          <li>تفهم أن مصلحتك التعليمية هي أولويتنا</li>
+          <li>يمكنك دعمنا بوعي من خلال استخدام روابطنا</li>
+        </ul>
+      </section>
+
+      <!-- Support Us -->
+      <div class="support-card">
+        <div class="support-card__content">
+          <h3 class="support-card__title">كيف تدعمنا</h3>
+          <p class="support-card__text">
+            إذا استفدت من محتوانا، يمكنك دعمنا من خلال استخدام روابطنا التابعة عند التسجيل في منصات التداول. هذا يساعدنا في الاستمرار دون أي تكلفة إضافية عليك.
+          </p>
+        </div>
+        <a href="/contact" class="support-card__button">
+          لديك سؤال؟ تواصل معنا
+        </a>
+      </div>
+
+    </article>
+  </div>
+</StaticPageLayoutEnhanced>
+
+<style>
+  /* Money Card */
+  .money-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow:
+      0 2px 8px rgba(15, 23, 42, 0.04),
+      0 4px 16px rgba(15, 23, 42, 0.04);
+  }
+
+  @media (min-width: 768px) {
+    .money-card {
+      padding: 3rem;
+    }
+  }
+
+  /* Money Section */
+  .money-section {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid #F1F5F9;
+  }
+
+  .money-section:last-of-type {
+    margin-bottom: 2rem;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .money-section__title {
+    position: relative;
+    margin: 0 0 1.25rem;
+    padding-bottom: 0.875rem;
+    font-family: var(--font-heading);
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: #102A43;
+  }
+
+  @media (min-width: 768px) {
+    .money-section__title {
+      font-size: 1.5rem;
+    }
+  }
+
+  .money-section__title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(
+      to left,
+      #d5a035 0%,
+      #d5a035 20%,
+      #E2E8F0 20%,
+      transparent 100%
+    );
+    border-radius: 2px;
+  }
+
+  /* Content typography */
+  .money-section p {
+    margin: 0 0 1rem;
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    color: #334155;
+  }
+
+  .money-section ul {
+    margin: 0 0 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .money-section li {
+    margin-bottom: 0.625rem;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: #334155;
+  }
+
+  /* Revenue Grid */
+  .revenue-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .revenue-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .revenue-item {
+    position: relative;
+    padding: 1.5rem;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
+  }
+
+  .revenue-item:hover {
+    border-color: rgba(213, 160, 53, 0.3);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  }
+
+  .revenue-item__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    margin-bottom: 1rem;
+    background: #FFFFFF;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 4px rgba(15, 23, 42, 0.04);
+  }
+
+  .revenue-item__icon--affiliate {
+    color: #d5a035;
+  }
+
+  .revenue-item__icon--ads {
+    color: #3B82F6;
+  }
+
+  .revenue-item__icon--sponsored {
+    color: #8B5CF6;
+  }
+
+  .revenue-item__title {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 700;
+    color: #102A43;
+  }
+
+  .revenue-item__text {
+    margin: 0 0 1rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #64748B;
+  }
+
+  .revenue-item__badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #92400E;
+    background: #FEF3C7;
+    border-radius: 9999px;
+  }
+
+  .revenue-item__badge--secondary {
+    color: #64748B;
+    background: #E2E8F0;
+  }
+
+  /* Principle List */
+  .principle-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .principle-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 0.75rem;
+  }
+
+  .principle-item__number {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    font-family: var(--font-heading);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    background: linear-gradient(135deg, #d5a035 0%, #b8892a 100%);
+    border-radius: 50%;
+  }
+
+  .principle-item__content h3 {
+    margin: 0 0 0.375rem;
+    font-family: var(--font-heading);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: #102A43;
+  }
+
+  .principle-item__content p {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #64748B;
+  }
+
+  /* Don't List */
+  .dont-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .dont-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .dont-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    border-radius: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #991B1B;
+  }
+
+  .dont-item svg {
+    flex-shrink: 0;
+    color: #DC2626;
+  }
+
+  /* Support Card */
+  .support-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+    border: 1px solid #E2E8F0;
+    border-radius: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .support-card {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .support-card__title {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-heading);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #102A43;
+  }
+
+  .support-card__text {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #64748B;
+  }
+
+  .support-card__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.875rem 1.5rem;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    color: #102941;
+    background: linear-gradient(135deg, #e8bc5a 0%, #d5a035 100%);
+    border-radius: 0.625rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(213, 160, 53, 0.25);
+    white-space: nowrap;
+  }
+
+  .support-card__button:hover {
+    background: linear-gradient(135deg, #d5a035 0%, #b8892a 100%);
+    box-shadow: 0 4px 12px rgba(213, 160, 53, 0.35);
+    transform: translateY(-1px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .revenue-item,
+    .support-card__button {
+      transition: none;
+    }
+
+    .support-card__button:hover {
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,410 @@
+---
+/**
+ * Terms and Conditions Page - الشروط والأحكام
+ *
+ * Enhanced terms page with TOC sidebar and highlighted key points.
+ */
+
+import StaticPageLayoutEnhanced from '@layouts/StaticPageLayoutEnhanced.astro';
+import CalloutBox from '@components/static/CalloutBox.astro';
+
+// Page metadata
+const title = 'الشروط والأحكام';
+const description = 'شروط وأحكام استخدام موقع تشارتس بوينت. اقرأ القواعد والإرشادات التي تحكم استخدامك للمنصة.';
+const lastModified = '2024-01-10';
+
+// TOC items
+const tocItems = [
+  { id: 'acceptance', label: 'القبول بالشروط' },
+  { id: 'definitions', label: 'التعريفات' },
+  { id: 'usage', label: 'استخدام الموقع' },
+  { id: 'intellectual-property', label: 'الملكية الفكرية' },
+  { id: 'disclaimers', label: 'إخلاء المسؤولية' },
+  { id: 'limitations', label: 'حدود المسؤولية' },
+  { id: 'third-party', label: 'الروابط الخارجية' },
+  { id: 'modifications', label: 'التعديلات' },
+  { id: 'termination', label: 'الإنهاء' },
+  { id: 'governing-law', label: 'القانون الحاكم' },
+  { id: 'contact', label: 'التواصل' },
+];
+
+// Breadcrumbs
+const breadcrumbs = [
+  { label: 'الرئيسية', href: '/' },
+  { label: 'الشروط والأحكام', href: '/terms', current: true },
+];
+---
+
+<StaticPageLayoutEnhanced
+  title={title}
+  description={description}
+  lastModified={lastModified}
+  variant="with-toc"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  showReadingTime={true}
+  showLastUpdated={true}
+>
+  <div class="max-w-6xl mx-auto">
+    <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+
+      <!-- Sticky TOC Sidebar -->
+      <aside class="hidden lg:block lg:col-span-3">
+        <nav class="sticky top-24 bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
+          <h2 class="text-sm font-bold text-navy-800 mb-4 pb-3 border-b border-slate-100 font-heading">
+            جدول المحتويات
+          </h2>
+          <ul class="space-y-1 text-sm" id="toc-list">
+            {tocItems.map((item) => (
+              <li>
+                <a
+                  href={`#${item.id}`}
+                  class="toc-link block py-2 px-3 rounded-lg text-slate-600 hover:text-navy-800 hover:bg-slate-50 transition-colors"
+                  data-toc-link={item.id}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <article class="lg:col-span-9 bg-white rounded-2xl shadow-card border border-slate-100 p-8 md:p-12">
+
+        <!-- Key Points Summary -->
+        <CalloutBox variant="info" title="النقاط الرئيسية">
+          <ul>
+            <li>المحتوى تعليمي فقط وليس نصيحة مالية</li>
+            <li>أنت مسؤول عن قرارات التداول الخاصة بك</li>
+            <li>جميع حقوق المحتوى محفوظة لتشارتس بوينت</li>
+            <li>قد نعدل هذه الشروط من وقت لآخر</li>
+          </ul>
+        </CalloutBox>
+
+        <!-- Acceptance -->
+        <section id="acceptance" class="terms-section">
+          <h2 class="terms-section__title">القبول بالشروط</h2>
+          <p>
+            باستخدامك لموقع تشارتس بوينت (chartspoint.com)، فإنك توافق على الالتزام بهذه الشروط والأحكام. إذا كنت لا توافق على أي جزء من هذه الشروط، يرجى عدم استخدام الموقع.
+          </p>
+          <p>
+            تسري هذه الشروط على جميع زوار ومستخدمي الموقع. يُعد استمرارك في استخدام الموقع بعد نشر أي تعديلات قبولًا منك لتلك التعديلات.
+          </p>
+        </section>
+
+        <!-- Definitions -->
+        <section id="definitions" class="terms-section">
+          <h2 class="terms-section__title">التعريفات</h2>
+          <p>لأغراض هذه الشروط والأحكام:</p>
+          <ul>
+            <li><strong>"الموقع"</strong> يشير إلى موقع تشارتس بوينت (chartspoint.com)</li>
+            <li><strong>"نحن" أو "لنا"</strong> يشير إلى القائمين على موقع تشارتس بوينت</li>
+            <li><strong>"أنت" أو "المستخدم"</strong> يشير إلى أي شخص يستخدم الموقع</li>
+            <li><strong>"المحتوى"</strong> يشير إلى جميع النصوص والرسومات والصور والمعلومات المتاحة على الموقع</li>
+            <li><strong>"الخدمات"</strong> تشير إلى المحتوى التعليمي والأدوات المقدمة عبر الموقع</li>
+          </ul>
+        </section>
+
+        <!-- Usage -->
+        <section id="usage" class="terms-section">
+          <h2 class="terms-section__title">استخدام الموقع</h2>
+
+          <h3>الاستخدام المسموح</h3>
+          <p>يُسمح لك باستخدام الموقع لأغراض:</p>
+          <ul>
+            <li>القراءة والتعلم من المحتوى التعليمي</li>
+            <li>مشاركة روابط المقالات مع الإشارة للمصدر</li>
+            <li>الاقتباس المحدود لأغراض تعليمية مع ذكر المصدر</li>
+          </ul>
+
+          <h3>الاستخدام المحظور</h3>
+          <CalloutBox variant="warning" title="يُحظر عليك">
+            <ul>
+              <li>نسخ المحتوى بشكل كامل أو إعادة نشره دون إذن</li>
+              <li>استخدام المحتوى لأغراض تجارية دون موافقة خطية</li>
+              <li>محاولة اختراق أو تعطيل الموقع</li>
+              <li>استخدام روبوتات أو برامج لسحب المحتوى تلقائيًا</li>
+              <li>إزالة أي إشارات لحقوق النشر أو العلامات التجارية</li>
+            </ul>
+          </CalloutBox>
+        </section>
+
+        <!-- Intellectual Property -->
+        <section id="intellectual-property" class="terms-section">
+          <h2 class="terms-section__title">الملكية الفكرية</h2>
+          <p>
+            جميع المحتوى المتاح على الموقع - بما في ذلك النصوص، الرسومات، الشعارات، الصور، مقاطع الفيديو، والرسوم البيانية - هو ملك لتشارتس بوينت ومحمي بموجب قوانين حقوق النشر والملكية الفكرية.
+          </p>
+          <p>
+            لا يُمنح لك أي ترخيص أو حق في استخدام أي علامة تجارية أو شعار دون موافقة خطية مسبقة.
+          </p>
+        </section>
+
+        <!-- Disclaimers -->
+        <section id="disclaimers" class="terms-section">
+          <h2 class="terms-section__title">إخلاء المسؤولية</h2>
+
+          <CalloutBox variant="critical" title="تنبيه مهم">
+            <p>
+              <strong>المحتوى المقدم على هذا الموقع هو لأغراض تعليمية فقط ولا يُعد نصيحة مالية أو استثمارية أو قانونية أو ضريبية.</strong>
+            </p>
+          </CalloutBox>
+
+          <h3>المحتوى التعليمي</h3>
+          <ul>
+            <li>جميع المعلومات المقدمة هي لأغراض تعليمية عامة فقط</li>
+            <li>لا نقدم توصيات بشراء أو بيع أي أصل مالي</li>
+            <li>لا نضمن دقة أو اكتمال أي معلومة</li>
+            <li>المعلومات قد تتغير دون إشعار مسبق</li>
+          </ul>
+
+          <h3>مخاطر التداول</h3>
+          <p>
+            التداول في الأسواق المالية ينطوي على مخاطر عالية قد تؤدي لخسارة رأس المال. الأداء السابق لا يضمن النتائج المستقبلية. يجب عليك استشارة مستشار مالي مرخص قبل اتخاذ أي قرار استثماري.
+          </p>
+        </section>
+
+        <!-- Limitations of Liability -->
+        <section id="limitations" class="terms-section">
+          <h2 class="terms-section__title">حدود المسؤولية</h2>
+          <p>
+            إلى أقصى حد يسمح به القانون، لا يتحمل موقع تشارتس بوينت والقائمون عليه أي مسؤولية عن:
+          </p>
+          <ul>
+            <li>أي خسائر مالية أو أضرار ناتجة عن استخدام المعلومات المقدمة</li>
+            <li>أي أخطاء أو عدم دقة في المحتوى</li>
+            <li>أي انقطاع أو تأخر في الوصول للموقع</li>
+            <li>أي ضرر مباشر أو غير مباشر أو عرضي أو تبعي</li>
+            <li>أي فيروسات أو برامج ضارة قد تصيب جهازك</li>
+          </ul>
+        </section>
+
+        <!-- Third Party Links -->
+        <section id="third-party" class="terms-section">
+          <h2 class="terms-section__title">الروابط الخارجية</h2>
+          <p>
+            قد يحتوي الموقع على روابط لمواقع خارجية لا نملكها أو نتحكم فيها. لسنا مسؤولين عن:
+          </p>
+          <ul>
+            <li>محتوى أو سياسات خصوصية المواقع الخارجية</li>
+            <li>أي أضرار ناتجة عن استخدام المواقع الخارجية</li>
+            <li>توفر أو دقة المعلومات على المواقع الخارجية</li>
+          </ul>
+          <p>
+            بعض الروابط قد تكون روابط تابعة (affiliate) نحصل منها على عمولة. نفصح عن ذلك بوضوح في المحتوى ذي الصلة.
+          </p>
+        </section>
+
+        <!-- Modifications -->
+        <section id="modifications" class="terms-section">
+          <h2 class="terms-section__title">التعديلات</h2>
+          <p>
+            نحتفظ بالحق في تعديل هذه الشروط في أي وقت. سنعلن عن التعديلات الجوهرية عبر الموقع. استمرارك في استخدام الموقع بعد نشر التعديلات يُعد قبولًا منك للشروط المعدلة.
+          </p>
+          <p>
+            ننصحك بمراجعة هذه الصفحة بشكل دوري للاطلاع على أي تحديثات.
+          </p>
+        </section>
+
+        <!-- Termination -->
+        <section id="termination" class="terms-section">
+          <h2 class="terms-section__title">الإنهاء</h2>
+          <p>
+            نحتفظ بالحق في حظر أو منع وصولك للموقع في أي وقت ولأي سبب، بما في ذلك انتهاك هذه الشروط والأحكام، دون إشعار مسبق.
+          </p>
+        </section>
+
+        <!-- Governing Law -->
+        <section id="governing-law" class="terms-section">
+          <h2 class="terms-section__title">القانون الحاكم</h2>
+          <p>
+            تخضع هذه الشروط والأحكام للقوانين السارية وتُفسر وفقًا لها. أي نزاع ينشأ عن استخدام الموقع يخضع للاختصاص القضائي للمحاكم المختصة.
+          </p>
+        </section>
+
+        <!-- Contact -->
+        <section id="contact" class="terms-section">
+          <h2 class="terms-section__title">التواصل معنا</h2>
+          <p>
+            إذا كان لديك أي أسئلة حول هذه الشروط والأحكام، يرجى التواصل معنا عبر:
+          </p>
+          <ul>
+            <li><a href="/contact">نموذج التواصل</a></li>
+            <li>البريد الإلكتروني: legal@chartspoint.com</li>
+          </ul>
+        </section>
+
+      </article>
+    </div>
+  </div>
+</StaticPageLayoutEnhanced>
+
+<style>
+  /* Terms Section Styling */
+  .terms-section {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid #F1F5F9;
+  }
+
+  .terms-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .terms-section__title {
+    position: relative;
+    margin: 0 0 1.25rem;
+    padding-bottom: 0.875rem;
+    font-family: var(--font-heading);
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: #102A43;
+    scroll-margin-top: 6rem;
+  }
+
+  @media (min-width: 768px) {
+    .terms-section__title {
+      font-size: 1.5rem;
+    }
+  }
+
+  .terms-section__title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(
+      to left,
+      #d5a035 0%,
+      #d5a035 20%,
+      #E2E8F0 20%,
+      transparent 100%
+    );
+    border-radius: 2px;
+  }
+
+  /* Content typography */
+  .terms-section p {
+    margin: 0 0 1rem;
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    color: #334155;
+  }
+
+  @media (min-width: 768px) {
+    .terms-section p {
+      font-size: 1.125rem;
+    }
+  }
+
+  .terms-section h3 {
+    position: relative;
+    margin: 1.75rem 0 0.875rem;
+    padding-right: 1rem;
+    font-family: var(--font-heading);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: #1a3a5c;
+  }
+
+  @media (min-width: 768px) {
+    .terms-section h3 {
+      font-size: 1.125rem;
+    }
+  }
+
+  .terms-section h3::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0.2em;
+    bottom: 0.2em;
+    width: 4px;
+    background: linear-gradient(to bottom, #d5a035, #b8892a);
+    border-radius: 2px;
+  }
+
+  .terms-section ul {
+    margin: 0 0 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .terms-section li {
+    margin-bottom: 0.625rem;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: #334155;
+  }
+
+  .terms-section li strong {
+    font-weight: 600;
+    color: #102A43;
+  }
+
+  .terms-section a {
+    color: #d5a035;
+    text-decoration: underline;
+    text-underline-offset: 6px;
+    text-decoration-thickness: 1px;
+    transition: color 0.2s ease;
+  }
+
+  .terms-section a:hover {
+    color: #b8892a;
+  }
+
+  /* TOC Link Active State */
+  .toc-link.is-active {
+    background-color: rgba(213, 160, 53, 0.1);
+    color: #d5a035;
+    font-weight: 600;
+  }
+</style>
+
+<script>
+  function initTocScrollSpy() {
+    const tocLinks = document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]');
+    if (tocLinks.length === 0) return;
+
+    const sections = Array.from(tocLinks).map(link => {
+      const id = link.dataset.tocLink;
+      return id ? document.getElementById(id) : null;
+    }).filter(Boolean) as HTMLElement[];
+
+    function updateActiveLink() {
+      const scrollPosition = window.scrollY + 150;
+
+      let activeIndex = 0;
+      sections.forEach((section, index) => {
+        if (section.offsetTop <= scrollPosition) {
+          activeIndex = index;
+        }
+      });
+
+      tocLinks.forEach((link, index) => {
+        if (index === activeIndex) {
+          link.classList.add('is-active');
+        } else {
+          link.classList.remove('is-active');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', updateActiveLink, { passive: true });
+    updateActiveLink();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTocScrollSpy);
+  } else {
+    initTocScrollSpy();
+  }
+
+  document.addEventListener('astro:page-load', initTocScrollSpy);
+</script>

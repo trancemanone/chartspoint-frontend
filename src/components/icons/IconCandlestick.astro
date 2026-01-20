@@ -1,0 +1,43 @@
+---
+/**
+ * IconCandlestick - Candlestick chart pattern
+ * Represents technical chart analysis - core ChartsPoint icon
+ * 24x24 grid, 1.75px stroke for readability (ages 40-70)
+ */
+interface Props {
+  class?: string;
+  size?: number;
+  strokeWidth?: number;
+}
+
+const { class: className = '', size = 24, strokeWidth = 1.75 } = Astro.props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={className}
+  width={size}
+  height={size}
+  aria-hidden="true"
+>
+  <!-- Left candlestick (bearish - red) -->
+  <line x1="6" y1="4" x2="6" y2="8" />
+  <rect x="4" y="8" width="4" height="6" rx="0.5" />
+  <line x1="6" y1="14" x2="6" y2="18" />
+
+  <!-- Middle candlestick (bullish - green) -->
+  <line x1="12" y1="6" x2="12" y2="9" />
+  <rect x="10" y="9" width="4" height="8" rx="0.5" />
+  <line x1="12" y1="17" x2="12" y2="20" />
+
+  <!-- Right candlestick (bullish - green) -->
+  <line x1="18" y1="3" x2="18" y2="7" />
+  <rect x="16" y="7" width="4" height="5" rx="0.5" />
+  <line x1="18" y1="12" x2="18" y2="16" />
+</svg>

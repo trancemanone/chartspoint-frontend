@@ -1,0 +1,438 @@
+---
+/**
+ * Risk Disclosure Page - إخلاء المسؤولية ومخاطر التداول
+ *
+ * Enhanced risk disclosure page with prominent warning styling.
+ * Educational tone without being fear-inducing.
+ */
+
+import StaticPageLayoutEnhanced from '@layouts/StaticPageLayoutEnhanced.astro';
+import CalloutBox from '@components/static/CalloutBox.astro';
+
+// Page metadata
+const title = 'إخلاء المسؤولية ومخاطر التداول';
+const description = 'إخلاء المسؤولية لموقع تشارتس بوينت. تعرف على مخاطر التداول والاستثمار والمحتوى التعليمي.';
+const lastModified = '2024-01-10';
+
+// TOC items
+const tocItems = [
+  { id: 'educational-purpose', label: 'المحتوى التعليمي' },
+  { id: 'not-financial-advice', label: 'ليس نصيحة مالية' },
+  { id: 'trading-risks', label: 'مخاطر التداول' },
+  { id: 'past-performance', label: 'الأداء السابق' },
+  { id: 'your-responsibility', label: 'مسؤوليتك' },
+  { id: 'third-party-links', label: 'الروابط الخارجية' },
+  { id: 'limitation-liability', label: 'حدود المسؤولية' },
+];
+
+// Breadcrumbs
+const breadcrumbs = [
+  { label: 'الرئيسية', href: '/' },
+  { label: 'إخلاء المسؤولية', href: '/risk-disclosure', current: true },
+];
+---
+
+<StaticPageLayoutEnhanced
+  title={title}
+  description={description}
+  lastModified={lastModified}
+  variant="disclosure"
+  warningLevel="warning"
+  breadcrumbs={breadcrumbs}
+  showReadingTime={true}
+  showLastUpdated={true}
+>
+  <div class="max-w-3xl mx-auto">
+
+    <!-- Critical Warning Banner -->
+    <div class="warning-banner">
+      <div class="warning-banner__icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+      </div>
+      <div class="warning-banner__content">
+        <h2 class="warning-banner__title">تحذير مهم - يرجى القراءة بعناية</h2>
+        <p class="warning-banner__text">
+          التداول والاستثمار في الأسواق المالية ينطوي على مخاطر عالية قد تؤدي لخسارة جزئية أو كلية لرأس المال. المحتوى المقدم في هذا الموقع لأغراض تعليمية فقط.
+        </p>
+      </div>
+    </div>
+
+    <!-- Main Content Card -->
+    <article class="disclosure-card">
+
+      <!-- Educational Purpose -->
+      <section id="educational-purpose" class="disclosure-section">
+        <h2 class="disclosure-section__title">المحتوى التعليمي</h2>
+        <p>
+          جميع المحتوى المقدم في موقع تشارتس بوينت - بما في ذلك المقالات، الشروحات، الرسوم البيانية، والتحليلات - هو محتوى تعليمي بحت يهدف إلى:
+        </p>
+        <ul>
+          <li>شرح مفاهيم التحليل الفني وأدواته</li>
+          <li>تعريف المتداولين بالمؤشرات الفنية المختلفة</li>
+          <li>توضيح آليات عمل الأسواق المالية</li>
+          <li>تقديم معلومات عامة عن استراتيجيات التداول</li>
+        </ul>
+      </section>
+
+      <!-- Not Financial Advice -->
+      <section id="not-financial-advice" class="disclosure-section">
+        <h2 class="disclosure-section__title">ليس نصيحة مالية أو استثمارية</h2>
+
+        <CalloutBox variant="critical" title="تنبيه حاسم">
+          <p>
+            <strong>لا يُقدم موقع تشارتس بوينت نصائح مالية أو استثمارية.</strong> المحتوى المقدم لا يُعد توصية بشراء أو بيع أي أصل مالي، ولا يُعد بديلًا عن استشارة مستشار مالي مرخص.
+          </p>
+        </CalloutBox>
+
+        <p>يجب عليك:</p>
+        <ul>
+          <li>استشارة مستشار مالي مرخص قبل اتخاذ أي قرار استثماري</li>
+          <li>إجراء بحثك الخاص والتأكد من ملاءمة أي استثمار لوضعك المالي</li>
+          <li>فهم أن أي قرار تداول هو مسؤوليتك الشخصية بالكامل</li>
+          <li>عدم الاعتماد على أي معلومة من هذا الموقع كأساس وحيد لقراراتك المالية</li>
+        </ul>
+      </section>
+
+      <!-- Trading Risks -->
+      <section id="trading-risks" class="disclosure-section">
+        <h2 class="disclosure-section__title">مخاطر التداول والاستثمار</h2>
+        <p>
+          التداول في الأسواق المالية (الأسهم، العملات، العملات الرقمية، العقود الآجلة، الخيارات، وغيرها) ينطوي على مخاطر جوهرية تشمل:
+        </p>
+
+        <div class="risk-grid">
+          <div class="risk-item">
+            <h3>خسارة رأس المال</h3>
+            <p>قد تخسر جزءًا كبيرًا أو كل رأس المال المستثمر. لا تتداول بأموال لا يمكنك تحمل خسارتها.</p>
+          </div>
+          <div class="risk-item">
+            <h3>تقلبات السوق</h3>
+            <p>الأسواق المالية متقلبة بطبيعتها، والأسعار قد تتغير بشكل سريع وغير متوقع.</p>
+          </div>
+          <div class="risk-item">
+            <h3>مخاطر الرافعة المالية</h3>
+            <p>استخدام الرافعة المالية يضخم الأرباح والخسائر على حد سواء، وقد يؤدي لخسائر تتجاوز إيداعك الأولي.</p>
+          </div>
+          <div class="risk-item">
+            <h3>مخاطر السيولة</h3>
+            <p>قد لا تتمكن من إغلاق صفقاتك بالسعر المطلوب في أوقات ضعف السيولة.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Past Performance -->
+      <section id="past-performance" class="disclosure-section">
+        <h2 class="disclosure-section__title">الأداء السابق ليس مؤشرًا للمستقبل</h2>
+
+        <CalloutBox variant="warning" title="تذكر دائمًا">
+          <p>
+            أي نتائج أو أمثلة أو رسوم بيانية تاريخية مذكورة في الموقع هي لأغراض توضيحية فقط. <strong>الأداء السابق لأي استراتيجية أو أداة لا يضمن نتائج مماثلة في المستقبل.</strong>
+          </p>
+        </CalloutBox>
+
+        <p>
+          ظروف السوق تتغير باستمرار، وما نجح في الماضي قد لا ينجح في المستقبل. كل متداول يجب أن:
+        </p>
+        <ul>
+          <li>يختبر أي استراتيجية على حساب تجريبي أولًا</li>
+          <li>يفهم أن النتائج تختلف بناءً على ظروف السوق</li>
+          <li>يدير المخاطر بشكل صارم ومنضبط</li>
+        </ul>
+      </section>
+
+      <!-- Your Responsibility -->
+      <section id="your-responsibility" class="disclosure-section">
+        <h2 class="disclosure-section__title">مسؤوليتك الشخصية</h2>
+        <p>
+          باستخدامك لهذا الموقع، فإنك تقر وتوافق على أن:
+        </p>
+        <ul>
+          <li>جميع قرارات التداول والاستثمار هي مسؤوليتك الشخصية بالكامل</li>
+          <li>قد قمت بقراءة وفهم هذا الإخلاء من المسؤولية</li>
+          <li>لديك الوعي الكافي بمخاطر التداول</li>
+          <li>لن تحمّل موقع تشارتس بوينت أو القائمين عليه مسؤولية أي خسائر</li>
+          <li>ستسعى للحصول على نصيحة مالية متخصصة عند الحاجة</li>
+        </ul>
+      </section>
+
+      <!-- Third Party Links -->
+      <section id="third-party-links" class="disclosure-section">
+        <h2 class="disclosure-section__title">الروابط الخارجية والأطراف الثالثة</h2>
+        <p>
+          قد يحتوي موقعنا على روابط لمواقع خارجية، بما في ذلك منصات وسطاء التداول. يرجى ملاحظة:
+        </p>
+        <ul>
+          <li>لسنا مسؤولين عن محتوى أو سياسات المواقع الخارجية</li>
+          <li>وجود رابط لموقع ما لا يعني تأييدنا أو توصيتنا به</li>
+          <li>بعض الروابط قد تكون روابط تابعة (affiliate) نحصل منها على عمولة</li>
+          <li>نفصح عن الروابط التابعة بوضوح في المحتوى ذي الصلة</li>
+        </ul>
+      </section>
+
+      <!-- Limitation of Liability -->
+      <section id="limitation-liability" class="disclosure-section">
+        <h2 class="disclosure-section__title">حدود المسؤولية</h2>
+        <p>
+          إلى أقصى حد يسمح به القانون، لا يتحمل موقع تشارتس بوينت والقائمون عليه أي مسؤولية عن:
+        </p>
+        <ul>
+          <li>أي خسائر مالية ناتجة عن استخدام المعلومات المقدمة</li>
+          <li>أي أخطاء أو عدم دقة في المحتوى</li>
+          <li>أي انقطاع أو تأخر في الوصول للموقع</li>
+          <li>أي ضرر مباشر أو غير مباشر ناتج عن استخدام الموقع</li>
+        </ul>
+      </section>
+
+      <!-- CTA Section -->
+      <div class="disclosure-cta">
+        <h3 class="disclosure-cta__title">تعلم إدارة المخاطر</h3>
+        <p class="disclosure-cta__text">
+          إدارة المخاطر هي أساس التداول الناجح. تعرف على استراتيجيات حماية رأس المال.
+        </p>
+        <a href="/tactics/risk" class="disclosure-cta__button">
+          مقالات إدارة المخاطر
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"/>
+            <path d="m12 5 7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
+
+    </article>
+  </div>
+</StaticPageLayoutEnhanced>
+
+<style>
+  /* Warning Banner */
+  .warning-banner {
+    display: flex;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+    border: 2px solid #F59E0B;
+    border-radius: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .warning-banner {
+      padding: 2rem;
+    }
+  }
+
+  .warning-banner__icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-start;
+    color: #B45309;
+  }
+
+  .warning-banner__title {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-heading);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #92400E;
+  }
+
+  @media (min-width: 768px) {
+    .warning-banner__title {
+      font-size: 1.25rem;
+    }
+  }
+
+  .warning-banner__text {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #78350F;
+  }
+
+  /* Disclosure Card */
+  .disclosure-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow:
+      0 2px 8px rgba(15, 23, 42, 0.04),
+      0 4px 16px rgba(15, 23, 42, 0.04);
+  }
+
+  @media (min-width: 768px) {
+    .disclosure-card {
+      padding: 3rem;
+    }
+  }
+
+  /* Disclosure Section */
+  .disclosure-section {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid #F1F5F9;
+  }
+
+  .disclosure-section:last-of-type {
+    margin-bottom: 2rem;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .disclosure-section__title {
+    position: relative;
+    margin: 0 0 1.25rem;
+    padding-bottom: 0.875rem;
+    font-family: var(--font-heading);
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: #102A43;
+    scroll-margin-top: 6rem;
+  }
+
+  @media (min-width: 768px) {
+    .disclosure-section__title {
+      font-size: 1.5rem;
+    }
+  }
+
+  .disclosure-section__title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(
+      to left,
+      #F59E0B 0%,
+      #F59E0B 20%,
+      #E2E8F0 20%,
+      transparent 100%
+    );
+    border-radius: 2px;
+  }
+
+  /* Content typography */
+  .disclosure-section p {
+    margin: 0 0 1rem;
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    color: #334155;
+  }
+
+  @media (min-width: 768px) {
+    .disclosure-section p {
+      font-size: 1.125rem;
+    }
+  }
+
+  .disclosure-section ul {
+    margin: 0 0 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .disclosure-section li {
+    margin-bottom: 0.625rem;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: #334155;
+  }
+
+  /* Risk Grid */
+  .risk-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .risk-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .risk-item {
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%);
+    border: 1px solid #FECACA;
+    border-radius: 0.75rem;
+  }
+
+  .risk-item h3 {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 700;
+    color: #991B1B;
+  }
+
+  .risk-item p {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #7F1D1D;
+  }
+
+  /* CTA Section */
+  .disclosure-cta {
+    margin-top: 2rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+    border: 1px solid #BBF7D0;
+    border-radius: 1rem;
+    text-align: center;
+  }
+
+  .disclosure-cta__title {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #166534;
+  }
+
+  .disclosure-cta__text {
+    margin: 0 0 1.5rem;
+    font-size: 1rem;
+    color: #15803D;
+  }
+
+  .disclosure-cta__button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    color: #FFFFFF;
+    background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
+    border-radius: 0.625rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.25);
+  }
+
+  .disclosure-cta__button:hover {
+    background: linear-gradient(135deg, #16A34A 0%, #15803D 100%);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.35);
+    transform: translateY(-1px);
+  }
+
+  .disclosure-cta__button svg {
+    transform: rotate(180deg); /* RTL */
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .disclosure-cta__button {
+      transition: none;
+    }
+
+    .disclosure-cta__button:hover {
+      transform: none;
+    }
+  }
+</style>

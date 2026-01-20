@@ -1,12 +1,13 @@
-// Content structure configuration for itqqan.com
+// Content structure configuration for chartspoint.com
 
 import type { PillarSlug } from './types';
+import { PILLARS, CLUSTERS, PILLAR_CATEGORY_IDS, CLUSTER_CATEGORY_IDS } from './types';
 
 // Re-export PILLARS from types
-export { PILLARS } from './types';
+export { PILLARS, CLUSTERS };
 
 // URL Structure: /{pillar}/{cluster}/{slug}
-// Example: /learn/stocks/basics
+// Example: /basics/intro/what-is-technical-analysis
 
 export interface ArticlePath {
   pillar: PillarSlug;
@@ -14,133 +15,126 @@ export interface ArticlePath {
   slug: string;
 }
 
-// Content structure mapping
-export const CONTENT_STRUCTURE: Record<PillarSlug, Record<string, string[]>> = {
-  learn: {
-    start: ['meaning', 'longterm', 'risk', 'types', 'income', 'inflation'],
-    stocks: ['basics', 'buy', 'sell', 'dividend', 'value', 'growth'],
-    gold: ['buy', 'pros', 'prices', 'storage', 'etf'],
-    funds: ['types', 'etf', 'active', 'passive', 'fees'],
-    plan: ['goals', 'budget', 'diversify', 'allocation', 'rebalance', 'timeline'],
-    analysis: ['technical', 'fundamental', 'ratios', 'reports', 'news'],
-    courses: ['best', 'ta', 'fa', 'free', 'cert'],
-  },
-  accounts: {
-    open: ['steps', 'alinma', 'darayya', 'online', 'verify'],
-    platform: ['best', 'compare', 'fees', 'tools', 'security'],
-    apps: ['best', 'reviews', 'features', 'security'],
-    brokers: ['companies', 'fees', 'choose', 'support', 'minimum'],
-    sectors: ['equity', 'real', 'crypto', 'funds', 'global'],
-  },
-  trust: {
-    license: ['verify', 'regulators', 'rules', 'regions'],
-    checks: ['research', 'crs', 'history', 'ownership'],
-    scams: ['signs', 'action', 'sites', 'ads', 'social'],
-    'funds-protection': ['safe', 'gov', 'guarantee', 'risk'],
-    privacy: ['data', 'policy', 'consent'],
-  },
-};
-
-// Arabic names for clusters
-export const CLUSTER_NAMES_AR: Record<string, string> = {
-  // Learn
-  start: 'أساسيات الاستثمار',
-  stocks: 'الأسهم',
-  gold: 'الذهب',
-  funds: 'الصناديق',
-  plan: 'التخطيط',
-  analysis: 'التحليل',
-  courses: 'الدورات',
-  // Accounts
-  open: 'فتح حساب',
-  platform: 'المنصات',
-  apps: 'التطبيقات',
-  brokers: 'الوسطاء',
-  sectors: 'القطاعات',
-  // Trust
-  license: 'الترخيص',
-  checks: 'العناية الواجبة',
-  scams: 'الاحتيال',
-  'funds-protection': 'حماية الأموال',
-  privacy: 'الخصوصية',
-};
-
 // Pillar Arabic names
-export const PILLAR_NAMES_AR: Record<PillarSlug, string> = {
+export const PILLAR_NAMES_AR: Record<string, string> = {
+  basics: 'أساسيات التحليل الفني',
+  indicators: 'المؤشرات الفنية',
+  tools: 'الأدوات والحاسبات',
+  tactics: 'الاستراتيجيات وإدارة المخاطر',
+  // Legacy support
   learn: 'تعلم',
   accounts: 'حسابات',
   trust: 'ثقة',
 };
 
-// Pillar descriptions
-export const PILLAR_DESCRIPTIONS_AR: Record<PillarSlug, string> = {
-  learn: 'أساسيات الاستثمار والتعليم المالي - تعلم مفاهيم الاستثمار وبناء ثروتك بوعي',
-  accounts: 'افتح حسابك الاستثماري وتعرف على أفضل المنصات والتطبيقات المرخصة',
-  trust: 'تحقق من التراخيص واحمِ استثماراتك من الاحتيال والمخاطر',
+// Cluster Arabic names
+export const CLUSTER_NAMES_AR: Record<string, string> = {
+  // Basics pillar clusters
+  intro: 'مقدمة في التحليل الفني',
+  patterns: 'أنماط الشموع والرسوم',
+  action: 'حركة السعر',
+  methods: 'طرق التحليل',
+  // Indicators pillar clusters
+  momentum: 'مؤشرات الزخم',
+  trend: 'مؤشرات الاتجاه',
+  volatility: 'مؤشرات التذبذب',
+  volume: 'مؤشرات الحجم',
+  // Tools pillar clusters
+  calc: 'الحاسبات',
+  charts: 'الرسوم البيانية',
+  data: 'البيانات والمصادر',
+  // Tactics pillar clusters
+  'trend-tactics': 'استراتيجيات الاتجاه',
+  reversion: 'استراتيجيات الارتداد',
+  intraday: 'التداول اليومي',
+  risk: 'إدارة المخاطر',
 };
 
-// Get all paths for static generation
-export function getAllPaths(): ArticlePath[] {
-  const paths: ArticlePath[] = [];
-
-  for (const [pillar, clusters] of Object.entries(CONTENT_STRUCTURE)) {
-    for (const [cluster, slugs] of Object.entries(clusters)) {
-      for (const slug of slugs) {
-        paths.push({
-          pillar: pillar as PillarSlug,
-          cluster,
-          slug,
-        });
-      }
-    }
-  }
-
-  return paths;
-}
+// Pillar descriptions
+export const PILLAR_DESCRIPTIONS_AR: Record<PillarSlug, string> = {
+  basics: 'المعرفة الأساسية والمفاهيم التأسيسية للتحليل الفني',
+  indicators: 'الأدوات الفنية والمؤشرات المستخدمة في التحليل',
+  tools: 'الحاسبات والأدوات العملية للمتداولين',
+  tactics: 'استراتيجيات التداول وإدارة المخاطر',
+};
 
 // Get clusters for a pillar
 export function getClustersByPillar(pillar: PillarSlug): string[] {
-  return Object.keys(CONTENT_STRUCTURE[pillar] || {});
+  return CLUSTERS
+    .filter(c => c.pillar === pillar)
+    .map(c => c.slug);
 }
 
-// Get articles for a cluster
-export function getArticlesByCluster(pillar: PillarSlug, cluster: string): string[] {
-  return CONTENT_STRUCTURE[pillar]?.[cluster] || [];
+// Get cluster info
+export function getClusterInfo(clusterSlug: string) {
+  return CLUSTERS.find(c => c.slug === clusterSlug);
 }
 
-// Validate path
-export function isValidPath(pillar: string, cluster: string, slug: string): boolean {
-  const pillarData = CONTENT_STRUCTURE[pillar as PillarSlug];
-  if (!pillarData) return false;
-
-  const clusterData = pillarData[cluster];
-  if (!clusterData) return false;
-
-  return clusterData.includes(slug);
+// Get pillar for a cluster
+export function getPillarForCluster(clusterSlug: string): PillarSlug | null {
+  const cluster = CLUSTERS.find(c => c.slug === clusterSlug);
+  return cluster?.pillar || null;
 }
 
 // Get breadcrumb data
 export function getBreadcrumbPath(
   pillar: PillarSlug,
   cluster?: string,
-  slug?: string
-): { label: string; href: string }[] {
+  articleTitle?: string
+): { label: string; href: string; current?: boolean }[] {
   const crumbs = [
     { label: 'الرئيسية', href: '/' },
-    { label: PILLAR_NAMES_AR[pillar], href: `/${pillar}` },
+    {
+      label: PILLAR_NAMES_AR[pillar] || pillar,
+      href: `/${pillar}/`,
+      current: !cluster && !articleTitle
+    },
   ];
 
   if (cluster) {
     crumbs.push({
       label: CLUSTER_NAMES_AR[cluster] || cluster,
-      href: `/${pillar}/${cluster}`,
+      href: `/${pillar}/${cluster}/`,
+      current: !articleTitle
+    });
+  }
+
+  if (articleTitle) {
+    crumbs.push({
+      label: articleTitle,
+      href: '#',
+      current: true
     });
   }
 
   return crumbs;
 }
 
-// Internal linking rules
+// Validate path
+export function isValidPillar(pillar: string): pillar is PillarSlug {
+  return ['basics', 'indicators', 'tools', 'tactics'].includes(pillar);
+}
+
+export function isValidCluster(pillar: PillarSlug, cluster: string): boolean {
+  return CLUSTERS.some(c => c.pillar === pillar && c.slug === cluster);
+}
+
+// Get category IDs for WordPress
+export function getCategoryIds(pillar: PillarSlug, cluster: string): number[] {
+  const ids: number[] = [];
+
+  if (PILLAR_CATEGORY_IDS[pillar]) {
+    ids.push(PILLAR_CATEGORY_IDS[pillar]);
+  }
+
+  if (CLUSTER_CATEGORY_IDS[cluster]) {
+    ids.push(CLUSTER_CATEGORY_IDS[cluster]);
+  }
+
+  return ids;
+}
+
+// Internal linking validation
 export interface InternalLinkRule {
   from: ArticlePath;
   to: ArticlePath;
@@ -148,7 +142,6 @@ export interface InternalLinkRule {
   type: 'pillar' | 'cluster' | 'sibling' | 'child';
 }
 
-// Validate internal linking requirements
 export function validateInternalLinks(
   articlePath: ArticlePath,
   links: { url: string; type: string }[]
@@ -157,7 +150,7 @@ export function validateInternalLinks(
 
   // Every article must link to its pillar page
   const hasPillarLink = links.some(
-    (l) => l.url === `/${articlePath.pillar}` || l.type === 'pillar'
+    (l) => l.url === `/${articlePath.pillar}/` || l.type === 'pillar'
   );
   if (!hasPillarLink) {
     missing.push('رابط صفحة الركيزة');
@@ -165,22 +158,17 @@ export function validateInternalLinks(
 
   // Every article must link to its cluster hub
   const hasClusterLink = links.some(
-    (l) => l.url === `/${articlePath.pillar}/${articlePath.cluster}` || l.type === 'cluster'
+    (l) => l.url === `/${articlePath.pillar}/${articlePath.cluster}/` || l.type === 'cluster'
   );
   if (!hasClusterLink) {
     missing.push('رابط صفحة المجموعة');
   }
 
-  // Accounts pillar must link to learn and trust
-  if (articlePath.pillar === 'accounts') {
-    const hasLearnLink = links.some((l) => l.url.startsWith('/learn'));
-    const hasTrustLink = links.some((l) => l.url.startsWith('/trust'));
-
-    if (!hasLearnLink) {
-      missing.push('رابط إلى قسم التعلم');
-    }
-    if (!hasTrustLink) {
-      missing.push('رابط إلى قسم الثقة');
+  // All articles should link to risk management (YMYL requirement)
+  if (articlePath.cluster !== 'risk') {
+    const hasRiskLink = links.some((l) => l.url.includes('/tactics/risk/'));
+    if (!hasRiskLink) {
+      missing.push('رابط إلى قسم إدارة المخاطر');
     }
   }
 

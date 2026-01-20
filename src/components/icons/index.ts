@@ -1,17 +1,39 @@
 /**
  * Icons Index - Central export for all fintech SVG icons
  *
- * Premium institutional icon system for itqqan.com
- * All icons use 24x24 viewBox, 2px stroke, currentColor
+ * Premium institutional icon system for ChartsPoint.com
+ * All icons use 24x24 viewBox, 1.75px stroke, currentColor
+ * Optimized for Arabic readers ages 40-70
  *
  * Usage:
  * ---
- * import { IconLearn, IconTrust, IconAccounts } from '../components/icons';
+ * import { IconCandlestick, IconIndicator, IconShieldCheck } from '../components/icons';
  * ---
- * <IconLearn class="w-6 h-6 text-blue-600" />
+ * <IconCandlestick class="w-6 h-6 text-blue-600" />
  */
 
-// Pillar Icons
+// ChartsPoint Pillar Icons - 4 Pillars
+export { default as IconBookOpen } from './IconBookOpen.astro';        // Basics pillar
+export { default as IconIndicator } from './IconIndicator.astro';      // Indicators pillar
+export { default as IconCalculator } from './IconCalculator.astro';    // Tools pillar
+export { default as IconShieldCheck } from './IconShieldCheck.astro';  // Tactics pillar
+
+// Technical Analysis Icons
+export { default as IconCandlestick } from './IconCandlestick.astro';
+export { default as IconChartLine } from './IconChartLine.astro';
+export { default as IconTrendDown } from './IconTrendDown.astro';
+export { default as IconScanner } from './IconScanner.astro';
+export { default as IconAlert } from './IconAlert.astro';
+export { default as IconPortfolio } from './IconPortfolio.astro';
+export { default as IconRisk } from './IconRisk.astro';
+
+// Educational Icons
+export { default as IconAcademy } from './IconAcademy.astro';
+export { default as IconVerification } from './IconVerification.astro';
+export { default as IconGlobeAr } from './IconGlobeAr.astro';
+export { default as IconFilter } from './IconFilter.astro';
+
+// Legacy Pillar Icons (for backwards compatibility)
 export { default as IconLearn } from './IconLearn.astro';
 export { default as IconAccounts } from './IconAccounts.astro';
 export { default as IconTrust } from './IconTrust.astro';

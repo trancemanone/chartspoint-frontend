@@ -11,8 +11,9 @@
  * and how traders manage risk before thinking about profits."
  *
  * Design Philosophy:
- * - Deep navy tones (#102941) convey institutional trust and analytical authority
- * - Refined gold (#d5a035) accents signal premium quality and exclusivity
+ * - Deep charcoal slate (#0F172A) conveys institutional depth and analytical authority
+ * - Vibrant teal (#0891B2) as primary accent - modern, data-driven, trustworthy
+ * - Coral accent (#F43F5E) for CTAs and highlights - warm, distinctive, action-oriented
  * - Calm, analytical aesthetic - no hype, focused on education
  * - Content pillars: basics (blue), indicators (orange), tools (green), tactics (purple)
  * - Generous spacing creates breathing room befitting premium fintech
@@ -27,65 +28,99 @@ export default {
       /**
        * COLOR SYSTEM
        *
-       * A bespoke palette crafted for institutional fintech:
-       * - Navy: Authority, trust, analytical credibility
-       * - Gold: Premium quality, exclusivity, success
+       * A unique CHARTSPOINT palette distinct from other platforms:
+       * - Deep Slate: Authority, trust, analytical credibility
+       * - Teal: Modern tech, data visualization, trustworthiness
+       * - Coral: Action, warmth, distinctive CTAs
        * - Pillar Colors: Content categorization (basics, indicators, tools, tactics)
        * - Slate: Sophisticated neutrals for text and backgrounds
        */
       colors: {
         // ═══════════════════════════════════════════════════════════════
-        // PRIMARY: Deep Navy - Institutional Authority
-        // Extended with dark navy #102941 as key color
+        // PRIMARY: Deep Charcoal Slate - Institutional Authority
+        // A sophisticated dark base distinct from navy
         // ═══════════════════════════════════════════════════════════════
         navy: {
-          50:  '#F0F4F8',   // Lightest tint for subtle backgrounds
-          100: '#D9E2EC',   // Light backgrounds, hover states
-          200: '#BCCCDC',   // Borders, dividers
-          300: '#9FB3C8',   // Muted text, icons
-          400: '#829AB1',   // Secondary text
-          500: '#627D98',   // Body text on light backgrounds
-          600: '#486581',   // Emphasis text
-          700: '#334E68',   // Strong text, headers
-          800: '#1a3a5c',   // Light dark navy
-          900: '#102941',   // DARK NAVY - Key brand color for backgrounds
-          950: '#0a1f33',   // Deepest dark navy
+          50:  '#F8FAFC',   // Lightest tint for subtle backgrounds
+          100: '#F1F5F9',   // Light backgrounds, hover states
+          200: '#E2E8F0',   // Borders, dividers
+          300: '#CBD5E1',   // Muted text, icons
+          400: '#94A3B8',   // Secondary text
+          500: '#64748B',   // Body text on light backgrounds
+          600: '#475569',   // Emphasis text
+          700: '#334155',   // Strong text, headers
+          800: '#1E293B',   // Dark charcoal slate
+          900: '#0F172A',   // DEEP SLATE - Key brand color for backgrounds
+          950: '#020617',   // Deepest near-black
         },
 
         // ═══════════════════════════════════════════════════════════════
-        // ACCENT: Primary Gold - Premium & Exclusivity (NEW PRIMARY)
-        // Replaces green as the main accent color
+        // ACCENT: Teal/Cyan - Modern Tech & Trust (CHARTSPOINT PRIMARY)
+        // Data-driven, modern fintech feel
         // ═══════════════════════════════════════════════════════════════
-        gold: {
-          50:  '#FDF8ED',   // Warmest white, subtle gold tint
-          100: '#FAF0D8',   // Light gold backgrounds
-          200: '#F5E2B5',   // Hover states, highlights
-          300: '#e8bc5a',   // Light gold - decorative accents
-          400: '#deb049',   // Bright gold for emphasis
-          500: '#d5a035',   // PRIMARY GOLD - Main accent color
-          600: '#b8892a',   // Dark gold for contrast
-          700: '#9a7223',   // Rich gold for premium elements
-          800: '#7c5c1c',   // Dark gold for depth
-          900: '#5e4515',   // Deepest gold
-          950: '#3D2903',   // Near-black gold
+        teal: {
+          50:  '#ECFEFF',   // Lightest teal tint
+          100: '#CFFAFE',   // Light teal backgrounds
+          200: '#A5F3FC',   // Hover states, highlights
+          300: '#67E8F9',   // Light teal - decorative accents
+          400: '#22D3EE',   // Bright teal for emphasis
+          500: '#06B6D4',   // PRIMARY TEAL - Main accent color
+          600: '#0891B2',   // BRAND TEAL - CTAs, key accents
+          700: '#0E7490',   // Rich teal for premium elements
+          800: '#155E75',   // Dark teal for depth
+          900: '#164E63',   // Deepest teal
+          950: '#083344',   // Near-black teal
         },
 
         // ═══════════════════════════════════════════════════════════════
-        // BRAND: CHARTSPOINT Gold - Premium & Trust
-        // Gold as primary brand color for CTAs and accents
+        // BRAND: CHARTSPOINT Teal - Modern & Trustworthy
+        // Teal as primary brand color for CTAs and accents
         // ═══════════════════════════════════════════════════════════════
         brand: {
-          50:  '#FDF8ED',   // Lightest gold tint
-          100: '#FAF0D8',   // Light backgrounds
-          200: '#F5E2B5',   // Hover states
-          300: '#e8bc5a',   // Light gold - decorative elements
-          400: '#deb049',   // Bright emphasis
-          500: '#d5a035',   // PRIMARY BRAND GOLD - CTAs, key accents
-          600: '#b8892a',   // Darker variant for contrast
-          700: '#9a7223',   // Deep gold
-          800: '#7c5c1c',   // Very deep gold
-          900: '#5e4515',   // Deepest gold
-          950: '#3D2903',   // Near-black gold
+          50:  '#ECFEFF',   // Lightest teal tint
+          100: '#CFFAFE',   // Light backgrounds
+          200: '#A5F3FC',   // Hover states
+          300: '#67E8F9',   // Light teal - decorative elements
+          400: '#22D3EE',   // Bright emphasis
+          500: '#06B6D4',   // PRIMARY BRAND TEAL - CTAs, key accents
+          600: '#0891B2',   // Darker variant for contrast
+          700: '#0E7490',   // Deep teal
+          800: '#155E75',   // Very deep teal
+          900: '#164E63',   // Deepest teal
+          950: '#083344',   // Near-black teal
+        },
+
+        // ═══════════════════════════════════════════════════════════════
+        // CORAL: Secondary Accent - Warmth & Action
+        // For CTAs, highlights, and distinctive elements
+        // ═══════════════════════════════════════════════════════════════
+        coral: {
+          50:  '#FFF1F2',   // Lightest coral tint
+          100: '#FFE4E6',   // Light coral backgrounds
+          200: '#FECDD3',   // Hover states
+          300: '#FDA4AF',   // Light coral decorative
+          400: '#FB7185',   // Bright coral emphasis
+          500: '#F43F5E',   // PRIMARY CORAL - Key highlights
+          600: '#E11D48',   // Darker coral for contrast
+          700: '#BE123C',   // Deep coral
+          800: '#9F1239',   // Very deep coral
+          900: '#881337',   // Deepest coral
+          950: '#4C0519',   // Near-black coral
+        },
+
+        // LEGACY: Gold alias for backwards compatibility
+        gold: {
+          50:  '#ECFEFF',
+          100: '#CFFAFE',
+          200: '#A5F3FC',
+          300: '#67E8F9',
+          400: '#22D3EE',
+          500: '#06B6D4',   // Maps to teal
+          600: '#0891B2',
+          700: '#0E7490',
+          800: '#155E75',
+          900: '#164E63',
+          950: '#083344',
         },
 
         // ═══════════════════════════════════════════════════════════════
@@ -493,23 +528,28 @@ export default {
         'card-hover': '0 8px 24px rgba(15, 23, 42, 0.08), 0 16px 48px rgba(15, 23, 42, 0.06)',
         'card-elevated': '0 12px 40px rgba(15, 23, 42, 0.12)',
 
-        // Brand-tinted shadows (Updated to gold)
-        'brand': '0 4px 14px rgba(213, 160, 53, 0.2)',
-        'brand-lg': '0 8px 24px rgba(213, 160, 53, 0.3)',
-        'gold': '0 4px 14px rgba(213, 160, 53, 0.2)',
-        'gold-lg': '0 8px 24px rgba(213, 160, 53, 0.35)',
-        'navy': '0 4px 14px rgba(36, 59, 83, 0.15)',
-        'navy-lg': '0 8px 24px rgba(36, 59, 83, 0.2)',
+        // Brand-tinted shadows (CHARTSPOINT Teal)
+        'brand': '0 4px 14px rgba(8, 145, 178, 0.2)',
+        'brand-lg': '0 8px 24px rgba(8, 145, 178, 0.3)',
+        'teal': '0 4px 14px rgba(8, 145, 178, 0.2)',
+        'teal-lg': '0 8px 24px rgba(8, 145, 178, 0.35)',
+        'coral': '0 4px 14px rgba(244, 63, 94, 0.2)',
+        'coral-lg': '0 8px 24px rgba(244, 63, 94, 0.3)',
+        'gold': '0 4px 14px rgba(8, 145, 178, 0.2)',  // Legacy alias to teal
+        'gold-lg': '0 8px 24px rgba(8, 145, 178, 0.35)',
+        'navy': '0 4px 14px rgba(15, 23, 42, 0.15)',
+        'navy-lg': '0 8px 24px rgba(15, 23, 42, 0.2)',
 
-        // Button shadows (Updated to gold)
+        // Button shadows (CHARTSPOINT Teal/Coral)
         'button': '0 2px 4px rgba(15, 23, 42, 0.06), 0 4px 8px rgba(15, 23, 42, 0.04)',
         'button-hover': '0 4px 8px rgba(15, 23, 42, 0.08), 0 8px 16px rgba(15, 23, 42, 0.06)',
-        'button-brand': '0 4px 12px rgba(213, 160, 53, 0.3)',
-        'button-gold': '0 4px 12px rgba(213, 160, 53, 0.35)',
+        'button-brand': '0 4px 12px rgba(8, 145, 178, 0.3)',
+        'button-coral': '0 4px 12px rgba(244, 63, 94, 0.35)',
+        'button-gold': '0 4px 12px rgba(8, 145, 178, 0.35)',  // Legacy alias
 
-        // Input shadows (Updated to gold)
+        // Input shadows (CHARTSPOINT Teal)
         'input': '0 1px 2px rgba(15, 23, 42, 0.04)',
-        'input-focus': '0 0 0 3px rgba(213, 160, 53, 0.2), 0 1px 2px rgba(15, 23, 42, 0.04)',
+        'input-focus': '0 0 0 3px rgba(8, 145, 178, 0.2), 0 1px 2px rgba(15, 23, 42, 0.04)',
         'input-error': '0 0 0 3px rgba(239, 68, 68, 0.15)',
 
         // Inner shadows
@@ -627,8 +667,8 @@ export default {
           '50%': { transform: 'translateY(-8px)' },
         },
         glow: {
-          '0%': { boxShadow: '0 0 20px rgba(213, 160, 53, 0.2)' },
-          '100%': { boxShadow: '0 0 40px rgba(213, 160, 53, 0.4)' },
+          '0%': { boxShadow: '0 0 20px rgba(8, 145, 178, 0.2)' },
+          '100%': { boxShadow: '0 0 40px rgba(8, 145, 178, 0.4)' },
         },
       },
 
@@ -736,10 +776,10 @@ export default {
           'min-width': '64px',
         },
 
-        // Focus ring utilities - high visibility for older users (Updated to gold)
+        // Focus ring utilities - high visibility for older users (CHARTSPOINT Teal)
         '.focus-ring': {
           'outline': 'none',
-          'box-shadow': '0 0 0 3px #FFFFFF, 0 0 0 6px rgba(213, 160, 53, 0.6)',
+          'box-shadow': '0 0 0 3px #FFFFFF, 0 0 0 6px rgba(8, 145, 178, 0.6)',
         },
         '.focus-ring-error': {
           'outline': 'none',
@@ -770,7 +810,7 @@ export default {
         },
       });
 
-      // Glassmorphism utilities (Updated with dark navy and gold)
+      // Glassmorphism utilities (CHARTSPOINT Slate and Teal)
       addUtilities({
         '.glass': {
           'background': 'rgba(255, 255, 255, 0.85)',
@@ -779,52 +819,67 @@ export default {
           'border': '1px solid rgba(255, 255, 255, 0.2)',
         },
         '.glass-dark': {
-          'background': 'rgba(16, 41, 65, 0.95)',
+          'background': 'rgba(15, 23, 42, 0.95)',
           'backdrop-filter': 'blur(16px)',
           '-webkit-backdrop-filter': 'blur(16px)',
           'border': '1px solid rgba(255, 255, 255, 0.1)',
         },
         '.glass-brand': {
-          'background': 'rgba(213, 160, 53, 0.95)',
+          'background': 'rgba(8, 145, 178, 0.95)',
           'backdrop-filter': 'blur(16px)',
           '-webkit-backdrop-filter': 'blur(16px)',
           'border': '1px solid rgba(255, 255, 255, 0.15)',
         },
         '.glass-navy': {
-          'background': 'rgba(16, 41, 65, 0.98)',
+          'background': 'rgba(15, 23, 42, 0.98)',
           'backdrop-filter': 'blur(16px)',
           '-webkit-backdrop-filter': 'blur(16px)',
           'border': '1px solid rgba(255, 255, 255, 0.08)',
         },
+        '.glass-coral': {
+          'background': 'rgba(244, 63, 94, 0.95)',
+          'backdrop-filter': 'blur(16px)',
+          '-webkit-backdrop-filter': 'blur(16px)',
+          'border': '1px solid rgba(255, 255, 255, 0.15)',
+        },
       });
 
-      // Premium gradient utilities (Updated with gold and dark navy)
+      // Premium gradient utilities (CHARTSPOINT Teal, Coral, and Slate)
       addUtilities({
         '.gradient-brand': {
-          'background': 'linear-gradient(135deg, #e8bc5a 0%, #d5a035 100%)',
+          'background': 'linear-gradient(135deg, #22D3EE 0%, #0891B2 100%)',
+        },
+        '.gradient-teal': {
+          'background': 'linear-gradient(135deg, #22D3EE 0%, #0891B2 100%)',
+        },
+        '.gradient-coral': {
+          'background': 'linear-gradient(135deg, #FB7185 0%, #F43F5E 100%)',
         },
         '.gradient-gold': {
-          'background': 'linear-gradient(135deg, #e8bc5a 0%, #d5a035 100%)',
+          'background': 'linear-gradient(135deg, #22D3EE 0%, #0891B2 100%)',  // Legacy alias
         },
         '.gradient-navy': {
-          'background': 'linear-gradient(135deg, #1a3a5c 0%, #102941 100%)',
+          'background': 'linear-gradient(135deg, #1E293B 0%, #0F172A 100%)',
         },
         '.gradient-premium': {
-          'background': 'linear-gradient(135deg, #102941 0%, #1a3a5c 50%, #d5a035 100%)',
+          'background': 'linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0891B2 100%)',
         },
         '.gradient-hero': {
-          'background': 'linear-gradient(180deg, #F6F8FA 0%, #FFFFFF 50%, #F0F4F8 100%)',
+          'background': 'linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 50%, #F1F5F9 100%)',
         },
         '.gradient-mesh': {
           'background': `
-            radial-gradient(at 0% 0%, rgba(213, 160, 53, 0.08) 0px, transparent 50%),
-            radial-gradient(at 100% 0%, rgba(213, 160, 53, 0.06) 0px, transparent 50%),
+            radial-gradient(at 0% 0%, rgba(8, 145, 178, 0.08) 0px, transparent 50%),
+            radial-gradient(at 100% 0%, rgba(244, 63, 94, 0.06) 0px, transparent 50%),
             radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.06) 0px, transparent 50%),
-            radial-gradient(at 0% 100%, rgba(16, 41, 65, 0.08) 0px, transparent 50%)
+            radial-gradient(at 0% 100%, rgba(15, 23, 42, 0.08) 0px, transparent 50%)
           `,
         },
+        '.gradient-dark-slate': {
+          'background': 'linear-gradient(180deg, #0F172A 0%, #020617 100%)',
+        },
         '.gradient-dark-navy': {
-          'background': 'linear-gradient(180deg, #102941 0%, #0a1f33 100%)',
+          'background': 'linear-gradient(180deg, #0F172A 0%, #020617 100%)',  // Legacy alias
         },
       });
     },

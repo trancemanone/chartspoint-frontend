@@ -1,0 +1,350 @@
+---
+/**
+ * CollapsibleSection.astro
+ *
+ * Expandable/collapsible content section for legal pages.
+ * Allows users to show/hide sections of content.
+ *
+ * Features:
+ * - Smooth height animation
+ * - Chevron rotation indicator
+ * - Accessible keyboard controls
+ * - Optional initial open state
+ */
+
+export interface Props {
+  title: string;
+  id: string;
+  initialOpen?: boolean;
+  class?: string;
+}
+
+const {
+  title,
+  id,
+  initialOpen = false,
+  class: className = '',
+} = Astro.props;
+
+const triggerId = `${id}-trigger`;
+const panelId = `${id}-panel`;
+---
+
+<div
+  class:list={['collapsible-section', className]}
+  data-collapsible
+  data-open={initialOpen ? 'true' : 'false'}
+>
+  <h3 class="collapsible-section__heading">
+    <button
+      type="button"
+      class="collapsible-section__trigger"
+      id={triggerId}
+      aria-expanded={initialOpen ? 'true' : 'false'}
+      aria-controls={panelId}
+      data-collapsible-trigger
+    >
+      <span class="collapsible-section__title">{title}</span>
+      <span class="collapsible-section__icon" aria-hidden="true">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </span>
+    </button>
+  </h3>
+
+  <div
+    id={panelId}
+    class="collapsible-section__panel"
+    role="region"
+    aria-labelledby={triggerId}
+    hidden={!initialOpen}
+    data-collapsible-panel
+  >
+    <div class="collapsible-section__content">
+      <slot />
+    </div>
+  </div>
+</div>
+
+<style>
+  .collapsible-section {
+    border-bottom: 1px solid #E2E8F0;
+  }
+
+  .collapsible-section:last-child {
+    border-bottom: none;
+  }
+
+  .collapsible-section__heading {
+    margin: 0;
+  }
+
+  .collapsible-section__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    padding: 1.25rem 0;
+    font-family: var(--font-heading);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #102A43;
+    text-align: right;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    min-height: 56px;
+    transition: color 0.2s ease;
+  }
+
+  @media (min-width: 768px) {
+    .collapsible-section__trigger {
+      font-size: 1.25rem;
+      padding: 1.5rem 0;
+    }
+  }
+
+  .collapsible-section__trigger:hover {
+    color: #d5a035;
+  }
+
+  .collapsible-section__trigger:focus-visible {
+    outline: none;
+    color: #d5a035;
+  }
+
+  .collapsible-section__trigger:focus-visible .collapsible-section__title {
+    text-decoration: underline;
+    text-underline-offset: 6px;
+    text-decoration-thickness: 2px;
+  }
+
+  .collapsible-section__title {
+    flex: 1;
+    text-align: right;
+    line-height: 1.4;
+  }
+
+  .collapsible-section__icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: #F1F5F9;
+    border-radius: 50%;
+    color: #64748B;
+    transition: all 0.25s ease;
+  }
+
+  .collapsible-section__trigger:hover .collapsible-section__icon {
+    background: rgba(213, 160, 53, 0.1);
+    color: #d5a035;
+  }
+
+  .collapsible-section__icon svg {
+    transition: transform 0.25s ease;
+  }
+
+  /* Expanded state */
+  .collapsible-section__trigger[aria-expanded="true"] {
+    color: #d5a035;
+  }
+
+  .collapsible-section__trigger[aria-expanded="true"] .collapsible-section__icon {
+    background: #d5a035;
+    color: white;
+  }
+
+  .collapsible-section__trigger[aria-expanded="true"] .collapsible-section__icon svg {
+    transform: rotate(180deg);
+  }
+
+  /* Panel */
+  .collapsible-section__panel {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition:
+      max-height 0.35s ease-out,
+      opacity 0.25s ease,
+      visibility 0s linear 0.35s;
+    visibility: hidden;
+  }
+
+  .collapsible-section__panel[hidden] {
+    display: block;
+  }
+
+  .collapsible-section__panel.is-expanded {
+    opacity: 1;
+    visibility: visible;
+    transition:
+      max-height 0.35s ease-out,
+      opacity 0.25s ease 0.1s,
+      visibility 0s linear 0s;
+  }
+
+  .collapsible-section__content {
+    padding-bottom: 1.5rem;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: #334155;
+  }
+
+  @media (min-width: 768px) {
+    .collapsible-section__content {
+      padding-bottom: 2rem;
+      font-size: 1.125rem;
+    }
+  }
+
+  /* Content typography */
+  .collapsible-section__content :global(p) {
+    margin: 0 0 1rem;
+  }
+
+  .collapsible-section__content :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .collapsible-section__content :global(ul),
+  .collapsible-section__content :global(ol) {
+    margin: 0 0 1rem;
+    padding-right: 1.5rem;
+  }
+
+  .collapsible-section__content :global(li) {
+    margin-bottom: 0.5rem;
+    line-height: 1.7;
+  }
+
+  .collapsible-section__content :global(a) {
+    color: #d5a035;
+    text-decoration: underline;
+    text-underline-offset: 6px;
+    text-decoration-thickness: 1px;
+    transition: color 0.2s ease;
+  }
+
+  .collapsible-section__content :global(a:hover) {
+    color: #b8892a;
+  }
+
+  .collapsible-section__content :global(strong) {
+    font-weight: 600;
+    color: #102A43;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .collapsible-section__trigger,
+    .collapsible-section__icon,
+    .collapsible-section__icon svg,
+    .collapsible-section__panel {
+      transition: none;
+    }
+  }
+
+  /* Print - show all content */
+  @media print {
+    .collapsible-section__panel {
+      max-height: none !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+
+    .collapsible-section__icon {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  class CollapsibleSection {
+    private container: HTMLElement;
+    private trigger: HTMLButtonElement;
+    private panel: HTMLElement;
+
+    constructor(container: HTMLElement) {
+      this.container = container;
+      this.trigger = container.querySelector('[data-collapsible-trigger]') as HTMLButtonElement;
+      this.panel = container.querySelector('[data-collapsible-panel]') as HTMLElement;
+
+      if (this.trigger && this.panel) {
+        this.init();
+      }
+    }
+
+    private init(): void {
+      // Initialize open state
+      if (this.container.dataset.open === 'true') {
+        this.open(false);
+      }
+
+      this.trigger.addEventListener('click', () => this.toggle());
+    }
+
+    private toggle(): void {
+      const isExpanded = this.trigger.getAttribute('aria-expanded') === 'true';
+
+      if (isExpanded) {
+        this.close();
+      } else {
+        this.open();
+      }
+    }
+
+    private open(animate: boolean = true): void {
+      this.trigger.setAttribute('aria-expanded', 'true');
+      this.panel.hidden = false;
+
+      if (animate) {
+        void this.panel.offsetHeight; // Force reflow
+      }
+
+      this.panel.classList.add('is-expanded');
+      this.panel.style.maxHeight = this.panel.scrollHeight + 'px';
+      this.container.dataset.open = 'true';
+    }
+
+    private close(): void {
+      this.trigger.setAttribute('aria-expanded', 'false');
+      this.panel.classList.remove('is-expanded');
+      this.panel.style.maxHeight = '0';
+      this.container.dataset.open = 'false';
+
+      setTimeout(() => {
+        if (this.trigger.getAttribute('aria-expanded') === 'false') {
+          this.panel.hidden = true;
+        }
+      }, 350);
+    }
+  }
+
+  function initCollapsibles(): void {
+    const containers = document.querySelectorAll<HTMLElement>('[data-collapsible]');
+    containers.forEach((container) => new CollapsibleSection(container));
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCollapsibles);
+  } else {
+    initCollapsibles();
+  }
+
+  document.addEventListener('astro:page-load', initCollapsibles);
+</script>

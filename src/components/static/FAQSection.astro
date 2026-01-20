@@ -1,0 +1,889 @@
+---
+/**
+ * FAQSection.astro
+ *
+ * Enhanced FAQ component with category filtering and search.
+ * Designed for the dedicated FAQ page.
+ *
+ * Features:
+ * - Category tabs/filter
+ * - Search functionality
+ * - Accordion questions
+ * - Schema.org FAQPage markup
+ * - "Still have questions?" CTA
+ */
+
+export interface FAQItem {
+  question: string;
+  answer: string;
+  category: string;
+}
+
+export interface FAQCategory {
+  id: string;
+  label: string;
+  icon?: string;
+}
+
+export interface Props {
+  faqs: FAQItem[];
+  categories: FAQCategory[];
+  title?: string;
+  showSearch?: boolean;
+  showCTA?: boolean;
+  ctaLink?: string;
+  class?: string;
+}
+
+const {
+  faqs,
+  categories,
+  title = 'الأسئلة الشائعة',
+  showSearch = true,
+  showCTA = true,
+  ctaLink = '/contact',
+  class: className = '',
+} = Astro.props;
+
+// Generate unique section ID
+const sectionId = `faq-section-${Math.random().toString(36).slice(2, 9)}`;
+
+// Generate Schema.org FAQPage
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map((faq) => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer.replace(/<[^>]*>/g, '') // Strip HTML for schema
+    }
+  }))
+};
+---
+
+<section
+  class:list={['faq-section', className]}
+  aria-labelledby={`${sectionId}-title`}
+  data-faq-section
+>
+  <!-- Header -->
+  <div class="faq-section__header">
+    {title && (
+      <h2 id={`${sectionId}-title`} class="faq-section__title">
+        <span class="faq-section__title-text">{title}</span>
+      </h2>
+    )}
+
+    {showSearch && (
+      <div class="faq-section__search">
+        <div class="faq-section__search-wrapper">
+          <svg
+            class="faq-section__search-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input
+            type="search"
+            class="faq-section__search-input"
+            placeholder="ابحث في الأسئلة..."
+            aria-label="البحث في الأسئلة الشائعة"
+            data-faq-search
+          />
+          <button
+            type="button"
+            class="faq-section__search-clear"
+            aria-label="مسح البحث"
+            data-faq-search-clear
+            hidden
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
+
+  <!-- Category Tabs -->
+  <div class="faq-section__tabs" role="tablist" aria-label="تصنيفات الأسئلة">
+    <button
+      type="button"
+      class="faq-section__tab is-active"
+      role="tab"
+      aria-selected="true"
+      data-faq-tab="all"
+    >
+      الكل
+    </button>
+    {categories.map((category) => (
+      <button
+        type="button"
+        class="faq-section__tab"
+        role="tab"
+        aria-selected="false"
+        data-faq-tab={category.id}
+      >
+        {category.label}
+      </button>
+    ))}
+  </div>
+
+  <!-- FAQ List -->
+  <div class="faq-section__list" data-faq-list>
+    {faqs.map((faq, index) => {
+      const itemId = `${sectionId}-item-${index}`;
+      return (
+        <div
+          class="faq-item"
+          data-faq-item
+          data-category={faq.category}
+          data-question={faq.question.toLowerCase()}
+        >
+          <h3 class="faq-item__heading">
+            <button
+              type="button"
+              class="faq-item__trigger"
+              id={`${itemId}-trigger`}
+              aria-expanded="false"
+              aria-controls={`${itemId}-panel`}
+              data-faq-trigger
+            >
+              <span class="faq-item__question">{faq.question}</span>
+              <span class="faq-item__icon" aria-hidden="true">
+                <svg
+                  class="faq-item__icon-plus"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19"/>
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                <svg
+                  class="faq-item__icon-minus"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+              </span>
+            </button>
+          </h3>
+          <div
+            id={`${itemId}-panel`}
+            class="faq-item__panel"
+            role="region"
+            aria-labelledby={`${itemId}-trigger`}
+            hidden
+            data-faq-panel
+          >
+            <div class="faq-item__answer" set:html={faq.answer} />
+          </div>
+        </div>
+      );
+    })}
+  </div>
+
+  <!-- No Results Message -->
+  <div class="faq-section__no-results" data-faq-no-results hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      <line x1="8" y1="8" x2="14" y2="14"/>
+      <line x1="14" y1="8" x2="8" y2="14"/>
+    </svg>
+    <p>لم نجد نتائج تطابق بحثك</p>
+    <button type="button" class="faq-section__reset-btn" data-faq-reset>
+      عرض جميع الأسئلة
+    </button>
+  </div>
+
+  <!-- CTA Section -->
+  {showCTA && (
+    <div class="faq-section__cta">
+      <div class="faq-section__cta-content">
+        <h3 class="faq-section__cta-title">لم تجد إجابة لسؤالك؟</h3>
+        <p class="faq-section__cta-text">تواصل معنا وسنرد على استفسارك في أقرب وقت</p>
+      </div>
+      <a href={ctaLink} class="faq-section__cta-button">
+        تواصل معنا
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14"/>
+          <path d="m12 5 7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+  )}
+</section>
+
+<!-- Schema.org FAQPage -->
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+<style>
+  .faq-section {
+    margin: 2rem 0;
+  }
+
+  /* Header */
+  .faq-section__header {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .faq-section__header {
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+  }
+
+  .faq-section__title {
+    position: relative;
+    margin: 0;
+    padding-bottom: 1rem;
+    font-family: var(--font-heading);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #102A43;
+  }
+
+  @media (min-width: 768px) {
+    .faq-section__title {
+      font-size: 2rem;
+    }
+  }
+
+  .faq-section__title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 4px;
+    width: 100%;
+    max-width: 200px;
+    background: linear-gradient(
+      to left,
+      #d5a035 0%,
+      #d5a035 40%,
+      #E2E8F0 40%,
+      transparent 100%
+    );
+    border-radius: 2px;
+  }
+
+  /* Search */
+  .faq-section__search {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .faq-section__search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .faq-section__search-icon {
+    position: absolute;
+    right: 1rem;
+    color: #94A3B8;
+    pointer-events: none;
+  }
+
+  .faq-section__search-input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    padding-right: 3rem;
+    padding-left: 2.5rem;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: #102A43;
+    background: #FFFFFF;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 0.625rem;
+    transition: all 0.2s ease;
+  }
+
+  .faq-section__search-input::placeholder {
+    color: #94A3B8;
+  }
+
+  .faq-section__search-input:focus {
+    outline: none;
+    border-color: #d5a035;
+    box-shadow: 0 0 0 3px rgba(213, 160, 53, 0.15);
+  }
+
+  .faq-section__search-clear {
+    position: absolute;
+    left: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    color: #94A3B8;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .faq-section__search-clear:hover {
+    color: #475569;
+    background: #F1F5F9;
+  }
+
+  /* Category Tabs */
+  .faq-section__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #E2E8F0;
+  }
+
+  .faq-section__tab {
+    padding: 0.625rem 1.25rem;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #64748B;
+    background: transparent;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 44px;
+  }
+
+  .faq-section__tab:hover {
+    color: #102A43;
+    border-color: #CBD5E1;
+    background: #F8FAFC;
+  }
+
+  .faq-section__tab.is-active {
+    color: #102941;
+    background: linear-gradient(135deg, #e8bc5a 0%, #d5a035 100%);
+    border-color: transparent;
+    font-weight: 600;
+  }
+
+  /* FAQ Items */
+  .faq-section__list {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  }
+
+  .faq-item {
+    border-bottom: 1px solid #F1F5F9;
+  }
+
+  .faq-item:last-child {
+    border-bottom: none;
+  }
+
+  .faq-item.is-hidden {
+    display: none;
+  }
+
+  .faq-item__heading {
+    margin: 0;
+  }
+
+  .faq-item__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    padding: 1.25rem 1.5rem;
+    font-family: var(--font-heading);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: #102A43;
+    text-align: right;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    min-height: 64px;
+    transition: all 0.2s ease;
+  }
+
+  @media (min-width: 768px) {
+    .faq-item__trigger {
+      font-size: 1.125rem;
+      padding: 1.5rem 2rem;
+    }
+  }
+
+  .faq-item__trigger:hover {
+    background: #F8FAFC;
+  }
+
+  .faq-item__trigger:focus-visible {
+    outline: none;
+    background: rgba(213, 160, 53, 0.06);
+    box-shadow: inset 0 0 0 3px rgba(213, 160, 53, 0.4);
+  }
+
+  .faq-item__question {
+    flex: 1;
+    text-align: right;
+    line-height: 1.5;
+  }
+
+  .faq-item__icon {
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: #F1F5F9;
+    border-radius: 50%;
+    color: #d5a035;
+    transition: all 0.2s ease;
+  }
+
+  .faq-item__trigger:hover .faq-item__icon {
+    background: rgba(213, 160, 53, 0.1);
+  }
+
+  .faq-item__icon-plus,
+  .faq-item__icon-minus {
+    position: absolute;
+    transition: all 0.3s ease;
+  }
+
+  .faq-item__icon-plus {
+    opacity: 1;
+    transform: rotate(0deg);
+  }
+
+  .faq-item__icon-minus {
+    opacity: 0;
+    transform: rotate(-90deg);
+  }
+
+  /* Expanded state */
+  .faq-item__trigger[aria-expanded="true"] {
+    background: #F8FAFC;
+    color: #d5a035;
+  }
+
+  .faq-item__trigger[aria-expanded="true"] .faq-item__icon {
+    background: #d5a035;
+    color: #FFFFFF;
+  }
+
+  .faq-item__trigger[aria-expanded="true"] .faq-item__icon-plus {
+    opacity: 0;
+    transform: rotate(90deg);
+  }
+
+  .faq-item__trigger[aria-expanded="true"] .faq-item__icon-minus {
+    opacity: 1;
+    transform: rotate(0deg);
+  }
+
+  /* Panel */
+  .faq-item__panel {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: all 0.35s ease-out;
+    visibility: hidden;
+  }
+
+  .faq-item__panel[hidden] {
+    display: block;
+  }
+
+  .faq-item__panel.is-expanded {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .faq-item__answer {
+    padding: 0 1.5rem 1.5rem;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: #334155;
+  }
+
+  @media (min-width: 768px) {
+    .faq-item__answer {
+      padding: 0 2rem 2rem;
+      font-size: 1.125rem;
+    }
+  }
+
+  .faq-item__answer :global(p) {
+    margin: 0 0 1rem;
+  }
+
+  .faq-item__answer :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .faq-item__answer :global(a) {
+    color: #d5a035;
+    text-decoration: underline;
+    text-underline-offset: 6px;
+  }
+
+  .faq-item__answer :global(a:hover) {
+    color: #b8892a;
+  }
+
+  /* No Results */
+  .faq-section__no-results {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: #64748B;
+  }
+
+  .faq-section__no-results svg {
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  .faq-section__no-results p {
+    margin: 0 0 1.5rem;
+    font-size: 1.125rem;
+  }
+
+  .faq-section__reset-btn {
+    padding: 0.75rem 1.5rem;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 500;
+    color: #d5a035;
+    background: rgba(213, 160, 53, 0.1);
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .faq-section__reset-btn:hover {
+    background: rgba(213, 160, 53, 0.2);
+  }
+
+  /* CTA */
+  .faq-section__cta {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+    border: 1px solid #E2E8F0;
+    border-radius: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .faq-section__cta {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2rem 2.5rem;
+    }
+  }
+
+  .faq-section__cta-title {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #102A43;
+  }
+
+  .faq-section__cta-text {
+    margin: 0;
+    font-size: 1rem;
+    color: #64748B;
+  }
+
+  .faq-section__cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    color: #102941;
+    background: linear-gradient(135deg, #e8bc5a 0%, #d5a035 100%);
+    border-radius: 0.625rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(213, 160, 53, 0.25);
+    white-space: nowrap;
+  }
+
+  .faq-section__cta-button:hover {
+    background: linear-gradient(135deg, #d5a035 0%, #b8892a 100%);
+    box-shadow: 0 4px 12px rgba(213, 160, 53, 0.35);
+    transform: translateY(-1px);
+  }
+
+  .faq-section__cta-button svg {
+    transform: rotate(180deg); /* RTL */
+  }
+
+  /* Reduced Motion */
+  @media (prefers-reduced-motion: reduce) {
+    .faq-item__trigger,
+    .faq-item__icon,
+    .faq-item__icon-plus,
+    .faq-item__icon-minus,
+    .faq-item__panel,
+    .faq-section__tab,
+    .faq-section__cta-button {
+      transition: none;
+    }
+  }
+
+  /* Print */
+  @media print {
+    .faq-section__search,
+    .faq-section__tabs,
+    .faq-section__cta {
+      display: none;
+    }
+
+    .faq-item__panel {
+      max-height: none !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+
+    .faq-item__icon {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  class FAQSection {
+    private container: HTMLElement;
+    private searchInput: HTMLInputElement | null;
+    private clearBtn: HTMLButtonElement | null;
+    private tabs: NodeListOf<HTMLButtonElement>;
+    private items: NodeListOf<HTMLElement>;
+    private triggers: NodeListOf<HTMLButtonElement>;
+    private noResults: HTMLElement | null;
+    private resetBtn: HTMLButtonElement | null;
+
+    private currentCategory: string = 'all';
+    private searchQuery: string = '';
+
+    constructor(container: HTMLElement) {
+      this.container = container;
+      this.searchInput = container.querySelector('[data-faq-search]');
+      this.clearBtn = container.querySelector('[data-faq-search-clear]');
+      this.tabs = container.querySelectorAll('[data-faq-tab]');
+      this.items = container.querySelectorAll('[data-faq-item]');
+      this.triggers = container.querySelectorAll('[data-faq-trigger]');
+      this.noResults = container.querySelector('[data-faq-no-results]');
+      this.resetBtn = container.querySelector('[data-faq-reset]');
+
+      this.init();
+    }
+
+    private init(): void {
+      // Search
+      if (this.searchInput) {
+        this.searchInput.addEventListener('input', () => {
+          this.searchQuery = this.searchInput!.value.toLowerCase().trim();
+          this.filterItems();
+          this.updateClearButton();
+        });
+      }
+
+      if (this.clearBtn) {
+        this.clearBtn.addEventListener('click', () => {
+          if (this.searchInput) {
+            this.searchInput.value = '';
+            this.searchQuery = '';
+            this.filterItems();
+            this.updateClearButton();
+            this.searchInput.focus();
+          }
+        });
+      }
+
+      // Tabs
+      this.tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          this.setActiveTab(tab);
+          this.currentCategory = tab.dataset.faqTab || 'all';
+          this.filterItems();
+        });
+      });
+
+      // Accordion triggers
+      this.triggers.forEach((trigger) => {
+        trigger.addEventListener('click', () => this.toggleItem(trigger));
+      });
+
+      // Reset button
+      if (this.resetBtn) {
+        this.resetBtn.addEventListener('click', () => {
+          if (this.searchInput) this.searchInput.value = '';
+          this.searchQuery = '';
+          this.currentCategory = 'all';
+          this.setActiveTab(this.tabs[0]);
+          this.filterItems();
+          this.updateClearButton();
+        });
+      }
+    }
+
+    private setActiveTab(activeTab: HTMLButtonElement): void {
+      this.tabs.forEach((tab) => {
+        const isActive = tab === activeTab;
+        tab.classList.toggle('is-active', isActive);
+        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+    }
+
+    private filterItems(): void {
+      let visibleCount = 0;
+
+      this.items.forEach((item) => {
+        const category = item.dataset.category || '';
+        const question = item.dataset.question || '';
+
+        const matchesCategory = this.currentCategory === 'all' || category === this.currentCategory;
+        const matchesSearch = !this.searchQuery || question.includes(this.searchQuery);
+
+        if (matchesCategory && matchesSearch) {
+          item.classList.remove('is-hidden');
+          visibleCount++;
+        } else {
+          item.classList.add('is-hidden');
+          // Close hidden items
+          const trigger = item.querySelector('[data-faq-trigger]') as HTMLButtonElement;
+          const panel = item.querySelector('[data-faq-panel]') as HTMLElement;
+          if (trigger && panel && trigger.getAttribute('aria-expanded') === 'true') {
+            this.closeItem(trigger, panel);
+          }
+        }
+      });
+
+      // Show/hide no results message
+      if (this.noResults) {
+        this.noResults.hidden = visibleCount > 0;
+      }
+
+      // Show/hide list
+      const list = this.container.querySelector('[data-faq-list]') as HTMLElement;
+      if (list) {
+        list.hidden = visibleCount === 0;
+      }
+    }
+
+    private updateClearButton(): void {
+      if (this.clearBtn) {
+        this.clearBtn.hidden = !this.searchQuery;
+      }
+    }
+
+    private toggleItem(trigger: HTMLButtonElement): void {
+      const panelId = trigger.getAttribute('aria-controls');
+      const panel = panelId ? document.getElementById(panelId) : null;
+
+      if (!panel) return;
+
+      const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+
+      if (isExpanded) {
+        this.closeItem(trigger, panel);
+      } else {
+        this.openItem(trigger, panel);
+      }
+    }
+
+    private openItem(trigger: HTMLButtonElement, panel: HTMLElement): void {
+      trigger.setAttribute('aria-expanded', 'true');
+      panel.hidden = false;
+
+      void panel.offsetHeight;
+      panel.classList.add('is-expanded');
+
+      const answer = panel.querySelector('.faq-item__answer') as HTMLElement;
+      if (answer) {
+        panel.style.maxHeight = answer.scrollHeight + 'px';
+      }
+    }
+
+    private closeItem(trigger: HTMLButtonElement, panel: HTMLElement): void {
+      trigger.setAttribute('aria-expanded', 'false');
+      panel.classList.remove('is-expanded');
+      panel.style.maxHeight = '0';
+
+      setTimeout(() => {
+        if (trigger.getAttribute('aria-expanded') === 'false') {
+          panel.hidden = true;
+        }
+      }, 350);
+    }
+  }
+
+  function initFAQSections(): void {
+    const sections = document.querySelectorAll<HTMLElement>('[data-faq-section]');
+    sections.forEach((section) => new FAQSection(section));
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFAQSections);
+  } else {
+    initFAQSections();
+  }
+
+  document.addEventListener('astro:page-load', initFAQSections);
+</script>

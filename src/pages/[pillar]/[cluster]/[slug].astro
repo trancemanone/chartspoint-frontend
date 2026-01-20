@@ -1,0 +1,38 @@
+---
+/**
+ * Dynamic Article Page
+ *
+ * Generates static pages for all articles from WordPress CMS.
+ * URL: /{pillar}/{cluster}/{slug}/
+ */
+
+import ArticleLayout from '@layouts/ArticleLayout.astro';
+import { getAllPostSlugs, getPostBySlug, transformToArticle } from '@lib/wordpress';
+import { CLUSTERS, type PillarSlug } from '@lib/types';
+
+export async function getStaticPaths() {
+  const slugs = await getAllPostSlugs();
+
+  return slugs.map(({ pillar, cluster, slug }) => ({
+    params: { pillar, cluster, slug },
+  }));
+}
+
+const { pillar, cluster, slug } = Astro.params;
+
+// Fetch the post from WordPress
+const post = await getPostBySlug(slug as string);
+
+if (!post) {
+  return Astro.redirect('/404');
+}
+
+// Transform to Article format
+const article = transformToArticle(post);
+
+// Override pillar/cluster if they don't match the URL
+article.pillar = (pillar as PillarSlug) || article.pillar;
+article.cluster = (cluster as string) || article.cluster;
+---
+
+<ArticleLayout article={article} />

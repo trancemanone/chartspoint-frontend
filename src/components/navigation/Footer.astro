@@ -1,16 +1,23 @@
 ---
 /**
- * Footer Component - Premium Dark Navy Design
+ * Footer Component - Trust Signature Design
  *
- * A sophisticated, institutional-grade footer for itqqan.com featuring:
+ * ChartsPoint institutional footer featuring:
  * - 4-column layout: About, Pillars, Resources, Legal
- * - Trust badges and certifications
- * - Social links
- * - Newsletter signup form
- * - Copyright with current year
+ * - Trust links (CRITICAL for YMYL compliance): About/Privacy/Terms/Risk/How We Make Money
+ * - Educational disclaimer
+ * - WhatsApp floating button spec
+ * - Risk warning placement
+ *
+ * Per Vision Document:
+ * "Google ينظر للـ Footer كـ توقيع الثقة"
+ * The footer is Google's trust signature - must contain all trust-building links
  *
  * Optimized for Arabic readers ages 40-70 with WCAG AAA compliance.
  */
+
+import type { PillarSlug } from '../../lib/types';
+import { PILLARS, CLUSTERS } from '../../lib/types';
 
 interface FooterLink {
   label: string;
@@ -24,16 +31,15 @@ interface SocialLink {
   icon: 'twitter' | 'linkedin' | 'youtube' | 'telegram';
 }
 
-// About section content
-const aboutDescription = 'منصة التعليم المالي الرائدة للمستثمر العربي. نساعدك على اتخاذ قرارات استثمارية مدروسة وآمنة.';
+// About section content - Educational focus per Vision
+const aboutDescription = 'منصة تعليمية متخصصة في التحليل الفني للأسواق المالية. نركز على الفهم العميق وإدارة المخاطر، لا على الوعود أو التوصيات.';
 
-// Pillar links
+// Pillar navigation - 4 ChartsPoint pillars
 const pillarLinks: FooterLink[] = [
-  { label: 'تعلم الاستثمار', href: '/learn' },
-  { label: 'فتح الحسابات', href: '/accounts' },
-  { label: 'الثقة والأمان', href: '/trust' },
-  { label: 'أساسيات الأسهم', href: '/learn/stocks' },
-  { label: 'مقارنة الوسطاء', href: '/accounts/brokers' },
+  { label: PILLARS.basics.nameAr, href: '/basics' },
+  { label: PILLARS.indicators.nameAr, href: '/indicators' },
+  { label: PILLARS.tools.nameAr, href: '/tools' },
+  { label: PILLARS.tactics.nameAr, href: '/tactics' },
 ];
 
 // Resources section
@@ -43,30 +49,35 @@ const resourceLinks: FooterLink[] = [
   { label: 'من نحن', href: '/about' },
 ];
 
-// Legal section
+// Legal section - CRITICAL for YMYL compliance
+// Per Vision: "روابط: About / Privacy / Terms / Risk / How we make money"
 const legalLinks: FooterLink[] = [
   { label: 'سياسة الخصوصية', href: '/privacy' },
   { label: 'الشروط والأحكام', href: '/terms' },
   { label: 'إخلاء المسؤولية', href: '/disclaimer' },
   { label: 'سياسة ملفات تعريف الارتباط', href: '/cookies' },
+  { label: 'كيف نحقق دخلا', href: '/how-we-make-money' }, // CRITICAL for trust
 ];
 
 // Social links
 const socialLinks: SocialLink[] = [
-  { label: 'تويتر', href: 'https://twitter.com/itqqan', icon: 'twitter' },
-  { label: 'لينكد إن', href: 'https://linkedin.com/company/itqqan', icon: 'linkedin' },
-  { label: 'يوتيوب', href: 'https://youtube.com/@itqqan', icon: 'youtube' },
-  { label: 'تيليجرام', href: 'https://t.me/itqqan', icon: 'telegram' },
+  { label: 'تويتر', href: 'https://twitter.com/chartspoint', icon: 'twitter' },
+  { label: 'لينكد إن', href: 'https://linkedin.com/company/chartspoint', icon: 'linkedin' },
+  { label: 'يوتيوب', href: 'https://youtube.com/@chartspoint', icon: 'youtube' },
+  { label: 'تيليجرام', href: 'https://t.me/chartspoint', icon: 'telegram' },
 ];
 
 // Trust badges
 const trustBadges = [
-  { label: 'محتوى موثوق', icon: 'verified' },
-  { label: 'SSL مشفر', icon: 'shield' },
-  { label: 'خصوصية محمية', icon: 'lock' },
+  { label: 'محتوى تعليمي', icon: 'book' },
+  { label: 'بدون توصيات', icon: 'shield' },
+  { label: 'التركيز على المخاطر', icon: 'target' },
 ];
 
 const currentYear = new Date().getFullYear();
+
+// Risk disclaimer - Per Vision Document (مهم جدا)
+const riskDisclaimer = 'هذا الموقع تعليمي فقط. التداول ينطوي على مخاطر. التحليل الفني لا يضمن نتائج. إدارة المخاطر أساسية لأي قرار استثماري. المعلومات المقدمة لا تشكل نصيحة مالية أو توصية بالتداول.';
 ---
 
 <footer
@@ -79,65 +90,34 @@ const currentYear = new Date().getFullYear();
     <div class="container mx-auto px-4 lg:px-6">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-6">
 
-        <!-- Column 1: About & Newsletter (spans 4 cols) -->
+        <!-- Column 1: About & Brand (spans 4 cols) -->
         <div class="lg:col-span-4">
           <!-- Logo -->
           <a
             href="/"
             class="footer-logo inline-flex items-center gap-3 mb-5"
-            aria-label="إتقان - الصفحة الرئيسية"
+            aria-label="ChartsPoint - الصفحة الرئيسية"
           >
-            <img
-              src="https://cms.itqqan.com/wp-content/uploads/2026/01/white-logo-itqaan.png"
-              alt="إتقان"
-              class="h-12 w-auto object-contain"
-              width="120"
-              height="48"
-              loading="lazy"
-            />
+            <div class="logo-mark w-11 h-11 rounded-lg bg-white/10 flex items-center justify-center border border-white/10">
+              <svg class="w-6 h-6 text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 3v18h18" />
+                <path d="M7 16l4-8 4 4 5-9" />
+              </svg>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-heading text-lg font-bold text-white leading-tight">ChartsPoint</span>
+              <span class="text-xs text-navy-300 leading-tight">التحليل الفني</span>
+            </div>
           </a>
 
-          <!-- Description -->
-          <p class="footer-description text-navy-200 text-[1.0625rem] leading-relaxed mb-6 max-w-xs">
+          <!-- Description - Educational Focus -->
+          <p class="footer-description text-navy-200 text-[0.9375rem] leading-relaxed mb-6 max-w-xs">
             {aboutDescription}
           </p>
 
-          <!-- Newsletter Form -->
-          <div class="newsletter-section">
-            <h3 class="text-white font-semibold text-lg mb-3">
-              اشترك في نشرتنا البريدية
-            </h3>
-            <form class="newsletter-form" data-newsletter-form>
-              <div class="newsletter-input-group">
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="البريد الإلكتروني"
-                  required
-                  class="newsletter-input"
-                  aria-label="البريد الإلكتروني"
-                  autocomplete="email"
-                />
-                <button
-                  type="submit"
-                  class="newsletter-btn group"
-                  aria-label="اشترك الآن"
-                >
-                  <span class="hidden sm:inline">اشترك</span>
-                  <svg class="icon icon--sm sm:hidden icon--animated" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-              </div>
-              <p class="newsletter-hint text-navy-300 text-sm mt-2">
-                نحترم خصوصيتك. لا رسائل مزعجة.
-              </p>
-            </form>
-          </div>
-
           <!-- Social Links -->
-          <div class="social-section mt-6">
-            <h3 class="text-white font-semibold text-lg mb-3">
+          <div class="social-section">
+            <h3 class="text-white font-semibold text-base mb-3">
               تابعنا
             </h3>
             <div class="social-links flex items-center gap-3">
@@ -150,22 +130,22 @@ const currentYear = new Date().getFullYear();
                   rel="noopener noreferrer"
                 >
                   {link.icon === 'twitter' && (
-                    <svg class="icon icon--sm icon--white icon--animated" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                     </svg>
                   )}
                   {link.icon === 'linkedin' && (
-                    <svg class="icon icon--sm icon--white icon--animated" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                     </svg>
                   )}
                   {link.icon === 'youtube' && (
-                    <svg class="icon icon--sm icon--white icon--animated" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
                     </svg>
                   )}
                   {link.icon === 'telegram' && (
-                    <svg class="icon icon--sm icon--white icon--animated" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
                     </svg>
                   )}
@@ -176,9 +156,9 @@ const currentYear = new Date().getFullYear();
         </div>
 
         <!-- Column 2: Pillars (spans 2 cols) -->
-        <nav class="lg:col-span-2" aria-label="أقسام الموقع">
+        <nav class="lg:col-span-2" aria-label="أقسام التحليل الفني">
           <h2 class="footer-heading">
-            الأقسام الرئيسية
+            المحتوى التعليمي
           </h2>
           <ul class="footer-links" role="list">
             {pillarLinks.map((link) => (
@@ -214,9 +194,35 @@ const currentYear = new Date().getFullYear();
               </li>
             ))}
           </ul>
+
+          <!-- Trust Badges -->
+          <div class="trust-badges mt-8">
+            <div class="flex flex-wrap gap-2">
+              {trustBadges.map((badge) => (
+                <div class="trust-badge">
+                  {badge.icon === 'book' && (
+                    <svg class="w-4 h-4 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                  )}
+                  {badge.icon === 'shield' && (
+                    <svg class="w-4 h-4 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  )}
+                  {badge.icon === 'target' && (
+                    <svg class="w-4 h-4 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  )}
+                  <span>{badge.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </nav>
 
-        <!-- Column 4: Legal (spans 3 cols) -->
+        <!-- Column 4: Legal - CRITICAL for YMYL (spans 3 cols) -->
         <nav class="lg:col-span-3" aria-label="الصفحات القانونية">
           <h2 class="footer-heading">
             قانوني
@@ -230,36 +236,21 @@ const currentYear = new Date().getFullYear();
               </li>
             ))}
           </ul>
-
-          <!-- Trust Badges -->
-          <div class="trust-badges mt-8">
-            <h3 class="text-navy-300 text-sm font-medium mb-3 uppercase tracking-wider">
-              ضمانات الأمان
-            </h3>
-            <div class="flex flex-wrap gap-3">
-              {trustBadges.map((badge) => (
-                <div class="trust-badge group">
-                  {badge.icon === 'verified' && (
-                    <svg class="icon icon--xs icon--gold" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                      <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                    </svg>
-                  )}
-                  {badge.icon === 'shield' && (
-                    <svg class="icon icon--xs icon--gold" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                      <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                    </svg>
-                  )}
-                  {badge.icon === 'lock' && (
-                    <svg class="icon icon--xs icon--gold" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                      <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-                    </svg>
-                  )}
-                  <span>{badge.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
         </nav>
+      </div>
+    </div>
+  </div>
+
+  <!-- Risk Warning Section - Per Vision: "صفحات الاستراتيجيات + Footer" -->
+  <div class="risk-warning-section">
+    <div class="container mx-auto px-4 lg:px-6">
+      <div class="risk-warning">
+        <svg class="w-5 h-5 flex-shrink-0 text-warning-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <p class="risk-warning-text">
+          <strong>تحذير المخاطر:</strong> {riskDisclaimer}
+        </p>
       </div>
     </div>
   </div>
@@ -270,18 +261,32 @@ const currentYear = new Date().getFullYear();
       <div class="footer-bottom-content">
         <!-- Copyright -->
         <p class="copyright">
-          جميع الحقوق محفوظة &copy; {currentYear} إتقان
+          جميع الحقوق محفوظة &copy; {currentYear} ChartsPoint
         </p>
 
-        <!-- Financial Disclaimer -->
+        <!-- Educational Statement - Per Vision -->
         <p class="disclaimer">
-          المعلومات المقدمة على هذا الموقع هي لأغراض تعليمية فقط ولا تشكل نصيحة مالية أو استثمارية.
-          يرجى استشارة مستشار مالي مرخص قبل اتخاذ أي قرارات استثمارية.
+          ChartsPoint موقع تعليمي تحليلي. لسنا منصة تداول، ولا وسطاء، ولا نقدم توصيات مالية.
         </p>
       </div>
     </div>
   </div>
 </footer>
+
+<!-- WhatsApp Floating Button - Per Vision: "نعم، لكن بحذر" -->
+<a
+  href="https://wa.me/966500000000?text=لدي%20سؤال%20حول%20التحليل%20الفني"
+  class="whatsapp-float"
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="هل لديك سؤال تعليمي؟ تواصل عبر واتساب"
+  data-whatsapp-float
+>
+  <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+  <span class="whatsapp-tooltip">هل لديك سؤال تعليمي؟</span>
+</a>
 
 <style>
   /* ═══════════════════════════════════════════════════════════════════════════
@@ -289,17 +294,17 @@ const currentYear = new Date().getFullYear();
      ═══════════════════════════════════════════════════════════════════════════ */
 
   .footer-wrapper {
-    background: linear-gradient(180deg, #102941 0%, #0a1f33 100%);
+    background: linear-gradient(180deg, #0F172A 0%, #020617 100%);
     margin-top: auto;
   }
 
   .footer-main {
-    padding: 4rem 0 3rem;
+    padding: 3.5rem 0 2.5rem;
   }
 
   @media (min-width: 1024px) {
     .footer-main {
-      padding: 5rem 0 4rem;
+      padding: 4rem 0 3rem;
     }
   }
 
@@ -309,11 +314,11 @@ const currentYear = new Date().getFullYear();
 
   .footer-logo:focus-visible {
     outline: none;
-    border-radius: 0.75rem;
+    border-radius: 0.5rem;
   }
 
   .footer-logo:focus-visible .logo-mark {
-    box-shadow: 0 0 0 3px transparent, 0 0 0 6px theme('colors.gold.400');
+    box-shadow: 0 0 0 3px transparent, 0 0 0 6px theme('colors.teal.400');
   }
 
   .footer-logo:hover .logo-mark {
@@ -325,69 +330,6 @@ const currentYear = new Date().getFullYear();
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     NEWSLETTER STYLES
-     ═══════════════════════════════════════════════════════════════════════════ */
-
-  .newsletter-input-group {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .newsletter-input {
-    flex: 1;
-    min-width: 0;
-    min-height: 48px;
-    padding: 0.75rem 1rem;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 0.75rem;
-    color: white;
-    font-size: 1rem;
-    transition: all 0.2s ease;
-  }
-
-  .newsletter-input::placeholder {
-    color: theme('colors.navy.300');
-  }
-
-  .newsletter-input:hover {
-    border-color: rgba(255, 255, 255, 0.25);
-  }
-
-  .newsletter-input:focus {
-    outline: none;
-    border-color: theme('colors.gold.400');
-    background: rgba(255, 255, 255, 0.12);
-    box-shadow: 0 0 0 3px rgba(213, 160, 53, 0.25);
-  }
-
-  .newsletter-btn {
-    min-height: 48px;
-    padding: 0.75rem 1.25rem;
-    background: linear-gradient(135deg, #e8bc5a 0%, #d5a035 100%);
-    color: theme('colors.navy.900');
-    font-weight: 600;
-    font-size: 0.9375rem;
-    border-radius: 0.75rem;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-  }
-
-  .newsletter-btn:hover {
-    background: linear-gradient(135deg, #d5a035 0%, #b8892a 100%);
-    transform: translateY(-1px);
-  }
-
-  .newsletter-btn:active {
-    transform: translateY(0);
-  }
-
-  .newsletter-btn:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px transparent, 0 0 0 6px theme('colors.gold.400');
-  }
-
-  /* ═══════════════════════════════════════════════════════════════════════════
      SOCIAL LINK STYLES
      ═══════════════════════════════════════════════════════════════════════════ */
 
@@ -395,28 +337,25 @@ const currentYear = new Date().getFullYear();
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
     color: theme('colors.navy.200');
     transition: all 0.2s ease;
   }
 
   .social-link:hover {
-    background: rgba(213, 160, 53, 0.15);
-    border-color: rgba(213, 160, 53, 0.4);
+    background: rgba(8, 145, 178, 0.15);
+    border-color: rgba(8, 145, 178, 0.4);
+    color: #22D3EE;
     transform: translateY(-2px);
-  }
-
-  .social-link:hover .icon {
-    color: #d5a035;
   }
 
   .social-link:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px transparent, 0 0 0 6px theme('colors.gold.400');
+    box-shadow: 0 0 0 3px transparent, 0 0 0 6px theme('colors.teal.400');
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
@@ -425,24 +364,24 @@ const currentYear = new Date().getFullYear();
 
   .footer-heading {
     font-family: theme('fontFamily.heading');
-    font-size: 1.125rem;
+    font-size: 1rem;
     font-weight: 700;
     color: white;
-    margin-bottom: 1.25rem;
+    margin-bottom: 1rem;
     letter-spacing: -0.01em;
     position: relative;
     padding-right: 12px;
   }
 
-  /* Gold accent bar before heading */
+  /* Teal accent bar before heading */
   .footer-heading::before {
     content: '';
     position: absolute;
     right: 0;
-    top: 4px;
+    top: 3px;
     width: 3px;
-    height: 18px;
-    background: linear-gradient(180deg, #d5a035 0%, rgba(213, 160, 53, 0.4) 100%);
+    height: 16px;
+    background: linear-gradient(180deg, #0891B2 0%, rgba(8, 145, 178, 0.4) 100%);
     border-radius: 2px;
   }
 
@@ -456,15 +395,15 @@ const currentYear = new Date().getFullYear();
     display: inline-flex;
     align-items: center;
     padding: 0.25rem 0;
-    min-height: 40px;
+    min-height: 36px;
     color: theme('colors.navy.200');
-    font-size: 1rem;
+    font-size: 0.9375rem;
     line-height: 1.3;
     transition: color 0.2s ease, padding-right 0.2s ease;
   }
 
   .footer-link:hover {
-    color: #d5a035;
+    color: #22D3EE;
     padding-right: 0.25rem;
   }
 
@@ -476,25 +415,50 @@ const currentYear = new Date().getFullYear();
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     TRUST BADGE STYLES - White icons on dark navy background for WCAG AA
+     TRUST BADGE STYLES
      ═══════════════════════════════════════════════════════════════════════════ */
 
   .trust-badge {
     display: inline-flex;
     align-items: center;
     gap: 0.375rem;
-    padding: 0.5rem 0.75rem;
-    background: rgba(213, 160, 53, 0.12);
-    border: 1px solid rgba(213, 160, 53, 0.25);
-    border-radius: 0.5rem;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 0.8125rem;
+    padding: 0.375rem 0.625rem;
+    background: rgba(8, 145, 178, 0.1);
+    border: 1px solid rgba(8, 145, 178, 0.2);
+    border-radius: 0.375rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.75rem;
     font-weight: 500;
   }
 
-  .trust-badge svg,
-  .trust-badge .icon--brand {
-    color: #d5a035;
+  /* ═══════════════════════════════════════════════════════════════════════════
+     RISK WARNING SECTION - Per Vision Document
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .risk-warning-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 1rem 0;
+  }
+
+  .risk-warning {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    padding: 1rem;
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.15);
+    border-radius: 0.5rem;
+  }
+
+  .risk-warning-text {
+    color: theme('colors.navy.200');
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  .risk-warning-text strong {
+    color: theme('colors.warning.500');
+    font-weight: 600;
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
@@ -503,11 +467,11 @@ const currentYear = new Date().getFullYear();
 
   .footer-bottom {
     position: relative;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 1.5rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 1.25rem 0;
   }
 
-  /* Gold gradient accent line at top of footer bottom */
+  /* Teal gradient accent line at top of footer bottom */
   .footer-bottom::before {
     content: '';
     position: absolute;
@@ -516,8 +480,8 @@ const currentYear = new Date().getFullYear();
     transform: translateX(-50%);
     width: 200px;
     height: 2px;
-    background: linear-gradient(90deg, transparent 0%, #d5a035 50%, transparent 100%);
-    opacity: 0.6;
+    background: linear-gradient(90deg, transparent 0%, #0891B2 50%, transparent 100%);
+    opacity: 0.4;
   }
 
   .footer-bottom-content {
@@ -526,16 +490,98 @@ const currentYear = new Date().getFullYear();
 
   .copyright {
     color: theme('colors.navy.200');
-    font-size: 0.9375rem;
-    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
   }
 
   .disclaimer {
     color: theme('colors.navy.400');
-    font-size: 0.8125rem;
-    line-height: 1.6;
-    max-width: 56rem;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    max-width: 48rem;
     margin: 0 auto;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     WHATSAPP FLOATING BUTTON - Per Vision: Educational Questions Only
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .whatsapp-float {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    background: #25D366;
+    border-radius: 50%;
+    color: white;
+    box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+    transition: all 0.2s ease;
+  }
+
+  .whatsapp-float:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 24px rgba(37, 211, 102, 0.5);
+  }
+
+  .whatsapp-float:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px white, 0 0 0 6px #25D366;
+  }
+
+  .whatsapp-tooltip {
+    position: absolute;
+    left: calc(100% + 12px);
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0.5rem 0.75rem;
+    background: theme('colors.navy.900');
+    color: white;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    white-space: nowrap;
+    border-radius: 0.375rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+  }
+
+  .whatsapp-tooltip::before {
+    content: '';
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-left-color: theme('colors.navy.900');
+  }
+
+  .whatsapp-float:hover .whatsapp-tooltip {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* RTL adjustment for WhatsApp button */
+  [dir="rtl"] .whatsapp-float {
+    left: auto;
+    right: 24px;
+  }
+
+  [dir="rtl"] .whatsapp-tooltip {
+    left: auto;
+    right: calc(100% + 12px);
+  }
+
+  [dir="rtl"] .whatsapp-tooltip::before {
+    right: auto;
+    left: 100%;
+    border-left-color: transparent;
+    border-right-color: theme('colors.navy.900');
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
@@ -544,13 +590,29 @@ const currentYear = new Date().getFullYear();
 
   @media (max-width: 639px) {
     .footer-wrapper nav {
-      padding-top: 1.5rem;
+      padding-top: 1.25rem;
       border-top: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     .footer-wrapper nav:first-of-type {
       border-top: none;
       padding-top: 0;
+    }
+
+    .whatsapp-float {
+      bottom: 16px;
+      left: 16px;
+      width: 52px;
+      height: 52px;
+    }
+
+    [dir="rtl"] .whatsapp-float {
+      left: auto;
+      right: 16px;
+    }
+
+    .whatsapp-tooltip {
+      display: none;
     }
   }
 
@@ -561,47 +623,9 @@ const currentYear = new Date().getFullYear();
   @media (prefers-reduced-motion: reduce) {
     .footer-link,
     .social-link,
-    .newsletter-btn,
-    .newsletter-input,
+    .whatsapp-float,
     .logo-mark {
       transition: none;
     }
   }
 </style>
-
-<script>
-  // Newsletter form handling
-  document.addEventListener('DOMContentLoaded', () => {
-    const form = document.querySelector('[data-newsletter-form]') as HTMLFormElement;
-
-    form?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const formData = new FormData(form);
-      const email = formData.get('email') as string;
-
-      // Basic validation
-      if (!email || !email.includes('@')) {
-        return;
-      }
-
-      // Here you would typically send to your newsletter service
-      // For now, we'll just show a success state
-      const btn = form.querySelector('.newsletter-btn') as HTMLButtonElement;
-      const originalText = btn.innerHTML;
-
-      btn.innerHTML = `
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-        </svg>
-      `;
-      btn.disabled = true;
-
-      setTimeout(() => {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-        form.reset();
-      }, 2000);
-    });
-  });
-</script>

@@ -1,0 +1,392 @@
+---
+/**
+ * Privacy Policy Page - سياسة الخصوصية
+ *
+ * Enhanced privacy page with TOC sidebar and collapsible sections.
+ * Designed for easy navigation of legal content.
+ */
+
+import StaticPageLayoutEnhanced from '@layouts/StaticPageLayoutEnhanced.astro';
+import CollapsibleSection from '@components/static/CollapsibleSection.astro';
+import CalloutBox from '@components/static/CalloutBox.astro';
+
+// Page metadata
+const title = 'سياسة الخصوصية';
+const description = 'سياسة الخصوصية لموقع تشارتس بوينت. تعرف على كيفية جمع واستخدام وحماية بياناتك الشخصية.';
+const lastModified = '2024-01-15';
+
+// TOC items
+const tocItems = [
+  { id: 'intro', label: 'مقدمة' },
+  { id: 'data-collection', label: 'البيانات التي نجمعها' },
+  { id: 'data-usage', label: 'كيف نستخدم بياناتك' },
+  { id: 'cookies', label: 'ملفات تعريف الارتباط' },
+  { id: 'third-parties', label: 'الأطراف الثالثة' },
+  { id: 'data-security', label: 'حماية البيانات' },
+  { id: 'your-rights', label: 'حقوقك' },
+  { id: 'updates', label: 'تحديثات السياسة' },
+  { id: 'contact', label: 'التواصل معنا' },
+];
+
+// Breadcrumbs
+const breadcrumbs = [
+  { label: 'الرئيسية', href: '/' },
+  { label: 'سياسة الخصوصية', href: '/privacy', current: true },
+];
+---
+
+<StaticPageLayoutEnhanced
+  title={title}
+  description={description}
+  lastModified={lastModified}
+  variant="with-toc"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  showReadingTime={true}
+  showLastUpdated={true}
+>
+  <div class="max-w-6xl mx-auto">
+    <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+
+      <!-- Sticky TOC Sidebar -->
+      <aside class="hidden lg:block lg:col-span-3">
+        <nav class="sticky top-24 bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
+          <h2 class="text-sm font-bold text-navy-800 mb-4 pb-3 border-b border-slate-100 font-heading">
+            جدول المحتويات
+          </h2>
+          <ul class="space-y-1 text-sm" id="toc-list">
+            {tocItems.map((item) => (
+              <li>
+                <a
+                  href={`#${item.id}`}
+                  class="toc-link block py-2 px-3 rounded-lg text-slate-600 hover:text-navy-800 hover:bg-slate-50 transition-colors"
+                  data-toc-link={item.id}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <article class="lg:col-span-9 bg-white rounded-2xl shadow-card border border-slate-100 p-8 md:p-12">
+
+        <CalloutBox variant="info" title="ملخص سريع">
+          <p>
+            نحترم خصوصيتك ونلتزم بحماية بياناتك الشخصية. نجمع الحد الأدنى من البيانات اللازمة لتقديم خدماتنا، ولا نبيع بياناتك لأطراف ثالثة.
+          </p>
+        </CalloutBox>
+
+        <!-- Introduction -->
+        <section id="intro" class="privacy-section">
+          <h2 class="privacy-section__title">مقدمة</h2>
+          <p>
+            مرحبًا بك في سياسة الخصوصية لموقع تشارتس بوينت. تشرح هذه السياسة كيفية جمعنا واستخدامنا وحمايتنا لبياناتك الشخصية عند استخدامك لموقعنا.
+          </p>
+          <p>
+            باستخدامك لموقعنا، فإنك توافق على جمع واستخدام المعلومات وفقًا لهذه السياسة.
+          </p>
+        </section>
+
+        <!-- Data Collection -->
+        <section id="data-collection" class="privacy-section">
+          <h2 class="privacy-section__title">البيانات التي نجمعها</h2>
+
+          <h3>البيانات التي تقدمها مباشرة</h3>
+          <ul>
+            <li><strong>نموذج التواصل:</strong> الاسم، البريد الإلكتروني، ومحتوى الرسالة</li>
+            <li><strong>الاشتراك في النشرة:</strong> البريد الإلكتروني (اختياري)</li>
+            <li><strong>التعليقات:</strong> الاسم والبريد الإلكتروني (اختياري)</li>
+          </ul>
+
+          <h3>البيانات التي نجمعها تلقائيًا</h3>
+          <ul>
+            <li><strong>بيانات التصفح:</strong> عنوان IP، نوع المتصفح، نظام التشغيل</li>
+            <li><strong>بيانات الاستخدام:</strong> الصفحات المزارة، مدة الزيارة، مصدر الإحالة</li>
+            <li><strong>ملفات تعريف الارتباط:</strong> لتحسين تجربة التصفح</li>
+          </ul>
+        </section>
+
+        <!-- Data Usage -->
+        <section id="data-usage" class="privacy-section">
+          <h2 class="privacy-section__title">كيف نستخدم بياناتك</h2>
+          <p>نستخدم البيانات التي نجمعها للأغراض التالية:</p>
+          <ul>
+            <li>تقديم وتحسين خدماتنا ومحتوانا</li>
+            <li>الرد على استفساراتك ورسائلك</li>
+            <li>إرسال النشرات البريدية (بموافقتك)</li>
+            <li>تحليل استخدام الموقع لتحسين التجربة</li>
+            <li>حماية موقعنا من الاستخدام غير المشروع</li>
+          </ul>
+        </section>
+
+        <!-- Cookies -->
+        <section id="cookies" class="privacy-section">
+          <h2 class="privacy-section__title">ملفات تعريف الارتباط (Cookies)</h2>
+          <p>
+            نستخدم ملفات تعريف الارتباط لتحسين تجربتك على موقعنا. يمكنك التحكم في هذه الملفات من خلال إعدادات متصفحك.
+          </p>
+
+          <h3>أنواع ملفات تعريف الارتباط</h3>
+          <ul>
+            <li><strong>أساسية:</strong> ضرورية لعمل الموقع بشكل صحيح</li>
+            <li><strong>تحليلية:</strong> تساعدنا في فهم كيفية استخدام الزوار للموقع</li>
+            <li><strong>تفضيلات:</strong> تحفظ تفضيلاتك مثل اللغة والمنطقة</li>
+          </ul>
+
+          <CalloutBox variant="tip" title="نصيحة">
+            <p>
+              يمكنك إدارة تفضيلات ملفات تعريف الارتباط من خلال إعدادات متصفحك أو من خلال صفحة <a href="/cookies">إعدادات ملفات تعريف الارتباط</a>.
+            </p>
+          </CalloutBox>
+        </section>
+
+        <!-- Third Parties -->
+        <section id="third-parties" class="privacy-section">
+          <h2 class="privacy-section__title">الأطراف الثالثة</h2>
+          <p>قد نشارك بعض البيانات مع أطراف ثالثة موثوقة للأغراض التالية:</p>
+
+          <h3>مزودو الخدمات</h3>
+          <ul>
+            <li><strong>تحليلات الويب:</strong> Google Analytics لتحليل استخدام الموقع</li>
+            <li><strong>استضافة:</strong> مزود الاستضافة لتشغيل الموقع</li>
+            <li><strong>CDN:</strong> Cloudflare لتسريع تحميل الموقع</li>
+          </ul>
+
+          <h3>الروابط التابعة</h3>
+          <p>
+            قد يحتوي موقعنا على روابط تابعة (affiliate links) لوسطاء ومنصات تداول. نفصح عن هذه الروابط بوضوح في المحتوى ذي الصلة.
+          </p>
+        </section>
+
+        <!-- Data Security -->
+        <section id="data-security" class="privacy-section">
+          <h2 class="privacy-section__title">حماية البيانات</h2>
+          <p>نتخذ إجراءات أمنية مناسبة لحماية بياناتك، تشمل:</p>
+          <ul>
+            <li>تشفير البيانات باستخدام بروتوكول HTTPS</li>
+            <li>تقييد الوصول إلى البيانات الشخصية</li>
+            <li>مراجعة دورية لإجراءات الأمان</li>
+            <li>عدم تخزين بيانات الدفع أو كلمات المرور</li>
+          </ul>
+        </section>
+
+        <!-- Your Rights -->
+        <section id="your-rights" class="privacy-section">
+          <h2 class="privacy-section__title">حقوقك</h2>
+          <p>لديك الحقوق التالية فيما يتعلق ببياناتك الشخصية:</p>
+          <ul>
+            <li><strong>حق الوصول:</strong> طلب نسخة من بياناتك الشخصية</li>
+            <li><strong>حق التصحيح:</strong> طلب تصحيح البيانات غير الدقيقة</li>
+            <li><strong>حق الحذف:</strong> طلب حذف بياناتك الشخصية</li>
+            <li><strong>حق الاعتراض:</strong> الاعتراض على معالجة بياناتك لأغراض معينة</li>
+            <li><strong>حق إلغاء الاشتراك:</strong> إلغاء الاشتراك في النشرات البريدية</li>
+          </ul>
+          <p>
+            لممارسة أي من هذه الحقوق، يرجى <a href="/contact">التواصل معنا</a>.
+          </p>
+        </section>
+
+        <!-- Policy Updates -->
+        <section id="updates" class="privacy-section">
+          <h2 class="privacy-section__title">تحديثات السياسة</h2>
+          <p>
+            قد نقوم بتحديث سياسة الخصوصية هذه من وقت لآخر. سنعلن عن أي تغييرات جوهرية على هذه الصفحة مع تحديث تاريخ "آخر تحديث" في أعلى الصفحة.
+          </p>
+          <p>
+            ننصحك بمراجعة هذه السياسة بشكل دوري للاطلاع على أي تغييرات.
+          </p>
+        </section>
+
+        <!-- Contact -->
+        <section id="contact" class="privacy-section">
+          <h2 class="privacy-section__title">التواصل معنا</h2>
+          <p>
+            إذا كان لديك أي أسئلة حول سياسة الخصوصية هذه، يرجى التواصل معنا عبر:
+          </p>
+          <ul>
+            <li><a href="/contact">نموذج التواصل</a></li>
+            <li>البريد الإلكتروني: privacy@chartspoint.com</li>
+          </ul>
+        </section>
+
+      </article>
+    </div>
+  </div>
+</StaticPageLayoutEnhanced>
+
+<style>
+  /* Privacy Section Styling */
+  .privacy-section {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid #F1F5F9;
+  }
+
+  .privacy-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .privacy-section__title {
+    position: relative;
+    margin: 0 0 1.25rem;
+    padding-bottom: 0.875rem;
+    font-family: var(--font-heading);
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: #102A43;
+    scroll-margin-top: 6rem;
+  }
+
+  @media (min-width: 768px) {
+    .privacy-section__title {
+      font-size: 1.5rem;
+    }
+  }
+
+  .privacy-section__title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(
+      to left,
+      #d5a035 0%,
+      #d5a035 20%,
+      #E2E8F0 20%,
+      transparent 100%
+    );
+    border-radius: 2px;
+  }
+
+  /* Content typography */
+  .privacy-section p {
+    margin: 0 0 1rem;
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    color: #334155;
+  }
+
+  @media (min-width: 768px) {
+    .privacy-section p {
+      font-size: 1.125rem;
+    }
+  }
+
+  .privacy-section h3 {
+    position: relative;
+    margin: 1.75rem 0 0.875rem;
+    padding-right: 1rem;
+    font-family: var(--font-heading);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: #1a3a5c;
+  }
+
+  @media (min-width: 768px) {
+    .privacy-section h3 {
+      font-size: 1.125rem;
+    }
+  }
+
+  .privacy-section h3::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0.2em;
+    bottom: 0.2em;
+    width: 4px;
+    background: linear-gradient(to bottom, #d5a035, #b8892a);
+    border-radius: 2px;
+  }
+
+  .privacy-section ul {
+    margin: 0 0 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .privacy-section li {
+    margin-bottom: 0.625rem;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: #334155;
+  }
+
+  @media (min-width: 768px) {
+    .privacy-section li {
+      font-size: 1.0625rem;
+    }
+  }
+
+  .privacy-section li strong {
+    font-weight: 600;
+    color: #102A43;
+  }
+
+  .privacy-section a {
+    color: #d5a035;
+    text-decoration: underline;
+    text-underline-offset: 6px;
+    text-decoration-thickness: 1px;
+    transition: color 0.2s ease;
+  }
+
+  .privacy-section a:hover {
+    color: #b8892a;
+  }
+
+  /* TOC Link Active State */
+  .toc-link.is-active {
+    background-color: rgba(213, 160, 53, 0.1);
+    color: #d5a035;
+    font-weight: 600;
+  }
+</style>
+
+<script>
+  function initTocScrollSpy() {
+    const tocLinks = document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]');
+    if (tocLinks.length === 0) return;
+
+    const sections = Array.from(tocLinks).map(link => {
+      const id = link.dataset.tocLink;
+      return id ? document.getElementById(id) : null;
+    }).filter(Boolean) as HTMLElement[];
+
+    function updateActiveLink() {
+      const scrollPosition = window.scrollY + 150;
+
+      let activeIndex = 0;
+      sections.forEach((section, index) => {
+        if (section.offsetTop <= scrollPosition) {
+          activeIndex = index;
+        }
+      });
+
+      tocLinks.forEach((link, index) => {
+        if (index === activeIndex) {
+          link.classList.add('is-active');
+        } else {
+          link.classList.remove('is-active');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', updateActiveLink, { passive: true });
+    updateActiveLink();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTocScrollSpy);
+  } else {
+    initTocScrollSpy();
+  }
+
+  document.addEventListener('astro:page-load', initTocScrollSpy);
+</script>

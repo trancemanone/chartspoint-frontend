@@ -1,145 +1,159 @@
 ---
 /**
- * MegaMenu Component - Ultra-Premium Navigation Panel
+ * MegaMenu Component - ChartsPoint Premium Navigation Panel
  *
- * A spectacular, Bloomberg/Goldman Sachs-tier mega menu featuring:
- * - Sophisticated glassmorphism with layered depth
- * - Premium geometric mesh patterns and radial glows
- * - Gold accent system with subtle shimmer effects
- * - Staggered entrance animations with GPU acceleration
- * - Three-column pillar layout with distinct visual identities
- * - Institutional-grade typography and spacing
- * - Full RTL Arabic support with WCAG AAA compliance
+ * Institutional-grade mega menu featuring 4 pillars:
+ * - Basics (blue) - Technical analysis fundamentals
+ * - Indicators (orange) - Technical indicators
+ * - Tools (green) - Charting tools and calculators
+ * - Tactics (purple) - Strategies and risk management
  *
- * Design Philosophy:
- * This mega menu represents the pinnacle of luxury fintech design.
- * Every pixel has been crafted to convey trust, authority, and exclusivity.
- * The experience rivals that of Swiss private banks and elite wealth
- * management platforms.
+ * Design: Bloomberg/Goldman Sachs-tier with:
+ * - Sophisticated glassmorphism
+ * - Gold accent system
+ * - Staggered entrance animations
+ * - Full RTL Arabic support
+ * - WCAG AAA compliance
  */
 
 import { getPostsByPillar, transformToArticle } from '../../lib/wordpress';
-import { CLUSTERS, type PillarSlug } from '../../lib/types';
+import { CLUSTERS, PILLARS, type PillarSlug } from '../../lib/types';
 
 export interface Props {
-  currentPillar?: 'learn' | 'accounts' | 'trust';
+  currentPillar?: PillarSlug;
 }
 
 const { currentPillar } = Astro.props;
 
 // Fetch articles for each pillar from WordPress
-const [learnPosts, accountsPosts, trustPosts] = await Promise.all([
-  getPostsByPillar('learn', 6),
-  getPostsByPillar('accounts', 6),
-  getPostsByPillar('trust', 6),
+const [basicsPosts, indicatorsPosts, toolsPosts, tacticsPosts] = await Promise.all([
+  getPostsByPillar('basics', 4).catch(() => ({ data: [] })),
+  getPostsByPillar('indicators', 4).catch(() => ({ data: [] })),
+  getPostsByPillar('tools', 4).catch(() => ({ data: [] })),
+  getPostsByPillar('tactics', 4).catch(() => ({ data: [] })),
 ]);
 
-// Transform posts to articles for easier access
-const learnArticles = learnPosts.data.map(transformToArticle);
-const accountsArticles = accountsPosts.data.map(transformToArticle);
-const trustArticles = trustPosts.data.map(transformToArticle);
+// Transform posts to articles
+const basicsArticles = basicsPosts.data.map(transformToArticle);
+const indicatorsArticles = indicatorsPosts.data.map(transformToArticle);
+const toolsArticles = toolsPosts.data.map(transformToArticle);
+const tacticsArticles = tacticsPosts.data.map(transformToArticle);
 
-// Get clusters for each pillar from the types definition
-const learnClusters = CLUSTERS.filter(c => c.pillar === 'learn');
-const accountsClusters = CLUSTERS.filter(c => c.pillar === 'accounts');
-const trustClusters = CLUSTERS.filter(c => c.pillar === 'trust');
+// Get clusters for each pillar
+const basicsClusters = CLUSTERS.filter(c => c.pillar === 'basics');
+const indicatorsClusters = CLUSTERS.filter(c => c.pillar === 'indicators');
+const toolsClusters = CLUSTERS.filter(c => c.pillar === 'tools');
+const tacticsClusters = CLUSTERS.filter(c => c.pillar === 'tactics');
 
-// Build pillar data with premium styling
+// Cluster descriptions
+function getClusterDescription(slug: string): string {
+  const descriptions: Record<string, string> = {
+    'intro': 'مقدمة شاملة للتحليل الفني',
+    'patterns': 'أنماط الشموع والرسوم البيانية',
+    'action': 'فهم حركة السعر',
+    'methods': 'طرق التحليل المختلفة',
+    'momentum': 'مؤشرات الزخم والقوة',
+    'trend': 'مؤشرات تحديد الاتجاه',
+    'volatility': 'قياس التذبذب والتقلبات',
+    'volume': 'تحليل حجم التداول',
+    'calc': 'حاسبات التداول المختلفة',
+    'charts': 'أدوات الرسم البياني',
+    'data': 'مصادر البيانات المالية',
+    'trend-tactics': 'استراتيجيات تتبع الاتجاه',
+    'reversion': 'استراتيجيات الارتداد',
+    'intraday': 'التداول خلال اليوم',
+    'risk': 'إدارة المخاطر والرأسمال',
+  };
+  return descriptions[slug] || '';
+}
+
+// Icon paths
+const icons = {
+  book: 'M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25',
+  chart: 'M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605',
+  calculator: 'M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zm0 2.25h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V18zm2.504-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zm0 2.25h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V18zm2.498-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zM8.25 6h7.5v2.25h-7.5V6zM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 002.25 2.25h10.5a2.25 2.25 0 002.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0012 2.25z',
+  target: 'M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z',
+  sparkle: 'M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z',
+};
+
+// Build pillar data
 const pillars = [
   {
-    id: 'learn' as PillarSlug,
-    label: 'تعلم',
-    labelEn: 'Learn',
-    href: '/learn',
-    description: 'أساسيات الاستثمار والتعليم المالي',
-    tagline: 'ابدأ رحلتك نحو الثقافة المالية',
+    id: 'basics' as PillarSlug,
+    label: 'الأساسيات',
+    labelEn: 'Basics',
+    href: '/basics',
+    description: PILLARS.basics.description,
     icon: 'book',
     colorHex: '#3B82F6',
     gradientFrom: '#3B82F6',
     gradientTo: '#1D4ED8',
     glowColor: 'rgba(59, 130, 246, 0.15)',
-    clusters: learnClusters.slice(0, 7).map(cluster => ({
+    clusters: basicsClusters.map(cluster => ({
       label: cluster.nameAr,
-      href: `/learn/${cluster.slug}`,
+      href: `/basics/${cluster.slug}`,
       description: getClusterDescription(cluster.slug),
     })),
-    articles: learnArticles.slice(0, 3),
+    articles: basicsArticles.slice(0, 2),
   },
   {
-    id: 'accounts' as PillarSlug,
-    label: 'حسابات',
-    labelEn: 'Accounts',
-    href: '/accounts',
-    description: 'افتح حسابك واختر المنصة المناسبة',
-    tagline: 'ابدأ التداول مع أفضل المنصات',
-    icon: 'wallet',
-    colorHex: '#d5a035',
-    gradientFrom: '#d5a035',
-    gradientTo: '#b8892a',
-    glowColor: 'rgba(213, 160, 53, 0.15)',
-    clusters: accountsClusters.slice(0, 5).map(cluster => ({
+    id: 'indicators' as PillarSlug,
+    label: 'المؤشرات',
+    labelEn: 'Indicators',
+    href: '/indicators',
+    description: PILLARS.indicators.description,
+    icon: 'chart',
+    colorHex: '#F97316',
+    gradientFrom: '#F97316',
+    gradientTo: '#EA580C',
+    glowColor: 'rgba(249, 115, 22, 0.15)',
+    clusters: indicatorsClusters.map(cluster => ({
       label: cluster.nameAr,
-      href: `/accounts/${cluster.slug}`,
+      href: `/indicators/${cluster.slug}`,
       description: getClusterDescription(cluster.slug),
     })),
-    articles: accountsArticles.slice(0, 3),
+    articles: indicatorsArticles.slice(0, 2),
   },
   {
-    id: 'trust' as PillarSlug,
-    label: 'ثقة',
-    labelEn: 'Trust',
-    href: '/trust',
-    description: 'تأكد من سلامة استثماراتك',
-    tagline: 'استثمر بأمان وثقة تامة',
-    icon: 'shield',
-    colorHex: '#7C2D3C',
-    gradientFrom: '#7C2D3C',
-    gradientTo: '#5B1E2B',
-    glowColor: 'rgba(124, 45, 60, 0.15)',
-    clusters: trustClusters.slice(0, 5).map(cluster => ({
+    id: 'tools' as PillarSlug,
+    label: 'الأدوات',
+    labelEn: 'Tools',
+    href: '/tools',
+    description: PILLARS.tools.description,
+    icon: 'calculator',
+    colorHex: '#10B981',
+    gradientFrom: '#10B981',
+    gradientTo: '#059669',
+    glowColor: 'rgba(16, 185, 129, 0.15)',
+    clusters: toolsClusters.map(cluster => ({
       label: cluster.nameAr,
-      href: `/trust/${cluster.slug}`,
+      href: `/tools/${cluster.slug}`,
       description: getClusterDescription(cluster.slug),
     })),
-    articles: trustArticles.slice(0, 3),
+    articles: toolsArticles.slice(0, 2),
+  },
+  {
+    id: 'tactics' as PillarSlug,
+    label: 'الاستراتيجيات',
+    labelEn: 'Tactics',
+    href: '/tactics',
+    description: PILLARS.tactics.description,
+    icon: 'target',
+    colorHex: '#8B5CF6',
+    gradientFrom: '#8B5CF6',
+    gradientTo: '#7C3AED',
+    glowColor: 'rgba(139, 92, 246, 0.15)',
+    clusters: tacticsClusters.map(cluster => ({
+      label: cluster.nameAr,
+      href: `/tactics/${cluster.slug}`,
+      description: getClusterDescription(cluster.slug),
+    })),
+    articles: tacticsArticles.slice(0, 2),
   },
 ];
-
-// Cluster descriptions for richer UX
-function getClusterDescription(slug: string): string {
-  const descriptions: Record<string, string> = {
-    'start': 'مبادئ الاستثمار الأساسية',
-    'stocks': 'تعلم أسواق الأسهم',
-    'gold': 'الاستثمار في المعادن الثمينة',
-    'funds-learn': 'صناديق الاستثمار المتداولة',
-    'plan': 'التخطيط المالي الشخصي',
-    'analysis': 'التحليل الفني والأساسي',
-    'courses': 'دورات تعليمية متخصصة',
-    'open': 'خطوات فتح الحساب',
-    'platform': 'مقارنة منصات التداول',
-    'apps': 'تطبيقات الجوال للتداول',
-    'brokers': 'اختيار الوسيط المناسب',
-    'sectors': 'قطاعات السوق المختلفة',
-    'license': 'التراخيص والتنظيم',
-    'checks': 'التحقق من الوسطاء',
-    'scams': 'حماية من الاحتيال',
-    'funds-trust': 'أمان الأموال',
-    'privacy': 'حماية البيانات',
-  };
-  return descriptions[slug] || '';
-}
-
-// Icon SVG paths - refined for premium feel
-const icons = {
-  book: 'M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25',
-  wallet: 'M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z',
-  shield: 'M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z',
-  arrow: 'M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18',
-  sparkle: 'M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z',
-};
 ---
 
-<!-- Premium Contained Mega Menu - Centered Rectangle -->
+<!-- Premium Contained Mega Menu -->
 <div
   id="mega-menu-panel"
   class="mega-menu-panel"
@@ -148,37 +162,32 @@ const icons = {
   data-mega-menu-panel
   hidden
 >
-  <!-- Layered Background System -->
+  <!-- Layered Background -->
   <div class="mega-menu-backdrop">
-    <!-- Base glassmorphism layer -->
     <div class="backdrop-glass"></div>
-    <!-- Geometric mesh pattern overlay -->
     <div class="backdrop-pattern"></div>
-    <!-- Pillar glow effects -->
-    <div class="backdrop-glow glow-learn"></div>
-    <div class="backdrop-glow glow-accounts"></div>
-    <div class="backdrop-glow glow-trust"></div>
-    <!-- Gold accent line -->
-    <div class="backdrop-gold-line"></div>
+    <div class="backdrop-glow glow-basics"></div>
+    <div class="backdrop-glow glow-indicators"></div>
+    <div class="backdrop-glow glow-tools"></div>
+    <div class="backdrop-glow glow-tactics"></div>
+    <div class="backdrop-teal-line"></div>
   </div>
 
   <!-- Menu Content -->
   <div class="mega-menu-content">
-    <div class="container mx-auto px-6 lg:px-8 xl:px-12">
-      <!-- Premium 3-Column Pillar Grid -->
+    <div class="container mx-auto px-6 lg:px-8">
+      <!-- 4-Column Pillar Grid -->
       <div class="mega-menu-grid">
         {pillars.map((pillar, pillarIndex) => (
           <div
             class="pillar-column"
             data-pillar-column={pillar.id}
-            style={`--pillar-color: ${pillar.colorHex}; --pillar-gradient-from: ${pillar.gradientFrom}; --pillar-gradient-to: ${pillar.gradientTo}; --pillar-glow: ${pillar.glowColor}; --pillar-delay: ${pillarIndex * 80}ms`}
+            style={`--pillar-color: ${pillar.colorHex}; --pillar-gradient-from: ${pillar.gradientFrom}; --pillar-gradient-to: ${pillar.gradientTo}; --pillar-glow: ${pillar.glowColor}; --pillar-delay: ${pillarIndex * 60}ms`}
           >
-            <!-- Pillar Header with Premium Styling -->
+            <!-- Pillar Header -->
             <div class="pillar-header">
-              <!-- Pillar accent bar -->
               <div class="pillar-accent-bar" aria-hidden="true"></div>
 
-              <!-- Icon container with glow -->
               <div class="pillar-icon-container">
                 <div class="pillar-icon-glow" aria-hidden="true"></div>
                 <div class="pillar-icon-wrapper">
@@ -195,7 +204,6 @@ const icons = {
                 </div>
               </div>
 
-              <!-- Header text content -->
               <div class="pillar-header-content">
                 <div class="pillar-title-group">
                   <h3 class="pillar-title">{pillar.label}</h3>
@@ -205,7 +213,7 @@ const icons = {
               </div>
             </div>
 
-            <!-- Cluster Links with Premium Hover States -->
+            <!-- Cluster Links -->
             <div class="pillar-clusters">
               {pillar.clusters.map((cluster, clusterIndex) => (
                 <a
@@ -214,7 +222,7 @@ const icons = {
                   role="menuitem"
                   tabindex="-1"
                   data-cluster-link
-                  style={`--cluster-delay: ${(pillarIndex * 80) + (clusterIndex * 40) + 100}ms`}
+                  style={`--cluster-delay: ${(pillarIndex * 60) + (clusterIndex * 30) + 80}ms`}
                 >
                   <div class="cluster-indicator-wrapper">
                     <span class="cluster-indicator" aria-hidden="true"></span>
@@ -241,7 +249,7 @@ const icons = {
               ))}
             </div>
 
-            <!-- Featured Articles Section -->
+            <!-- Featured Articles -->
             {pillar.articles.length > 0 && (
               <div class="pillar-articles">
                 <div class="articles-header">
@@ -251,7 +259,7 @@ const icons = {
                   <span class="articles-heading">أحدث المقالات</span>
                 </div>
                 <div class="articles-list">
-                  {pillar.articles.slice(0, 2).map((article) => (
+                  {pillar.articles.map((article) => (
                     <a
                       href={`/${article.pillar}/${article.cluster}/${article.slug}`}
                       class="article-link"
@@ -267,19 +275,11 @@ const icons = {
               </div>
             )}
 
-            <!-- Premium CTA Button -->
-            <a
-              href={pillar.href}
-              class="pillar-cta"
-            >
+            <!-- CTA Button -->
+            <a href={pillar.href} class="pillar-cta">
               <span class="pillar-cta-text">استكشف {pillar.label}</span>
               <div class="pillar-cta-icon">
-                <svg
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
               </div>
@@ -289,37 +289,31 @@ const icons = {
         ))}
       </div>
 
-      <!-- Premium Footer Bar -->
+      <!-- Footer Bar -->
       <div class="mega-menu-footer">
         <div class="footer-content">
-          <!-- Trust Indicators -->
           <div class="footer-trust">
             <div class="trust-badge">
               <svg class="trust-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.746 3.746 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
               </svg>
-              <span>محتوى موثوق ومُراجع</span>
+              <span>محتوى تعليمي موثوق</span>
             </div>
             <div class="trust-divider"></div>
             <div class="trust-badge">
               <svg class="trust-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
               </svg>
-              <span>+200 مقال تعليمي</span>
+              <span>4 محاور تعليمية</span>
             </div>
           </div>
 
-          <!-- Quick Links -->
           <div class="footer-links">
             <a href="/about" class="footer-link">
               <span>من نحن</span>
             </a>
             <span class="footer-link-divider"></span>
-            <a href="/contact" class="footer-link">
-              <span>تواصل معنا</span>
-            </a>
-            <span class="footer-link-divider"></span>
-            <a href="/faq" class="footer-link footer-link-gold">
+            <a href="/faq" class="footer-link footer-link-teal">
               <span>الأسئلة الشائعة</span>
               <svg class="footer-link-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -334,9 +328,7 @@ const icons = {
 
 <style>
   /* ═══════════════════════════════════════════════════════════════════════════════
-     PREMIUM MEGA MENU - Contained Rectangle Design
-     Institutional-grade navigation panel with sophisticated visual effects
-     Centered below header with clean, contained appearance
+     MEGA MENU PANEL - 4 Pillars Layout
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   .mega-menu-panel {
@@ -345,7 +337,7 @@ const icons = {
     left: 50%;
     transform: translateX(-50%) translateY(-12px) scale(0.98);
     width: calc(100% - 2rem);
-    max-width: 1280px;
+    max-width: 1400px;
     z-index: 100;
     opacity: 0;
     visibility: hidden;
@@ -369,29 +361,24 @@ const icons = {
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════════
-     LAYERED BACKDROP SYSTEM - Premium Glassmorphism with Rounded Corners
+     BACKDROP - Glassmorphism
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   .mega-menu-backdrop {
     position: absolute;
     inset: 0;
     overflow: hidden;
-    border-radius: 1.25rem;
+    border-radius: 1rem;
   }
 
-  /* Base glass layer */
   .backdrop-glass {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.98) 0%,
-      rgba(250, 251, 252, 0.97) 100%
-    );
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 251, 252, 0.97) 100%);
     backdrop-filter: blur(24px) saturate(200%);
     -webkit-backdrop-filter: blur(24px) saturate(200%);
     border: 1px solid rgba(226, 232, 240, 0.7);
-    border-radius: 1.25rem;
+    border-radius: 1rem;
     box-shadow:
       0 25px 80px rgba(15, 23, 42, 0.12),
       0 12px 40px rgba(15, 23, 42, 0.08),
@@ -399,14 +386,12 @@ const icons = {
       inset 0 1px 0 rgba(255, 255, 255, 0.9);
   }
 
-  /* Geometric mesh pattern */
   .backdrop-pattern {
     position: absolute;
     inset: 0;
-    background-image:
-      radial-gradient(circle at 1px 1px, rgba(16, 41, 65, 0.03) 1px, transparent 0);
+    background-image: radial-gradient(circle at 1px 1px, rgba(16, 41, 65, 0.03) 1px, transparent 0);
     background-size: 24px 24px;
-    border-radius: 1.25rem;
+    border-radius: 1rem;
     opacity: 0;
     transition: opacity 0.5s ease 0.1s;
   }
@@ -415,13 +400,12 @@ const icons = {
     opacity: 1;
   }
 
-  /* Pillar glow effects */
   .backdrop-glow {
     position: absolute;
-    width: 300px;
-    height: 200px;
+    width: 200px;
+    height: 150px;
     border-radius: 50%;
-    filter: blur(60px);
+    filter: blur(50px);
     opacity: 0;
     transition: opacity 0.6s ease 0.15s;
     pointer-events: none;
@@ -431,75 +415,70 @@ const icons = {
     opacity: 1;
   }
 
-  .glow-learn {
-    top: -30px;
-    right: 15%;
+  .glow-basics {
+    top: -20px;
+    right: 10%;
     background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
   }
 
-  .glow-accounts {
+  .glow-indicators {
+    top: 40%;
+    right: 35%;
+    background: radial-gradient(circle, rgba(249, 115, 22, 0.08) 0%, transparent 70%);
+  }
+
+  .glow-tools {
     top: 30%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: radial-gradient(circle, rgba(213, 160, 53, 0.08) 0%, transparent 70%);
+    left: 35%;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
   }
 
-  .glow-trust {
+  .glow-tactics {
     top: -20px;
-    left: 15%;
-    background: radial-gradient(circle, rgba(124, 45, 60, 0.08) 0%, transparent 70%);
+    left: 10%;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
   }
 
-  /* Gold accent line at top */
-  .backdrop-gold-line {
+  .backdrop-teal-line {
     position: absolute;
     top: 0;
-    left: 1.25rem;
-    right: 1.25rem;
+    left: 1rem;
+    right: 1rem;
     height: 3px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(213, 160, 53, 0.3) 15%,
-      rgba(213, 160, 53, 0.7) 35%,
-      #d5a035 50%,
-      rgba(213, 160, 53, 0.7) 65%,
-      rgba(213, 160, 53, 0.3) 85%,
-      transparent 100%
-    );
+    background: linear-gradient(90deg, transparent 0%, rgba(8, 145, 178, 0.2) 15%, rgba(8, 145, 178, 0.5) 35%, #0891B2 50%, rgba(8, 145, 178, 0.5) 65%, rgba(8, 145, 178, 0.2) 85%, transparent 100%);
     border-radius: 0 0 2px 2px;
     transform: scaleX(0);
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
   }
 
-  .mega-menu-panel.is-open .backdrop-gold-line {
+  .mega-menu-panel.is-open .backdrop-teal-line {
     transform: scaleX(1);
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════════
-     MENU CONTENT CONTAINER
+     CONTENT CONTAINER
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   .mega-menu-content {
     position: relative;
     z-index: 1;
-    padding: 2rem 0 1.5rem;
-    border-radius: 1.25rem;
+    padding: 1.75rem 0 1.25rem;
+    border-radius: 1rem;
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════════
-     PREMIUM 3-COLUMN PILLAR GRID
+     4-COLUMN PILLAR GRID
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   .mega-menu-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2.5rem;
-    margin-bottom: 2rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════════
-     PILLAR COLUMN - Staggered Animation
+     PILLAR COLUMN
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   .pillar-column {
@@ -517,64 +496,44 @@ const icons = {
   }
 
   @keyframes pillarReveal {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════════
-     PILLAR HEADER - Premium Design
+     PILLAR HEADER
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   .pillar-header {
     position: relative;
     display: flex;
     align-items: flex-start;
-    gap: 1.25rem;
-    padding: 1.5rem;
-    background: linear-gradient(
-      135deg,
-      rgba(248, 250, 252, 0.9) 0%,
-      rgba(255, 255, 255, 0.6) 100%
-    );
-    border-radius: 1.25rem;
-    margin-bottom: 1rem;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(255, 255, 255, 0.6) 100%);
+    border-radius: 1rem;
+    margin-bottom: 0.75rem;
     border: 1px solid rgba(226, 232, 240, 0.6);
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .pillar-header:hover {
-    background: linear-gradient(
-      135deg,
-      rgba(248, 250, 252, 1) 0%,
-      rgba(255, 255, 255, 0.8) 100%
-    );
+    background: linear-gradient(135deg, rgba(248, 250, 252, 1) 0%, rgba(255, 255, 255, 0.8) 100%);
     border-color: rgba(226, 232, 240, 0.8);
     box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
   }
 
-  /* Pillar accent bar */
   .pillar-accent-bar {
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
-    width: 4px;
-    background: linear-gradient(
-      180deg,
-      var(--pillar-gradient-from) 0%,
-      var(--pillar-gradient-to) 100%
-    );
-    border-radius: 0 1.25rem 1.25rem 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--pillar-gradient-from) 0%, var(--pillar-gradient-to) 100%);
+    border-radius: 0 1rem 1rem 0;
   }
 
-  /* Icon container */
   .pillar-icon-container {
     position: relative;
     flex-shrink: 0;
@@ -582,10 +541,10 @@ const icons = {
 
   .pillar-icon-glow {
     position: absolute;
-    inset: -8px;
+    inset: -6px;
     background: var(--pillar-glow);
     border-radius: 50%;
-    filter: blur(12px);
+    filter: blur(10px);
     opacity: 0;
     transition: opacity 0.3s ease;
   }
@@ -599,14 +558,10 @@ const icons = {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 3.5rem;
-    height: 3.5rem;
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--pillar-color) 10%, white) 0%,
-      color-mix(in srgb, var(--pillar-color) 5%, white) 100%
-    );
-    border-radius: 1rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--pillar-color) 10%, white) 0%, color-mix(in srgb, var(--pillar-color) 5%, white) 100%);
+    border-radius: 0.75rem;
     border: 1px solid color-mix(in srgb, var(--pillar-color) 15%, transparent);
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
@@ -617,8 +572,8 @@ const icons = {
   }
 
   .pillar-icon {
-    width: 1.75rem;
-    height: 1.75rem;
+    width: 1.375rem;
+    height: 1.375rem;
     color: var(--pillar-color);
     transition: transform 0.3s ease;
   }
@@ -627,7 +582,6 @@ const icons = {
     transform: scale(1.1);
   }
 
-  /* Header content */
   .pillar-header-content {
     flex: 1;
     min-width: 0;
@@ -636,13 +590,13 @@ const icons = {
   .pillar-title-group {
     display: flex;
     align-items: baseline;
-    gap: 0.75rem;
-    margin-bottom: 0.375rem;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
   }
 
   .pillar-title {
     font-family: var(--font-heading, 'Noto Kufi Arabic', sans-serif);
-    font-size: 1.375rem;
+    font-size: 1.125rem;
     font-weight: 700;
     color: var(--pillar-color);
     letter-spacing: -0.01em;
@@ -650,7 +604,7 @@ const icons = {
   }
 
   .pillar-title-en {
-    font-size: 0.75rem;
+    font-size: 0.625rem;
     font-weight: 600;
     color: #94a3b8;
     text-transform: uppercase;
@@ -658,29 +612,29 @@ const icons = {
   }
 
   .pillar-description {
-    font-size: 0.9375rem;
+    font-size: 0.8125rem;
     color: #64748b;
-    line-height: 1.6;
+    line-height: 1.5;
     margin: 0;
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════════
-     CLUSTER LINKS - Premium Hover States
+     CLUSTER LINKS
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   .pillar-clusters {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.125rem;
     flex: 1;
   }
 
   .cluster-link {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 0.875rem 1.125rem;
-    border-radius: 0.875rem;
+    gap: 0.75rem;
+    padding: 0.625rem 0.875rem;
+    border-radius: 0.625rem;
     text-decoration: none;
     opacity: 0;
     transform: translateX(12px);
@@ -695,34 +649,21 @@ const icons = {
   }
 
   @keyframes clusterReveal {
-    from {
-      opacity: 0;
-      transform: translateX(12px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+    from { opacity: 0; transform: translateX(12px); }
+    to { opacity: 1; transform: translateX(0); }
   }
 
   .cluster-link:hover {
-    background: linear-gradient(
-      90deg,
-      color-mix(in srgb, var(--pillar-color) 6%, white) 0%,
-      color-mix(in srgb, var(--pillar-color) 3%, white) 100%
-    );
+    background: linear-gradient(90deg, color-mix(in srgb, var(--pillar-color) 6%, white) 0%, color-mix(in srgb, var(--pillar-color) 3%, white) 100%);
     transform: translateX(-4px);
   }
 
   .cluster-link:focus-visible {
     outline: none;
-    box-shadow:
-      0 0 0 2px white,
-      0 0 0 4px var(--pillar-color);
+    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--pillar-color);
     background: color-mix(in srgb, var(--pillar-color) 5%, white);
   }
 
-  /* Cluster indicator */
   .cluster-indicator-wrapper {
     position: relative;
     flex-shrink: 0;
@@ -730,13 +671,9 @@ const icons = {
 
   .cluster-indicator {
     display: block;
-    width: 8px;
-    height: 8px;
-    background: linear-gradient(
-      135deg,
-      var(--pillar-gradient-from) 0%,
-      var(--pillar-gradient-to) 100%
-    );
+    width: 6px;
+    height: 6px;
+    background: linear-gradient(135deg, var(--pillar-gradient-from) 0%, var(--pillar-gradient-to) 100%);
     border-radius: 50%;
     opacity: 0.5;
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -744,10 +681,10 @@ const icons = {
 
   .cluster-indicator-glow {
     position: absolute;
-    inset: -4px;
+    inset: -3px;
     background: var(--pillar-color);
     border-radius: 50%;
-    filter: blur(6px);
+    filter: blur(4px);
     opacity: 0;
     transition: opacity 0.25s ease;
   }
@@ -761,18 +698,17 @@ const icons = {
     opacity: 0.3;
   }
 
-  /* Cluster content */
   .cluster-content {
     flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.125rem;
+    gap: 0.0625rem;
   }
 
   .cluster-label {
     display: block;
-    font-size: 0.9375rem;
+    font-size: 0.8125rem;
     font-weight: 600;
     color: #1e293b;
     transition: color 0.2s ease;
@@ -784,7 +720,7 @@ const icons = {
 
   .cluster-desc {
     display: block;
-    font-size: 0.8125rem;
+    font-size: 0.6875rem;
     color: #94a3b8;
     line-height: 1.4;
   }
@@ -793,7 +729,6 @@ const icons = {
     color: #64748b;
   }
 
-  /* Cluster arrow */
   .cluster-arrow-wrapper {
     flex-shrink: 0;
     opacity: 0;
@@ -807,37 +742,37 @@ const icons = {
   }
 
   .cluster-arrow {
-    width: 1.125rem;
-    height: 1.125rem;
+    width: 0.875rem;
+    height: 0.875rem;
     color: var(--pillar-color);
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════════
-     FEATURED ARTICLES SECTION
+     FEATURED ARTICLES
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   .pillar-articles {
-    margin-top: 1.25rem;
-    padding-top: 1rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
     border-top: 1px solid rgba(226, 232, 240, 0.8);
   }
 
   .articles-header {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
+    gap: 0.375rem;
+    margin-bottom: 0.5rem;
     padding-right: 0.25rem;
   }
 
   .articles-icon {
-    width: 1rem;
-    height: 1rem;
-    color: #d5a035;
+    width: 0.875rem;
+    height: 0.875rem;
+    color: #0891B2;
   }
 
   .articles-heading {
-    font-size: 0.75rem;
+    font-size: 0.625rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -847,15 +782,15 @@ const icons = {
   .articles-list {
     display: flex;
     flex-direction: column;
-    gap: 0.375rem;
+    gap: 0.25rem;
   }
 
   .article-link {
     display: flex;
     align-items: flex-start;
-    gap: 0.75rem;
-    padding: 0.625rem 0.875rem;
-    border-radius: 0.625rem;
+    gap: 0.5rem;
+    padding: 0.5rem 0.625rem;
+    border-radius: 0.5rem;
     text-decoration: none;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
@@ -867,16 +802,16 @@ const icons = {
 
   .article-link:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px white, 0 0 0 4px #d5a035;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #0891B2;
     background: rgba(248, 250, 252, 0.8);
   }
 
   .article-bullet {
     flex-shrink: 0;
-    width: 5px;
-    height: 5px;
-    margin-top: 0.5rem;
-    background: #d5a035;
+    width: 4px;
+    height: 4px;
+    margin-top: 0.375rem;
+    background: #0891B2;
     border-radius: 50%;
     opacity: 0.6;
     transition: all 0.2s ease;
@@ -892,7 +827,7 @@ const icons = {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    font-size: 0.8125rem;
+    font-size: 0.6875rem;
     font-weight: 500;
     color: #475569;
     line-height: 1.5;
@@ -904,7 +839,7 @@ const icons = {
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════════
-     PREMIUM CTA BUTTON
+     CTA BUTTON
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   .pillar-cta {
@@ -912,30 +847,22 @@ const icons = {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.625rem;
-    padding: 1rem 1.5rem;
-    margin-top: 1rem;
-    border-radius: 0.875rem;
-    font-size: 0.9375rem;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    margin-top: 0.75rem;
+    border-radius: 0.625rem;
+    font-size: 0.8125rem;
     font-weight: 600;
     text-decoration: none;
     color: var(--pillar-color);
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--pillar-color) 8%, white) 0%,
-      color-mix(in srgb, var(--pillar-color) 4%, white) 100%
-    );
+    background: linear-gradient(135deg, color-mix(in srgb, var(--pillar-color) 8%, white) 0%, color-mix(in srgb, var(--pillar-color) 4%, white) 100%);
     border: 1px solid color-mix(in srgb, var(--pillar-color) 18%, transparent);
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .pillar-cta:hover {
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--pillar-color) 12%, white) 0%,
-      color-mix(in srgb, var(--pillar-color) 8%, white) 100%
-    );
+    background: linear-gradient(135deg, color-mix(in srgb, var(--pillar-color) 12%, white) 0%, color-mix(in srgb, var(--pillar-color) 8%, white) 100%);
     border-color: color-mix(in srgb, var(--pillar-color) 30%, transparent);
     transform: translateY(-2px);
     box-shadow: 0 8px 24px var(--pillar-glow);
@@ -943,10 +870,7 @@ const icons = {
 
   .pillar-cta:focus-visible {
     outline: none;
-    box-shadow:
-      0 0 0 2px white,
-      0 0 0 4px var(--pillar-color),
-      0 8px 24px var(--pillar-glow);
+    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--pillar-color), 0 8px 24px var(--pillar-glow);
   }
 
   .pillar-cta-text {
@@ -964,27 +888,21 @@ const icons = {
   }
 
   .pillar-cta-icon svg {
-    width: 1.125rem;
-    height: 1.125rem;
+    width: 0.875rem;
+    height: 0.875rem;
   }
 
   .pillar-cta:hover .pillar-cta-icon {
     transform: translateX(-4px);
   }
 
-  /* Gold shimmer effect */
   .pillar-cta-shimmer {
     position: absolute;
     top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(213, 160, 53, 0.1) 50%,
-      transparent 100%
-    );
+    background: linear-gradient(90deg, transparent 0%, rgba(8, 145, 178, 0.1) 50%, transparent 100%);
     transition: left 0.5s ease;
   }
 
@@ -993,12 +911,12 @@ const icons = {
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════════
-     PREMIUM FOOTER BAR
+     FOOTER BAR
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   .mega-menu-footer {
     border-top: 1px solid rgba(226, 232, 240, 0.7);
-    padding-top: 1.5rem;
+    padding-top: 1.25rem;
   }
 
   .footer-content {
@@ -1008,57 +926,50 @@ const icons = {
     gap: 2rem;
   }
 
-  /* Trust indicators */
   .footer-trust {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1.25rem;
   }
 
   .trust-badge {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.375rem;
   }
 
   .trust-icon {
-    width: 1.25rem;
-    height: 1.25rem;
-    color: #d5a035;
+    width: 1.125rem;
+    height: 1.125rem;
+    color: #0891B2;
     opacity: 0.9;
   }
 
   .trust-badge span {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     font-weight: 500;
     color: #64748b;
   }
 
   .trust-divider {
     width: 1px;
-    height: 1.25rem;
-    background: linear-gradient(
-      180deg,
-      transparent 0%,
-      #e2e8f0 50%,
-      transparent 100%
-    );
+    height: 1rem;
+    background: linear-gradient(180deg, transparent 0%, #e2e8f0 50%, transparent 100%);
   }
 
-  /* Footer links */
   .footer-links {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.375rem;
   }
 
   .footer-link {
     display: flex;
     align-items: center;
-    gap: 0.375rem;
-    padding: 0.5rem 0.75rem;
-    border-radius: 0.5rem;
-    font-size: 0.875rem;
+    gap: 0.25rem;
+    padding: 0.375rem 0.625rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
     font-weight: 500;
     color: #475569;
     text-decoration: none;
@@ -1072,24 +983,24 @@ const icons = {
 
   .footer-link:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px white, 0 0 0 4px #d5a035;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #0891B2;
   }
 
-  .footer-link-gold {
-    color: #d5a035;
-    background: rgba(213, 160, 53, 0.08);
-    border: 1px solid rgba(213, 160, 53, 0.15);
+  .footer-link-teal {
+    color: #0891B2;
+    background: rgba(8, 145, 178, 0.08);
+    border: 1px solid rgba(8, 145, 178, 0.15);
   }
 
-  .footer-link-gold:hover {
-    color: #b8892a;
-    background: rgba(213, 160, 53, 0.12);
-    border-color: rgba(213, 160, 53, 0.25);
+  .footer-link-teal:hover {
+    color: #0E7490;
+    background: rgba(8, 145, 178, 0.12);
+    border-color: rgba(8, 145, 178, 0.25);
   }
 
   .footer-link-icon {
-    width: 1rem;
-    height: 1rem;
+    width: 0.875rem;
+    height: 0.875rem;
     transition: transform 0.2s ease;
   }
 
@@ -1099,12 +1010,12 @@ const icons = {
 
   .footer-link-divider {
     width: 1px;
-    height: 1rem;
+    height: 0.875rem;
     background: #e2e8f0;
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════════
-     RESPONSIVE - Hide on mobile (handled by MobileMenu)
+     RESPONSIVE - Hide on mobile
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   @media (max-width: 1023px) {
@@ -1113,46 +1024,30 @@ const icons = {
     }
   }
 
-  /* Large screens - enhanced spacing */
+  /* Large screens */
   @media (min-width: 1280px) {
     .mega-menu-panel {
-      max-width: 1200px;
-    }
-
-    .mega-menu-content {
-      padding: 2.25rem 0 1.75rem;
+      max-width: 1320px;
     }
 
     .mega-menu-grid {
-      gap: 2.5rem;
-    }
-
-    .pillar-header {
-      padding: 1.5rem;
-    }
-
-    .cluster-link {
-      padding: 0.875rem 1.125rem;
-    }
-
-    .pillar-cta {
-      padding: 1rem 1.5rem;
+      gap: 2rem;
     }
   }
 
   /* Extra large screens */
   @media (min-width: 1536px) {
     .mega-menu-panel {
-      max-width: 1320px;
+      max-width: 1440px;
     }
 
     .mega-menu-grid {
-      gap: 3rem;
+      gap: 2.5rem;
     }
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════════
-     REDUCED MOTION - Accessibility
+     REDUCED MOTION
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   @media (prefers-reduced-motion: reduce) {
@@ -1193,38 +1088,10 @@ const icons = {
       display: none;
     }
   }
-
-  /* ═══════════════════════════════════════════════════════════════════════════════
-     HIGH CONTRAST MODE - Accessibility
-     ═══════════════════════════════════════════════════════════════════════════════ */
-
-  @media (prefers-contrast: high) {
-    .backdrop-glass {
-      background: white;
-      border: 2px solid #1e293b;
-      border-radius: 1.25rem;
-    }
-
-    .pillar-header {
-      border: 2px solid currentColor;
-    }
-
-    .cluster-link:focus-visible,
-    .article-link:focus-visible,
-    .pillar-cta:focus-visible,
-    .footer-link:focus-visible {
-      box-shadow: 0 0 0 3px #000;
-      outline: 3px solid #fff;
-    }
-
-    .pillar-accent-bar {
-      width: 6px;
-    }
-  }
 </style>
 
 <script>
-  // Premium MegaMenu - Keyboard Navigation & Interaction Enhancement
+  // MegaMenu Keyboard Navigation
   document.addEventListener('DOMContentLoaded', () => {
     const megaMenu = document.querySelector('[data-mega-menu-panel]') as HTMLElement;
     if (!megaMenu) return;
@@ -1232,7 +1099,7 @@ const icons = {
     const clusterLinks = megaMenu.querySelectorAll('[data-cluster-link]');
     const pillarColumns = megaMenu.querySelectorAll('[data-pillar-column]');
 
-    // Enhanced keyboard navigation within mega menu
+    // Keyboard navigation within mega menu
     clusterLinks.forEach((link) => {
       link.addEventListener('keydown', (e: Event) => {
         const keyEvent = e as KeyboardEvent;
@@ -1279,7 +1146,6 @@ const icons = {
       });
     });
 
-    // Helper function to navigate between columns
     function navigateToColumn(direction: number, currentColumn: Element | null, currentIndex: number) {
       if (!currentColumn) return;
 
@@ -1294,15 +1160,13 @@ const icons = {
       }
     }
 
-    // Preload hover states for smoother transitions
+    // GPU acceleration optimization
     pillarColumns.forEach((column) => {
       column.addEventListener('mouseenter', () => {
-        // Trigger GPU acceleration preparation
         (column as HTMLElement).style.willChange = 'transform';
       });
 
       column.addEventListener('mouseleave', () => {
-        // Clean up
         setTimeout(() => {
           (column as HTMLElement).style.willChange = '';
         }, 300);

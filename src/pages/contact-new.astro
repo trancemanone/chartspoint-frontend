@@ -1,0 +1,373 @@
+---
+/**
+ * Contact Page - اتصل بنا
+ *
+ * Enhanced contact page with form, WhatsApp link, and FAQ shortcuts.
+ */
+
+import StaticPageLayoutEnhanced from '@layouts/StaticPageLayoutEnhanced.astro';
+import ContactForm from '@components/static/ContactForm.astro';
+
+// Page metadata
+const title = 'اتصل بنا';
+const description = 'تواصل مع فريق تشارتس بوينت. نحن هنا للإجابة على استفساراتك ومساعدتك في رحلتك التعليمية.';
+const heroSubtitle = 'نرحب بأسئلتكم واقتراحاتكم. تواصلوا معنا وسنرد في أقرب وقت.';
+
+// Breadcrumbs
+const breadcrumbs = [
+  { label: 'الرئيسية', href: '/' },
+  { label: 'اتصل بنا', href: '/contact', current: true },
+];
+
+// FAQ shortcuts
+const faqShortcuts = [
+  { question: 'هل تقدمون نصائح استثمارية؟', answer: 'لا، نحن منصة تعليمية فقط ولا نقدم نصائح استثمارية شخصية.' },
+  { question: 'كيف أختار وسيط تداول مناسب؟', answer: 'راجع مقالاتنا التعليمية عن معايير اختيار الوسطاء.' },
+  { question: 'هل يمكنني اقتراح موضوع جديد؟', answer: 'نعم، نرحب باقتراحات المحتوى من خلال نموذج التواصل.' },
+];
+---
+
+<StaticPageLayoutEnhanced
+  title={title}
+  description={description}
+  heroSubtitle={heroSubtitle}
+  variant="contact"
+  breadcrumbs={breadcrumbs}
+  showReadingTime={false}
+  showLastUpdated={false}
+>
+  <div class="max-w-5xl mx-auto">
+    <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+
+      <!-- Contact Form Section -->
+      <div class="lg:col-span-7">
+        <div class="contact-card">
+          <h2 class="contact-card__title">أرسل لنا رسالة</h2>
+          <p class="contact-card__subtitle">
+            املأ النموذج أدناه وسنرد على استفسارك خلال 24-48 ساعة عمل.
+          </p>
+          <ContactForm action="/api/contact" />
+        </div>
+      </div>
+
+      <!-- Contact Info Sidebar -->
+      <aside class="lg:col-span-5 mt-8 lg:mt-0">
+        <div class="space-y-6">
+
+          <!-- WhatsApp Card -->
+          <div class="info-card info-card--whatsapp">
+            <div class="info-card__icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+            </div>
+            <div class="info-card__content">
+              <h3 class="info-card__title">واتساب</h3>
+              <p class="info-card__text">للردود السريعة، تواصل معنا عبر واتساب</p>
+              <a href="https://wa.me/966XXXXXXXXX" class="info-card__button" target="_blank" rel="noopener noreferrer">
+                ابدأ المحادثة
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                  <polyline points="15 3 21 3 21 9"/>
+                  <line x1="10" y1="14" x2="21" y2="3"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Response Time Card -->
+          <div class="info-card">
+            <div class="info-card__icon info-card__icon--time">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+            <div class="info-card__content">
+              <h3 class="info-card__title">وقت الاستجابة</h3>
+              <p class="info-card__text">نرد على جميع الرسائل خلال 24-48 ساعة عمل</p>
+              <ul class="info-card__list">
+                <li>أيام العمل: الأحد - الخميس</li>
+                <li>ساعات العمل: 9 صباحًا - 5 مساءً (توقيت السعودية)</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- FAQ Shortcuts -->
+          <div class="faq-shortcuts">
+            <h3 class="faq-shortcuts__title">أسئلة شائعة</h3>
+            <div class="faq-shortcuts__list">
+              {faqShortcuts.map((item) => (
+                <details class="faq-shortcut">
+                  <summary class="faq-shortcut__question">{item.question}</summary>
+                  <p class="faq-shortcut__answer">{item.answer}</p>
+                </details>
+              ))}
+            </div>
+            <a href="/faq" class="faq-shortcuts__link">
+              عرض جميع الأسئلة الشائعة
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14"/>
+                <path d="m12 5 7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+
+        </div>
+      </aside>
+
+    </div>
+  </div>
+</StaticPageLayoutEnhanced>
+
+<style>
+  /* Contact Card */
+  .contact-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow:
+      0 2px 8px rgba(15, 23, 42, 0.04),
+      0 4px 16px rgba(15, 23, 42, 0.04);
+  }
+
+  @media (min-width: 768px) {
+    .contact-card {
+      padding: 2.5rem;
+    }
+  }
+
+  .contact-card__title {
+    position: relative;
+    margin: 0 0 0.5rem;
+    padding-bottom: 1rem;
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #102A43;
+  }
+
+  .contact-card__title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 4px;
+    width: 100%;
+    max-width: 120px;
+    background: linear-gradient(
+      to left,
+      #d5a035 0%,
+      #d5a035 100%
+    );
+    border-radius: 2px;
+  }
+
+  .contact-card__subtitle {
+    margin: 0 0 2rem;
+    font-size: 1rem;
+    color: #64748B;
+  }
+
+  /* Info Card */
+  .info-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: all 0.2s ease;
+  }
+
+  .info-card:hover {
+    border-color: rgba(213, 160, 53, 0.3);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  }
+
+  .info-card--whatsapp {
+    background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+    border-color: #BBF7D0;
+  }
+
+  .info-card--whatsapp:hover {
+    border-color: #86EFAC;
+  }
+
+  .info-card__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    margin-bottom: 1rem;
+    background: #F8FAFC;
+    border-radius: 0.75rem;
+    color: #d5a035;
+  }
+
+  .info-card--whatsapp .info-card__icon {
+    background: #FFFFFF;
+    color: #25D366;
+  }
+
+  .info-card__icon--time {
+    color: #3B82F6;
+  }
+
+  .info-card__title {
+    margin: 0 0 0.375rem;
+    font-family: var(--font-heading);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #102A43;
+  }
+
+  .info-card__text {
+    margin: 0 0 1rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #64748B;
+  }
+
+  .info-card__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: #64748B;
+  }
+
+  .info-card__list li {
+    margin-bottom: 0.25rem;
+  }
+
+  .info-card__button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    font-family: var(--font-heading);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #FFFFFF;
+    background: #25D366;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .info-card__button:hover {
+    background: #22C55E;
+    transform: translateY(-1px);
+  }
+
+  /* FAQ Shortcuts */
+  .faq-shortcuts {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 1rem;
+    padding: 1.5rem;
+  }
+
+  .faq-shortcuts__title {
+    margin: 0 0 1rem;
+    font-family: var(--font-heading);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #102A43;
+  }
+
+  .faq-shortcuts__list {
+    margin-bottom: 1.25rem;
+  }
+
+  .faq-shortcut {
+    border-bottom: 1px solid #F1F5F9;
+  }
+
+  .faq-shortcut:last-child {
+    border-bottom: none;
+  }
+
+  .faq-shortcut__question {
+    display: block;
+    padding: 0.875rem 0;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #102A43;
+    cursor: pointer;
+    list-style: none;
+    transition: color 0.2s ease;
+  }
+
+  .faq-shortcut__question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-shortcut__question::before {
+    content: '+';
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    margin-left: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #d5a035;
+    background: rgba(213, 160, 53, 0.1);
+    border-radius: 50%;
+    transition: all 0.2s ease;
+  }
+
+  .faq-shortcut[open] .faq-shortcut__question::before {
+    content: '-';
+    background: #d5a035;
+    color: #FFFFFF;
+  }
+
+  .faq-shortcut__question:hover {
+    color: #d5a035;
+  }
+
+  .faq-shortcut__answer {
+    margin: 0;
+    padding: 0 0 1rem 1.75rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: #64748B;
+  }
+
+  .faq-shortcuts__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #d5a035;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .faq-shortcuts__link:hover {
+    color: #b8892a;
+  }
+
+  .faq-shortcuts__link svg {
+    transform: rotate(180deg); /* RTL */
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .info-card,
+    .info-card__button,
+    .faq-shortcut__question,
+    .faq-shortcut__question::before,
+    .faq-shortcuts__link {
+      transition: none;
+    }
+
+    .info-card__button:hover {
+      transform: none;
+    }
+  }
+</style>

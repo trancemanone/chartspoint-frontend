@@ -1,0 +1,594 @@
+---
+/**
+ * StaticPageLayoutEnhanced.astro
+ *
+ * Advanced layout system for static pages with multiple layout variants.
+ * Designed for institutional fintech with premium Arabic-first aesthetics.
+ *
+ * Layout Variants:
+ * - default: Simple centered content (Privacy, Terms, Cookies)
+ * - with-toc: Left sidebar table of contents (Legal pages)
+ * - about: Hero + trust icons + sections grid (About page)
+ * - contact: Contact form + info cards (Contact page)
+ * - faq: Category tabs + search + accordion (FAQ page)
+ * - disclosure: Warning-styled prominent boxes (Risk, Monetization)
+ *
+ * Features:
+ * - RTL Arabic support optimized for ages 40-70
+ * - Breadcrumb navigation
+ * - Reading time estimate
+ * - Print-friendly styles
+ * - Schema.org structured data
+ * - Mobile-first responsive design
+ */
+
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '@components/navigation/Breadcrumbs.astro';
+
+export interface Props {
+  title: string;
+  content?: string;
+  description?: string;
+  lastModified?: string;
+  noIndex?: boolean;
+  /** Layout variant */
+  variant?: 'default' | 'with-toc' | 'about' | 'contact' | 'faq' | 'disclosure';
+  /** Show reading time estimate */
+  showReadingTime?: boolean;
+  /** Show last updated badge */
+  showLastUpdated?: boolean;
+  /** Show breadcrumbs */
+  showBreadcrumbs?: boolean;
+  /** Custom breadcrumb items */
+  breadcrumbs?: Array<{ label: string; href: string; current?: boolean }>;
+  /** Table of contents items for with-toc variant */
+  tocItems?: Array<{ id: string; label: string; level?: number }>;
+  /** Hero subtitle for about variant */
+  heroSubtitle?: string;
+  /** Warning level for disclosure variant: 'info' | 'warning' | 'critical' */
+  warningLevel?: 'info' | 'warning' | 'critical';
+}
+
+const {
+  title,
+  content = '',
+  description,
+  lastModified,
+  noIndex = false,
+  variant = 'default',
+  showReadingTime = true,
+  showLastUpdated = true,
+  showBreadcrumbs = true,
+  breadcrumbs,
+  tocItems = [],
+  heroSubtitle,
+  warningLevel = 'info',
+} = Astro.props;
+
+// Calculate reading time (Arabic: ~180 words per minute for legal content)
+const wordCount = content.replace(/<[^>]*>/g, '').split(/\s+/).filter(Boolean).length;
+const readingTime = Math.max(1, Math.ceil(wordCount / 180));
+
+// Format the last modified date for display
+const formattedDate = lastModified
+  ? new Date(lastModified).toLocaleDateString('ar-SA', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  : null;
+
+// Default breadcrumbs
+const defaultBreadcrumbs = breadcrumbs || [
+  { label: 'الرئيسية', href: '/' },
+  { label: title, href: '#', current: true },
+];
+
+// Generate page schema
+const pageSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": title,
+  "description": description || `${title} - تشارتس بوينت`,
+  "url": Astro.url.href,
+  "inLanguage": "ar",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "تشارتس بوينت",
+    "url": "https://chartspoint.com"
+  },
+  ...(lastModified && { "dateModified": lastModified })
+});
+
+// Determine hero gradient based on variant
+const heroGradients = {
+  default: 'from-navy-900 via-navy-800 to-navy-900',
+  'with-toc': 'from-navy-900 via-navy-800 to-navy-900',
+  about: 'from-navy-950 via-navy-900 to-navy-800',
+  contact: 'from-navy-900 via-navy-800 to-navy-900',
+  faq: 'from-navy-900 via-navy-800 to-navy-900',
+  disclosure: warningLevel === 'critical'
+    ? 'from-red-900 via-red-800 to-navy-900'
+    : warningLevel === 'warning'
+    ? 'from-amber-900 via-navy-900 to-navy-900'
+    : 'from-navy-900 via-navy-800 to-navy-900',
+};
+
+// Warning level colors
+const warningColors = {
+  info: { bg: 'bg-blue-50', border: 'border-blue-200', icon: 'text-blue-600' },
+  warning: { bg: 'bg-amber-50', border: 'border-amber-200', icon: 'text-amber-600' },
+  critical: { bg: 'bg-red-50', border: 'border-red-200', icon: 'text-red-600' },
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description || `${title} - تشارتس بوينت`}
+  schema={pageSchema}
+  noIndex={noIndex}
+>
+  <!-- Page Hero Section -->
+  <section class:list={[
+    'static-page-hero relative overflow-hidden pt-16 pb-20 lg:pt-20 lg:pb-24',
+    `bg-gradient-to-bl ${heroGradients[variant]}`
+  ]}>
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute inset-0 hero-pattern"></div>
+    </div>
+
+    <!-- Gold Accent Line -->
+    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gold-500 to-transparent"></div>
+
+    <div class="container mx-auto px-4 relative">
+      {showBreadcrumbs && (
+        <div class="max-w-4xl mx-auto mb-6">
+          <Breadcrumbs items={defaultBreadcrumbs} variant="light" />
+        </div>
+      )}
+
+      <div class="max-w-3xl mx-auto text-center">
+        <!-- Page Title -->
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-4 leading-tight font-heading">
+          {title}
+        </h1>
+
+        {heroSubtitle && (
+          <p class="text-lg md:text-xl text-white/80 mb-6 leading-relaxed max-w-2xl mx-auto">
+            {heroSubtitle}
+          </p>
+        )}
+
+        <!-- Meta Info Bar -->
+        <div class="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm text-white/60">
+          {showLastUpdated && formattedDate && (
+            <span class="flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              <span>آخر تحديث: {formattedDate}</span>
+            </span>
+          )}
+
+          {showReadingTime && (
+            <span class="flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span>وقت القراءة: {readingTime} دقيقة</span>
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Wave -->
+    <div class="absolute bottom-0 left-0 right-0">
+      <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto">
+        <path d="M0 30L48 27.9C96 25.8 192 21.5 288 23.4C384 25.3 480 33.3 576 35.9C672 38.5 768 35.7 864 32C960 28.3 1056 23.7 1152 25.4C1248 27 1344 34.9 1392 38.8L1440 42.8V60H1392C1344 60 1248 60 1152 60C1056 60 960 60 864 60C768 60 672 60 576 60C480 60 384 60 288 60C192 60 96 60 48 60H0V30Z" fill="#F8F9FA"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Main Content Area -->
+  <section class="static-page-content py-12 lg:py-16 bg-[#f8f9fa]">
+    <div class="container mx-auto px-4">
+
+      {/* Default Layout - Simple Centered Content */}
+      {variant === 'default' && (
+        <article class="max-w-3xl mx-auto bg-white rounded-2xl shadow-card border border-slate-100 p-8 md:p-12">
+          <div class="prose prose-lg prose-static max-w-none" set:html={content} />
+        </article>
+      )}
+
+      {/* With TOC Layout - Sidebar Table of Contents */}
+      {variant === 'with-toc' && (
+        <div class="max-w-6xl mx-auto">
+          <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+            <!-- Sticky TOC Sidebar -->
+            <aside class="hidden lg:block lg:col-span-3">
+              <nav class="sticky top-24 bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
+                <h2 class="text-sm font-bold text-navy-800 mb-4 pb-3 border-b border-slate-100">
+                  جدول المحتويات
+                </h2>
+                <ul class="space-y-2 text-sm" id="toc-list">
+                  {tocItems.map((item) => (
+                    <li class:list={[
+                      'toc-item',
+                      item.level === 3 ? 'pr-4' : ''
+                    ]}>
+                      <a
+                        href={`#${item.id}`}
+                        class="block py-2 px-3 rounded-lg text-slate-600 hover:text-navy-800 hover:bg-slate-50 transition-colors"
+                        data-toc-link={item.id}
+                      >
+                        {item.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </aside>
+
+            <!-- Main Content -->
+            <article class="lg:col-span-9 bg-white rounded-2xl shadow-card border border-slate-100 p-8 md:p-12">
+              <div class="prose prose-lg prose-static max-w-none" set:html={content} />
+            </article>
+          </div>
+        </div>
+      )}
+
+      {/* Disclosure Layout - Warning-Styled Content */}
+      {variant === 'disclosure' && (
+        <div class="max-w-3xl mx-auto">
+          <!-- Prominent Warning Banner -->
+          <div class:list={[
+            'mb-8 p-6 rounded-xl border-2',
+            warningColors[warningLevel].bg,
+            warningColors[warningLevel].border
+          ]}>
+            <div class="flex gap-4">
+              <div class:list={['flex-shrink-0', warningColors[warningLevel].icon]}>
+                {warningLevel === 'critical' ? (
+                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                  </svg>
+                ) : warningLevel === 'warning' ? (
+                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                ) : (
+                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                )}
+              </div>
+              <div>
+                <h2 class="text-lg font-bold text-navy-900 mb-2">تنبيه مهم</h2>
+                <p class="text-navy-700 leading-relaxed">
+                  المحتوى التعليمي المقدم في هذا الموقع لأغراض تعليمية فقط ولا يُعد نصيحة مالية أو استثمارية. التداول والاستثمار ينطويان على مخاطر قد تؤدي لخسارة رأس المال.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Content Card -->
+          <article class="bg-white rounded-2xl shadow-card border border-slate-100 p-8 md:p-12">
+            <div class="prose prose-lg prose-static max-w-none" set:html={content} />
+          </article>
+        </div>
+      )}
+
+      {/* Slot for custom content (About, Contact, FAQ) */}
+      {(variant === 'about' || variant === 'contact' || variant === 'faq') && (
+        <slot />
+      )}
+
+      <!-- Back to Home Link -->
+      <div class="max-w-3xl mx-auto mt-8 text-center">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 text-navy-700 hover:text-gold-600 transition-colors font-medium touch-target"
+        >
+          <svg class="w-5 h-5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          <span>العودة للرئيسية</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════════
+     HERO PATTERN
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .hero-pattern {
+    background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.4"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     PROSE STYLING FOR STATIC PAGES
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .prose-static {
+    --tw-prose-body: #334155;
+    --tw-prose-headings: #102A43;
+    --tw-prose-links: #d5a035;
+    --tw-prose-bold: #1E293B;
+  }
+
+  /* H2 with custom underline system */
+  .prose-static :global(h2) {
+    position: relative;
+    margin-top: 2.5rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.875rem;
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #102A43;
+    scroll-margin-top: 6rem;
+  }
+
+  @media (min-width: 768px) {
+    .prose-static :global(h2) {
+      font-size: 1.75rem;
+    }
+  }
+
+  .prose-static :global(h2)::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(
+      to left,
+      #d5a035 0%,
+      #d5a035 20%,
+      #E2E8F0 20%,
+      transparent 100%
+    );
+    border-radius: 2px;
+  }
+
+  /* H3 with vertical indicator */
+  .prose-static :global(h3) {
+    position: relative;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    padding-right: 1rem;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a3a5c;
+    scroll-margin-top: 6rem;
+  }
+
+  @media (min-width: 768px) {
+    .prose-static :global(h3) {
+      font-size: 1.375rem;
+    }
+  }
+
+  .prose-static :global(h3)::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0.25em;
+    bottom: 0.25em;
+    width: 4px;
+    background: linear-gradient(to bottom, #d5a035, #b8892a);
+    border-radius: 2px;
+  }
+
+  /* Paragraphs optimized for Arabic readability */
+  .prose-static :global(p) {
+    line-height: 1.9;
+    margin-bottom: 1.25rem;
+    font-size: 1.125rem;
+  }
+
+  @media (min-width: 768px) {
+    .prose-static :global(p) {
+      font-size: 1.1875rem;
+    }
+  }
+
+  /* Lists */
+  .prose-static :global(ul),
+  .prose-static :global(ol) {
+    margin-bottom: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .prose-static :global(li) {
+    margin-bottom: 0.625rem;
+    line-height: 1.8;
+    font-size: 1.125rem;
+  }
+
+  /* Links */
+  .prose-static :global(a) {
+    color: #d5a035;
+    text-decoration: underline;
+    text-underline-offset: 6px;
+    text-decoration-thickness: 1px;
+    transition: color 0.2s ease;
+  }
+
+  .prose-static :global(a:hover) {
+    color: #b8892a;
+  }
+
+  /* Strong text */
+  .prose-static :global(strong) {
+    font-weight: 600;
+    color: #102A43;
+  }
+
+  /* Blockquotes styled as callout boxes */
+  .prose-static :global(blockquote) {
+    position: relative;
+    margin: 2rem 0;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+    border: 1px solid #E2E8F0;
+    border-right: 4px solid #d5a035;
+    border-radius: 0.75rem;
+    font-style: normal;
+  }
+
+  .prose-static :global(blockquote p) {
+    margin: 0;
+    color: #334155;
+  }
+
+  /* Code blocks */
+  .prose-static :global(code) {
+    background-color: #F1F5F9;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.9375em;
+    direction: ltr;
+  }
+
+  /* Tables */
+  .prose-static :global(table) {
+    width: 100%;
+    margin: 2rem 0;
+    border-collapse: collapse;
+    font-size: 1rem;
+  }
+
+  .prose-static :global(th),
+  .prose-static :global(td) {
+    padding: 1rem;
+    text-align: right;
+    border-bottom: 1px solid #E2E8F0;
+  }
+
+  .prose-static :global(th) {
+    font-weight: 600;
+    background-color: #F8FAFC;
+    color: #102A43;
+  }
+
+  .prose-static :global(tr:hover td) {
+    background-color: #FAFBFC;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     TOC SIDEBAR STYLES
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .toc-item a.is-active {
+    background-color: rgba(213, 160, 53, 0.1);
+    color: #d5a035;
+    font-weight: 600;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     PRINT STYLES
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media print {
+    .static-page-hero {
+      background: #102941 !important;
+      padding: 2rem 0 !important;
+    }
+
+    .static-page-hero svg {
+      display: none;
+    }
+
+    .static-page-content {
+      background: white !important;
+      padding: 0 !important;
+    }
+
+    .prose-static :global(a) {
+      color: #102A43 !important;
+      text-decoration: none !important;
+    }
+
+    .prose-static :global(a)::after {
+      content: ' (' attr(href) ')';
+      font-size: 0.875em;
+      color: #64748B;
+    }
+
+    aside {
+      display: none !important;
+    }
+
+    article {
+      box-shadow: none !important;
+      border: none !important;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     REDUCED MOTION
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .prose-static :global(a),
+    .toc-item a {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  /**
+   * TOC Scroll Spy for with-toc variant
+   * Highlights the current section in the table of contents
+   */
+  function initTocScrollSpy() {
+    const tocLinks = document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]');
+    if (tocLinks.length === 0) return;
+
+    const headings = Array.from(tocLinks).map(link => {
+      const id = link.dataset.tocLink;
+      return id ? document.getElementById(id) : null;
+    }).filter(Boolean) as HTMLElement[];
+
+    function updateActiveLink() {
+      const scrollPosition = window.scrollY + 150;
+
+      let activeIndex = 0;
+      headings.forEach((heading, index) => {
+        if (heading.offsetTop <= scrollPosition) {
+          activeIndex = index;
+        }
+      });
+
+      tocLinks.forEach((link, index) => {
+        if (index === activeIndex) {
+          link.classList.add('is-active');
+        } else {
+          link.classList.remove('is-active');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', updateActiveLink, { passive: true });
+    updateActiveLink();
+  }
+
+  // Initialize on load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTocScrollSpy);
+  } else {
+    initTocScrollSpy();
+  }
+
+  // Re-initialize on Astro page transitions
+  document.addEventListener('astro:page-load', initTocScrollSpy);
+</script>

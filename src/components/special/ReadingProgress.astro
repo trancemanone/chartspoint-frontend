@@ -1,0 +1,188 @@
+---
+/**
+ * ReadingProgress.astro
+ * Article reading progress indicator for CHARTSPOINT fintech platform
+ *
+ * Features:
+ * - Thin progress bar at top of viewport
+ * - Shows reading progress through article
+ * - Smooth animation
+ * - Respects reduced motion preferences
+ * - Accessible (decorative, no ARIA needed)
+ * - Gold brand color
+ * - Optimized performance with passive scroll listener
+ */
+
+export interface Props {
+  /** Selector for the content to track (defaults to article) */
+  contentSelector?: string;
+  /** Height of the progress bar in pixels */
+  height?: number;
+  /** Color of the progress bar */
+  color?: string;
+  /** Background/track color */
+  trackColor?: string;
+  /** Offset from top (to account for fixed header) */
+  topOffset?: number;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  contentSelector = 'article',
+  height = 3,
+  color = '#d5a035',
+  trackColor = '#E2E8F0',
+  topOffset = 80, // Header height
+  class: className = '',
+} = Astro.props;
+---
+
+<div
+  class={`reading-progress ${className}`}
+  style={`top: ${topOffset}px; height: ${height}px; background-color: ${trackColor};`}
+  data-reading-progress
+  data-content-selector={contentSelector}
+  aria-hidden="true"
+>
+  <div
+    class="reading-progress__bar"
+    style={`height: ${height}px; background-color: ${color};`}
+    data-reading-progress-bar
+  ></div>
+</div>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════════
+     READING PROGRESS CONTAINER
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .reading-progress {
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: calc(var(--z-header, 300) - 1);
+    overflow: hidden;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     PROGRESS BAR
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .reading-progress__bar {
+    width: 0%;
+    transition: width 0.1s ease-out;
+    will-change: width;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     REDUCED MOTION
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .reading-progress__bar {
+      transition: none;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     PRINT STYLES
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media print {
+    .reading-progress {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  /**
+   * Reading Progress Controller
+   * Calculates and updates the progress bar based on scroll position
+   */
+
+  class ReadingProgressController {
+    private container: HTMLElement;
+    private progressBar: HTMLElement;
+    private contentSelector: string;
+    private content: HTMLElement | null = null;
+    private ticking: boolean = false;
+
+    constructor(container: HTMLElement) {
+      this.container = container;
+      this.progressBar = container.querySelector('[data-reading-progress-bar]') as HTMLElement;
+      this.contentSelector = container.dataset.contentSelector || 'article';
+
+      this.init();
+    }
+
+    private init(): void {
+      // Find content element
+      this.content = document.querySelector(this.contentSelector);
+
+      if (!this.content || !this.progressBar) {
+        // Hide if no content found
+        this.container.style.display = 'none';
+        return;
+      }
+
+      // Bind scroll handler with passive option for performance
+      window.addEventListener('scroll', () => this.onScroll(), { passive: true });
+
+      // Initial update
+      this.updateProgress();
+    }
+
+    private onScroll(): void {
+      if (!this.ticking) {
+        requestAnimationFrame(() => {
+          this.updateProgress();
+          this.ticking = false;
+        });
+        this.ticking = true;
+      }
+    }
+
+    private updateProgress(): void {
+      if (!this.content) return;
+
+      const contentRect = this.content.getBoundingClientRect();
+      const contentTop = contentRect.top + window.scrollY;
+      const contentHeight = this.content.offsetHeight;
+      const windowHeight = window.innerHeight;
+      const scrollY = window.scrollY;
+
+      // Calculate progress
+      // Start: when content top enters viewport
+      // End: when content bottom exits viewport
+      const startPosition = contentTop - windowHeight;
+      const endPosition = contentTop + contentHeight;
+      const totalDistance = endPosition - startPosition;
+      const currentProgress = scrollY - startPosition;
+
+      let progress = (currentProgress / totalDistance) * 100;
+      progress = Math.min(Math.max(progress, 0), 100);
+
+      this.progressBar.style.width = `${progress}%`;
+    }
+  }
+
+  // Initialize
+  function initReadingProgress(): void {
+    const containers = document.querySelectorAll<HTMLElement>('[data-reading-progress]');
+    containers.forEach((container) => {
+      new ReadingProgressController(container);
+    });
+  }
+
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initReadingProgress);
+  } else {
+    initReadingProgress();
+  }
+
+  // Re-initialize on Astro page transitions
+  document.addEventListener('astro:page-load', initReadingProgress);
+</script>

@@ -1,0 +1,453 @@
+---
+/**
+ * Toast.astro
+ * Premium toast notification component for CHARTSPOINT fintech platform
+ *
+ * Features:
+ * - Multiple variants: success, error, warning, info
+ * - Auto-dismiss with configurable duration
+ * - Manual dismiss button
+ * - Stacking support for multiple toasts
+ * - Accessible with ARIA live regions
+ * - Smooth slide-in animation (RTL aware)
+ * - Optimized for users aged 40-70
+ *
+ * Usage:
+ * This component is designed to be used with a toast controller.
+ * Import the ToastController script and use toast.show() methods.
+ */
+
+export interface Props {
+  /** Position of toast container */
+  position?: 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right';
+  /** Maximum number of visible toasts */
+  maxToasts?: number;
+  /** Default auto-dismiss duration in ms (0 = no auto-dismiss) */
+  defaultDuration?: number;
+}
+
+const {
+  position = 'bottom-left', // RTL: appears on left side
+  maxToasts = 5,
+  defaultDuration = 5000,
+} = Astro.props;
+
+// Position classes mapping
+const positionClasses: Record<string, string> = {
+  'bottom-left': 'bottom-6 left-6',
+  'bottom-right': 'bottom-6 right-6',
+  'top-left': 'top-24 left-6', // Account for header
+  'top-right': 'top-24 right-6',
+};
+---
+
+<!-- Toast Container -->
+<div
+  class={`toast-container fixed z-toast flex flex-col gap-3 max-w-sm w-full ${positionClasses[position]}`}
+  data-toast-container
+  data-position={position}
+  data-max-toasts={maxToasts}
+  data-default-duration={defaultDuration}
+  role="region"
+  aria-label="الإشعارات"
+>
+  <!-- Toasts will be injected here by JavaScript -->
+</div>
+
+<!-- Toast Templates (hidden, cloned by JS) -->
+<template data-toast-template="success">
+  <div class="toast toast--success" role="alert" aria-live="polite">
+    <svg class="toast__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+      <polyline points="22 4 12 14.01 9 11.01"/>
+    </svg>
+    <div class="toast__content">
+      <p class="toast__title"></p>
+      <p class="toast__message"></p>
+    </div>
+    <button class="toast__dismiss" aria-label="إغلاق" data-toast-dismiss>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+</template>
+
+<template data-toast-template="error">
+  <div class="toast toast--error" role="alert" aria-live="assertive">
+    <svg class="toast__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="15" y1="9" x2="9" y2="15"/>
+      <line x1="9" y1="9" x2="15" y2="15"/>
+    </svg>
+    <div class="toast__content">
+      <p class="toast__title"></p>
+      <p class="toast__message"></p>
+    </div>
+    <button class="toast__dismiss" aria-label="إغلاق" data-toast-dismiss>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+</template>
+
+<template data-toast-template="warning">
+  <div class="toast toast--warning" role="alert" aria-live="polite">
+    <svg class="toast__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+    <div class="toast__content">
+      <p class="toast__title"></p>
+      <p class="toast__message"></p>
+    </div>
+    <button class="toast__dismiss" aria-label="إغلاق" data-toast-dismiss>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+</template>
+
+<template data-toast-template="info">
+  <div class="toast toast--info" role="alert" aria-live="polite">
+    <svg class="toast__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="16" x2="12" y2="12"/>
+      <line x1="12" y1="8" x2="12.01" y2="8"/>
+    </svg>
+    <div class="toast__content">
+      <p class="toast__title"></p>
+      <p class="toast__message"></p>
+    </div>
+    <button class="toast__dismiss" aria-label="إغلاق" data-toast-dismiss>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+</template>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════════
+     TOAST CONTAINER
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .toast-container {
+    pointer-events: none;
+  }
+
+  .toast-container > * {
+    pointer-events: auto;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     TOAST BASE
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .toast {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background-color: #FFFFFF;
+    border-radius: 0.75rem;
+    border-right-width: 4px;
+    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.15);
+
+    /* Animation initial state */
+    opacity: 0;
+    transform: translateX(-100%);
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  /* Animation: visible state */
+  .toast.is-visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Animation: exit state */
+  .toast.is-exiting {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+
+  /* Right-side positioned toasts slide from right */
+  [data-position="bottom-right"] .toast,
+  [data-position="top-right"] .toast {
+    transform: translateX(100%);
+    border-right-width: 0;
+    border-left-width: 4px;
+  }
+
+  [data-position="bottom-right"] .toast.is-visible,
+  [data-position="top-right"] .toast.is-visible {
+    transform: translateX(0);
+  }
+
+  [data-position="bottom-right"] .toast.is-exiting,
+  [data-position="top-right"] .toast.is-exiting {
+    transform: translateX(100%);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     TOAST VARIANTS
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  /* Success */
+  .toast--success {
+    background-color: #ECFDF5;
+    border-color: #10B981;
+  }
+
+  .toast--success .toast__icon {
+    color: #059669;
+  }
+
+  /* Error */
+  .toast--error {
+    background-color: #FEF2F2;
+    border-color: #B91C1C;
+  }
+
+  .toast--error .toast__icon {
+    color: #B91C1C;
+  }
+
+  /* Warning */
+  .toast--warning {
+    background-color: #FFFBEB;
+    border-color: #D97706;
+  }
+
+  .toast--warning .toast__icon {
+    color: #D97706;
+  }
+
+  /* Info */
+  .toast--info {
+    background-color: #EFF6FF;
+    border-color: #3B82F6;
+  }
+
+  .toast--info .toast__icon {
+    color: #2563EB;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     TOAST ELEMENTS
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .toast__icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+  }
+
+  .toast__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .toast__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #0F172A;
+    margin: 0 0 0.25rem;
+    line-height: 1.4;
+  }
+
+  .toast__title:empty {
+    display: none;
+  }
+
+  .toast__message {
+    font-size: 1rem;
+    color: #475569;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .toast__message:empty {
+    display: none;
+  }
+
+  .toast__dismiss {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94A3B8;
+    background-color: transparent;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition:
+      color 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .toast__dismiss:hover {
+    color: #475569;
+    background-color: rgba(15, 23, 42, 0.05);
+  }
+
+  .toast__dismiss:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(213, 160, 53, 0.4);
+  }
+
+  .toast__dismiss svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     REDUCED MOTION
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .toast {
+      transition: none;
+      transform: none;
+    }
+
+    .toast.is-exiting {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  /**
+   * ToastController
+   * Manages toast notifications
+   */
+
+  interface ToastOptions {
+    title?: string;
+    message?: string;
+    duration?: number;
+    type?: 'success' | 'error' | 'warning' | 'info';
+  }
+
+  class ToastController {
+    private container: HTMLElement;
+    private maxToasts: number;
+    private defaultDuration: number;
+    private toasts: HTMLElement[] = [];
+
+    constructor() {
+      this.container = document.querySelector('[data-toast-container]') as HTMLElement;
+      this.maxToasts = parseInt(this.container?.dataset.maxToasts || '5', 10);
+      this.defaultDuration = parseInt(this.container?.dataset.defaultDuration || '5000', 10);
+
+      if (!this.container) {
+        console.warn('Toast container not found');
+      }
+    }
+
+    show(options: ToastOptions): void {
+      if (!this.container) return;
+
+      const { type = 'info', title, message, duration = this.defaultDuration } = options;
+
+      // Get template
+      const template = document.querySelector(`[data-toast-template="${type}"]`) as HTMLTemplateElement;
+      if (!template) return;
+
+      // Clone template
+      const toast = template.content.firstElementChild?.cloneNode(true) as HTMLElement;
+      if (!toast) return;
+
+      // Set content
+      const titleEl = toast.querySelector('.toast__title');
+      const messageEl = toast.querySelector('.toast__message');
+
+      if (titleEl && title) {
+        titleEl.textContent = title;
+      }
+
+      if (messageEl && message) {
+        messageEl.textContent = message;
+      }
+
+      // Add dismiss handler
+      const dismissBtn = toast.querySelector('[data-toast-dismiss]');
+      dismissBtn?.addEventListener('click', () => this.dismiss(toast));
+
+      // Add to container
+      this.container.appendChild(toast);
+      this.toasts.push(toast);
+
+      // Trigger animation
+      requestAnimationFrame(() => {
+        toast.classList.add('is-visible');
+      });
+
+      // Remove excess toasts
+      while (this.toasts.length > this.maxToasts) {
+        const oldToast = this.toasts.shift();
+        if (oldToast) this.dismiss(oldToast);
+      }
+
+      // Auto-dismiss
+      if (duration > 0) {
+        setTimeout(() => this.dismiss(toast), duration);
+      }
+    }
+
+    dismiss(toast: HTMLElement): void {
+      if (!toast.parentElement) return;
+
+      toast.classList.remove('is-visible');
+      toast.classList.add('is-exiting');
+
+      // Remove after animation
+      setTimeout(() => {
+        toast.remove();
+        const index = this.toasts.indexOf(toast);
+        if (index > -1) {
+          this.toasts.splice(index, 1);
+        }
+      }, 300);
+    }
+
+    success(message: string, title?: string): void {
+      this.show({ type: 'success', message, title: title || 'تم بنجاح' });
+    }
+
+    error(message: string, title?: string): void {
+      this.show({ type: 'error', message, title: title || 'حدث خطأ' });
+    }
+
+    warning(message: string, title?: string): void {
+      this.show({ type: 'warning', message, title: title || 'تحذير' });
+    }
+
+    info(message: string, title?: string): void {
+      this.show({ type: 'info', message, title: title || 'معلومة' });
+    }
+  }
+
+  // Initialize and expose globally
+  const toast = new ToastController();
+  (window as any).toast = toast;
+
+  // Re-initialize on Astro page transitions
+  document.addEventListener('astro:page-load', () => {
+    (window as any).toast = new ToastController();
+  });
+</script>

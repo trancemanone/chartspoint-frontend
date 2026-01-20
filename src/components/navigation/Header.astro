@@ -1,61 +1,75 @@
 ---
 /**
- * Header Component - Premium Fintech Navigation
+ * Header Component - Premium Institutional Navigation
  *
- * Glassmorphism sticky header with:
+ * ChartsPoint glassmorphism sticky header with:
  * - Logo on the right (RTL)
- * - Full-width mega menu with 3-column layout showcasing all pillars
- * - Each pillar has its own color (Learn=blue, Accounts=gold, Trust=purple)
+ * - Full-width mega menu with 4 pillars: Basics, Indicators, Tools, Tactics
+ * - Each pillar has its own color (basics=blue, indicators=orange, tools=green, tactics=purple)
  * - Mobile hamburger with slide-from-right drawer
- * - Search button
- * - CTA button "افتح حسابك" with gold accent
+ * - Educational CTA button
  *
  * Design Philosophy:
- * This navigation embodies the visual language of a $200M fintech institution.
+ * This navigation embodies the visual language of institutional fintech.
  * The full-width mega menu creates an immersive experience that showcases
  * all content pillars simultaneously, reinforcing the platform's comprehensive
- * approach to financial education.
+ * approach to technical analysis education.
  *
  * Optimized for Arabic readers ages 40-70 with WCAG AAA compliance.
  */
 
 import MegaMenu from './MegaMenu.astro';
+import type { PillarSlug } from '../../lib/types';
+import { PILLARS } from '../../lib/types';
 
 export interface Props {
-  currentPillar?: 'learn' | 'accounts' | 'trust';
+  currentPillar?: PillarSlug;
   variant?: 'default' | 'dark';
 }
 
 const { currentPillar, variant = 'default' } = Astro.props;
 
-// Navigation structure for trigger buttons
+// Navigation structure for trigger buttons - 4 ChartsPoint pillars
 const navigation = [
   {
-    id: 'learn',
-    label: 'تعلم',
-    href: '/learn',
-    color: 'learn',
-    colorClass: 'text-learn-600',
-    bgClass: 'bg-learn-50',
-    borderClass: 'border-learn-500',
+    id: 'basics' as PillarSlug,
+    label: 'الأساسيات',
+    labelShort: 'أساسيات',
+    href: '/basics',
+    colorClass: 'text-basics-600',
+    bgClass: 'bg-basics-50',
+    borderClass: 'border-basics-500',
+    hoverBg: 'hover:bg-basics-50',
   },
   {
-    id: 'accounts',
-    label: 'حسابات',
-    href: '/accounts',
-    color: 'accounts',
-    colorClass: 'text-accounts-600',
-    bgClass: 'bg-accounts-50',
-    borderClass: 'border-accounts-500',
+    id: 'indicators' as PillarSlug,
+    label: 'المؤشرات',
+    labelShort: 'مؤشرات',
+    href: '/indicators',
+    colorClass: 'text-indicators-600',
+    bgClass: 'bg-indicators-50',
+    borderClass: 'border-indicators-500',
+    hoverBg: 'hover:bg-indicators-50',
   },
   {
-    id: 'trust',
-    label: 'ثقة',
-    href: '/trust',
-    color: 'trust',
-    colorClass: 'text-trust-600',
-    bgClass: 'bg-trust-50',
-    borderClass: 'border-trust-500',
+    id: 'tools' as PillarSlug,
+    label: 'الأدوات',
+    labelShort: 'أدوات',
+    href: '/tools',
+    colorClass: 'text-tools-600',
+    bgClass: 'bg-tools-50',
+    borderClass: 'border-tools-500',
+    hoverBg: 'hover:bg-tools-50',
+  },
+  {
+    id: 'tactics' as PillarSlug,
+    label: 'الاستراتيجيات',
+    labelShort: 'استراتيجيات',
+    href: '/tactics',
+    colorClass: 'text-tactics-600',
+    bgClass: 'bg-tactics-50',
+    borderClass: 'border-tactics-500',
+    hoverBg: 'hover:bg-tactics-50',
   },
 ];
 ---
@@ -73,7 +87,7 @@ const navigation = [
   role="banner"
   data-header
 >
-  <div class="header-inner h-[120px] lg:h-[104px]">
+  <div class="header-inner h-[88px] lg:h-[80px]">
     <div class="container mx-auto px-4 lg:px-6 h-full">
       <nav
         class="flex items-center justify-between h-full gap-4"
@@ -83,40 +97,42 @@ const navigation = [
         <!-- Logo (Right side in RTL) -->
         <a
           href="/"
-          class="logo-link flex items-center flex-shrink-0 my-3 lg:my-3"
-          aria-label="إتقان - الصفحة الرئيسية"
+          class="logo-link flex items-center flex-shrink-0"
+          aria-label="ChartsPoint - الصفحة الرئيسية"
         >
-          <!-- Logo - Desktop only (full logo with text) -->
-          <img
-            src="https://cms.itqqan.com/wp-content/uploads/2026/01/cropped-itqqan_600_x_600.jpg"
-            alt="إتقان"
-            class="hidden lg:block w-20 h-20 rounded-xl object-contain"
-            width="80"
-            height="80"
-            loading="eager"
-          />
+          <!-- Logo - Desktop -->
+          <div class="hidden lg:flex items-center gap-3">
+            <div class="logo-mark w-12 h-12 rounded-xl bg-gradient-to-br from-navy-900 to-navy-800 flex items-center justify-center border border-navy-700/50">
+              <svg class="w-7 h-7 text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 3v18h18" />
+                <path d="M7 16l4-8 4 4 5-9" />
+              </svg>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-heading text-xl font-bold text-navy-900 leading-tight">ChartsPoint</span>
+              <span class="text-xs text-teal-600 leading-tight">التحليل الفني</span>
+            </div>
+          </div>
 
-          <!-- Logo - Mobile & Tablet (icon only, without text) -->
-          <img
-            src="https://cms.itqqan.com/wp-content/uploads/2026/01/cropped-600_x_600_logo_itqqan.png"
-            alt="إتقان"
-            class="lg:hidden w-24 h-24 rounded-xl object-contain"
-            width="96"
-            height="96"
-            loading="eager"
-          />
+          <!-- Logo - Mobile (icon only) -->
+          <div class="lg:hidden logo-mark w-12 h-12 rounded-xl bg-gradient-to-br from-navy-900 to-navy-800 flex items-center justify-center border border-navy-700/50">
+            <svg class="w-7 h-7 text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 3v18h18" />
+              <path d="M7 16l4-8 4 4 5-9" />
+            </svg>
+          </div>
         </a>
 
-        <!-- Desktop Navigation (Center) - Mega Menu Triggers -->
+        <!-- Desktop Navigation (Center) - Mega Menu Triggers for 4 Pillars -->
         <div class="hidden lg:flex items-center gap-1" role="menubar">
           {navigation.map((item) => (
             <button
               type="button"
               class:list={[
-                'nav-trigger flex items-center gap-2 px-4 py-3 rounded-xl font-medium text-[1.0625rem] transition-all duration-200',
+                'nav-trigger flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-[0.9375rem] transition-all duration-200',
                 currentPillar === item.id
                   ? `${item.colorClass} ${item.bgClass}`
-                  : 'text-navy-700 hover:bg-slate-100'
+                  : `text-navy-700 ${item.hoverBg}`
               ]}
               aria-expanded="false"
               aria-haspopup="true"
@@ -139,22 +155,22 @@ const navigation = [
 
         <!-- Right Actions (Left side in RTL) -->
         <div class="flex items-center gap-2 lg:gap-3">
-          <!-- CTA Button - Desktop only -->
+          <!-- CTA Button - Desktop only - EDUCATIONAL focus -->
           <a
-            href="/accounts/open/steps"
-            class="cta-btn hidden lg:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-[0.9375rem] transition-all duration-200"
-            aria-label="افتح حسابك الاستثماري الآن"
+            href="/basics"
+            class="cta-btn hidden lg:inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-[0.875rem] transition-all duration-200"
+            aria-label="ابدأ تعلم التحليل الفني"
           >
-            <span>افتح حسابك</span>
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            <span>ابدأ من الأساسيات</span>
+            <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
           </a>
 
           <!-- Mobile Menu Toggle -->
           <button
             type="button"
-            class="mobile-menu-toggle lg:hidden touch-target flex items-center justify-center w-11 h-11 rounded-xl text-navy-700 hover:bg-slate-100 hover:text-navy-900 transition-all duration-200"
+            class="mobile-menu-toggle lg:hidden touch-target flex items-center justify-center w-12 h-12 rounded-lg text-navy-700 hover:bg-slate-100 hover:text-navy-900 transition-all duration-200"
             aria-label="فتح القائمة"
             aria-expanded="false"
             aria-controls="mobile-menu"
@@ -184,12 +200,12 @@ const navigation = [
     </div>
   </div>
 
-  <!-- Full-Width Mega Menu - Positioned inside header for full-width spanning -->
+  <!-- Full-Width Mega Menu Panel -->
   <MegaMenu currentPillar={currentPillar} />
 </header>
 
 <!-- Spacer for fixed header -->
-<div class="h-[120px] lg:h-[104px]" aria-hidden="true"></div>
+<div class="h-[88px] lg:h-[80px]" aria-hidden="true"></div>
 
 <style>
   /* ═══════════════════════════════════════════════════════════════════════════
@@ -209,7 +225,7 @@ const navigation = [
     box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 4px 24px rgba(15, 23, 42, 0.04);
   }
 
-  /* Premium gold accent line at bottom of header - institutional quality indicator */
+  /* Premium teal accent line at bottom - institutional quality indicator */
   .header-light .header-inner::after {
     content: '';
     position: absolute;
@@ -217,8 +233,8 @@ const navigation = [
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, transparent 0%, #d5a035 20%, #d5a035 80%, transparent 100%);
-    opacity: 0.5;
+    background: linear-gradient(90deg, transparent 0%, #0891B2 20%, #0891B2 80%, transparent 100%);
+    opacity: 0.4;
   }
 
   .header-dark .header-inner {
@@ -255,15 +271,15 @@ const navigation = [
     border-radius: 0.75rem;
   }
 
-  .logo-link:focus-visible img {
-    box-shadow: 0 0 0 3px white, 0 0 0 6px theme('colors.gold.500');
+  .logo-link:focus-visible .logo-mark {
+    box-shadow: 0 0 0 3px white, 0 0 0 6px theme('colors.teal.500');
   }
 
-  .logo-link img {
+  .logo-mark {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .logo-link:hover img {
+  .logo-link:hover .logo-mark {
     transform: scale(1.02);
   }
 
@@ -279,12 +295,12 @@ const navigation = [
   .nav-trigger::after {
     content: '';
     position: absolute;
-    bottom: 0.5rem;
+    bottom: 0.375rem;
     right: 1rem;
     left: 1rem;
-    height: 3px;
+    height: 2px;
     background: transparent;
-    border-radius: 1.5px;
+    border-radius: 1px;
     transform: scaleX(0);
     transition: transform 0.2s ease, background 0.2s ease;
   }
@@ -295,19 +311,24 @@ const navigation = [
   }
 
   /* Pillar-specific underline colors */
-  .nav-trigger[data-nav-trigger="learn"]:hover::after,
-  .nav-trigger[data-nav-trigger="learn"][aria-expanded="true"]::after {
-    background: theme('colors.learn.500');
+  .nav-trigger[data-nav-trigger="basics"]:hover::after,
+  .nav-trigger[data-nav-trigger="basics"][aria-expanded="true"]::after {
+    background: theme('colors.basics.500');
   }
 
-  .nav-trigger[data-nav-trigger="accounts"]:hover::after,
-  .nav-trigger[data-nav-trigger="accounts"][aria-expanded="true"]::after {
-    background: theme('colors.accounts.500');
+  .nav-trigger[data-nav-trigger="indicators"]:hover::after,
+  .nav-trigger[data-nav-trigger="indicators"][aria-expanded="true"]::after {
+    background: theme('colors.indicators.500');
   }
 
-  .nav-trigger[data-nav-trigger="trust"]:hover::after,
-  .nav-trigger[data-nav-trigger="trust"][aria-expanded="true"]::after {
-    background: theme('colors.trust.500');
+  .nav-trigger[data-nav-trigger="tools"]:hover::after,
+  .nav-trigger[data-nav-trigger="tools"][aria-expanded="true"]::after {
+    background: theme('colors.tools.500');
+  }
+
+  .nav-trigger[data-nav-trigger="tactics"]:hover::after,
+  .nav-trigger[data-nav-trigger="tactics"][aria-expanded="true"]::after {
+    background: theme('colors.tactics.500');
   }
 
   /* Chevron rotation */
@@ -317,7 +338,7 @@ const navigation = [
 
   .nav-trigger:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px white, 0 0 0 6px theme('colors.gold.500');
+    box-shadow: 0 0 0 3px white, 0 0 0 6px theme('colors.teal.500');
   }
 
   /* Active/Expanded state background */
@@ -325,35 +346,40 @@ const navigation = [
     background: theme('colors.slate.100');
   }
 
-  .nav-trigger[data-nav-trigger="learn"][aria-expanded="true"] {
-    background: theme('colors.learn.50');
-    color: theme('colors.learn.700');
+  .nav-trigger[data-nav-trigger="basics"][aria-expanded="true"] {
+    background: theme('colors.basics.50');
+    color: theme('colors.basics.700');
   }
 
-  .nav-trigger[data-nav-trigger="accounts"][aria-expanded="true"] {
-    background: theme('colors.accounts.50');
-    color: theme('colors.accounts.700');
+  .nav-trigger[data-nav-trigger="indicators"][aria-expanded="true"] {
+    background: theme('colors.indicators.50');
+    color: theme('colors.indicators.700');
   }
 
-  .nav-trigger[data-nav-trigger="trust"][aria-expanded="true"] {
-    background: theme('colors.trust.50');
-    color: theme('colors.trust.700');
+  .nav-trigger[data-nav-trigger="tools"][aria-expanded="true"] {
+    background: theme('colors.tools.50');
+    color: theme('colors.tools.700');
+  }
+
+  .nav-trigger[data-nav-trigger="tactics"][aria-expanded="true"] {
+    background: theme('colors.tactics.50');
+    color: theme('colors.tactics.700');
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     CTA BUTTON STYLES - Premium Gold Gradient
+     CTA BUTTON STYLES - Coral Gradient (Educational Focus)
      ═══════════════════════════════════════════════════════════════════════════ */
 
   .cta-btn {
-    background: linear-gradient(135deg, #e8bc5a 0%, #d5a035 100%);
-    color: theme('colors.navy.900');
-    box-shadow: 0 4px 14px rgba(213, 160, 53, 0.25);
-    border: 1px solid rgba(213, 160, 53, 0.3);
+    background: linear-gradient(135deg, #FB7185 0%, #F43F5E 100%);
+    color: white;
+    box-shadow: 0 4px 14px rgba(244, 63, 94, 0.25);
+    border: 1px solid rgba(244, 63, 94, 0.3);
   }
 
   .cta-btn:hover {
-    background: linear-gradient(135deg, #d5a035 0%, #b8892a 100%);
-    box-shadow: 0 6px 20px rgba(213, 160, 53, 0.4);
+    background: linear-gradient(135deg, #F43F5E 0%, #E11D48 100%);
+    box-shadow: 0 6px 20px rgba(244, 63, 94, 0.4);
     transform: translateY(-1px);
   }
 
@@ -363,7 +389,7 @@ const navigation = [
 
   .cta-btn:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px white, 0 0 0 6px theme('colors.gold.500');
+    box-shadow: 0 0 0 3px white, 0 0 0 6px theme('colors.coral.500');
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
@@ -372,7 +398,7 @@ const navigation = [
 
   .mobile-menu-toggle:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px white, 0 0 0 6px theme('colors.gold.500');
+    box-shadow: 0 0 0 3px white, 0 0 0 6px theme('colors.teal.500');
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
@@ -388,7 +414,7 @@ const navigation = [
     color: white;
     font-weight: 600;
     font-size: 1rem;
-    border-radius: 0.75rem;
+    border-radius: 0.5rem;
     text-decoration: underline;
     text-underline-offset: 4px;
     z-index: 9999;
@@ -409,7 +435,7 @@ const navigation = [
     .nav-trigger,
     .nav-chevron,
     .cta-btn,
-    .logo-link img {
+    .logo-mark {
       transition: none;
       animation: none;
     }

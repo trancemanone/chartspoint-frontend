@@ -1,0 +1,575 @@
+---
+/**
+ * ContactForm.astro
+ *
+ * Premium contact form for the Contact page.
+ * Minimal fields with institutional fintech styling.
+ *
+ * Features:
+ * - Name, Email, Subject, Message fields
+ * - Client-side validation
+ * - Loading state on submit
+ * - Success/error feedback
+ * - Accessible with proper labels
+ */
+
+export interface Props {
+  /** Form action URL */
+  action?: string;
+  /** Form method */
+  method?: 'POST' | 'GET';
+  /** Show subject field */
+  showSubject?: boolean;
+  class?: string;
+}
+
+const {
+  action = '/api/contact',
+  method = 'POST',
+  showSubject = true,
+  class: className = '',
+} = Astro.props;
+
+// Generate unique form ID
+const formId = `contact-form-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<form
+  id={formId}
+  class:list={['contact-form', className]}
+  action={action}
+  method={method}
+  data-contact-form
+  novalidate
+>
+  <div class="contact-form__grid">
+    <!-- Name Field -->
+    <div class="contact-form__field">
+      <label for={`${formId}-name`} class="contact-form__label">
+        الاسم
+        <span class="contact-form__required" aria-hidden="true">*</span>
+      </label>
+      <input
+        type="text"
+        id={`${formId}-name`}
+        name="name"
+        required
+        autocomplete="name"
+        class="contact-form__input"
+        placeholder="أدخل اسمك الكريم"
+        data-validate="name"
+      />
+      <span class="contact-form__error" data-error="name" aria-live="polite"></span>
+    </div>
+
+    <!-- Email Field -->
+    <div class="contact-form__field">
+      <label for={`${formId}-email`} class="contact-form__label">
+        البريد الإلكتروني
+        <span class="contact-form__required" aria-hidden="true">*</span>
+      </label>
+      <input
+        type="email"
+        id={`${formId}-email`}
+        name="email"
+        required
+        autocomplete="email"
+        class="contact-form__input"
+        placeholder="example@email.com"
+        dir="ltr"
+        data-validate="email"
+      />
+      <span class="contact-form__error" data-error="email" aria-live="polite"></span>
+    </div>
+
+    {showSubject && (
+      <!-- Subject Field -->
+      <div class="contact-form__field contact-form__field--full">
+        <label for={`${formId}-subject`} class="contact-form__label">
+          الموضوع
+          <span class="contact-form__required" aria-hidden="true">*</span>
+        </label>
+        <select
+          id={`${formId}-subject`}
+          name="subject"
+          required
+          class="contact-form__select"
+          data-validate="subject"
+        >
+          <option value="">اختر الموضوع</option>
+          <option value="general">استفسار عام</option>
+          <option value="content">اقتراح محتوى</option>
+          <option value="correction">تصحيح معلومة</option>
+          <option value="partnership">شراكات وتعاون</option>
+          <option value="technical">مشكلة تقنية</option>
+          <option value="other">موضوع آخر</option>
+        </select>
+        <span class="contact-form__error" data-error="subject" aria-live="polite"></span>
+      </div>
+    )}
+
+    <!-- Message Field -->
+    <div class="contact-form__field contact-form__field--full">
+      <label for={`${formId}-message`} class="contact-form__label">
+        الرسالة
+        <span class="contact-form__required" aria-hidden="true">*</span>
+      </label>
+      <textarea
+        id={`${formId}-message`}
+        name="message"
+        required
+        rows="5"
+        class="contact-form__textarea"
+        placeholder="اكتب رسالتك هنا..."
+        data-validate="message"
+      ></textarea>
+      <span class="contact-form__error" data-error="message" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <!-- Submit Button -->
+  <div class="contact-form__actions">
+    <button
+      type="submit"
+      class="contact-form__submit"
+      data-submit-button
+    >
+      <span class="contact-form__submit-text">إرسال الرسالة</span>
+      <span class="contact-form__submit-loading" aria-hidden="true">
+        <svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12a9 9 0 11-6.219-8.56"/>
+        </svg>
+      </span>
+    </button>
+
+    <p class="contact-form__note">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <span>نرد عادةً خلال 24-48 ساعة</span>
+    </p>
+  </div>
+
+  <!-- Form Status Messages -->
+  <div class="contact-form__status" data-form-status aria-live="polite" hidden>
+    <div class="contact-form__status-success" data-status="success">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <span>تم إرسال رسالتك بنجاح. سنتواصل معك قريبًا.</span>
+    </div>
+    <div class="contact-form__status-error" data-status="error">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <span>حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى.</span>
+    </div>
+  </div>
+</form>
+
+<style>
+  .contact-form {
+    max-width: 100%;
+  }
+
+  .contact-form__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .contact-form__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .contact-form__field--full {
+      grid-column: span 2;
+    }
+  }
+
+  .contact-form__field {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .contact-form__label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    color: #102A43;
+  }
+
+  .contact-form__required {
+    color: #DC2626;
+    margin-right: 0.25rem;
+  }
+
+  /* Input Styles */
+  .contact-form__input,
+  .contact-form__select,
+  .contact-form__textarea {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #102A43;
+    background-color: #FFFFFF;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 0.625rem;
+    transition: all 0.2s ease;
+    min-height: 48px;
+  }
+
+  .contact-form__input::placeholder,
+  .contact-form__textarea::placeholder {
+    color: #94A3B8;
+  }
+
+  .contact-form__input:hover,
+  .contact-form__select:hover,
+  .contact-form__textarea:hover {
+    border-color: #CBD5E1;
+  }
+
+  .contact-form__input:focus,
+  .contact-form__select:focus,
+  .contact-form__textarea:focus {
+    outline: none;
+    border-color: #d5a035;
+    box-shadow: 0 0 0 3px rgba(213, 160, 53, 0.15);
+  }
+
+  /* Invalid state */
+  .contact-form__input.is-invalid,
+  .contact-form__select.is-invalid,
+  .contact-form__textarea.is-invalid {
+    border-color: #DC2626;
+  }
+
+  .contact-form__input.is-invalid:focus,
+  .contact-form__select.is-invalid:focus,
+  .contact-form__textarea.is-invalid:focus {
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+  }
+
+  /* Select arrow */
+  .contact-form__select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: left 1rem center;
+    padding-left: 2.5rem;
+  }
+
+  /* Textarea */
+  .contact-form__textarea {
+    resize: vertical;
+    min-height: 140px;
+  }
+
+  /* Error message */
+  .contact-form__error {
+    display: block;
+    min-height: 1.5rem;
+    margin-top: 0.375rem;
+    font-size: 0.875rem;
+    color: #DC2626;
+    line-height: 1.5;
+  }
+
+  /* Actions */
+  .contact-form__actions {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .contact-form__actions {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  /* Submit button */
+  .contact-form__submit {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 180px;
+    min-height: 52px;
+    padding: 0.875rem 2rem;
+    font-family: var(--font-heading);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: #102941;
+    background: linear-gradient(135deg, #e8bc5a 0%, #d5a035 100%);
+    border: none;
+    border-radius: 0.625rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(213, 160, 53, 0.25);
+  }
+
+  .contact-form__submit:hover {
+    background: linear-gradient(135deg, #d5a035 0%, #b8892a 100%);
+    box-shadow: 0 4px 12px rgba(213, 160, 53, 0.35);
+    transform: translateY(-1px);
+  }
+
+  .contact-form__submit:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px #FFFFFF, 0 0 0 6px rgba(213, 160, 53, 0.6);
+  }
+
+  .contact-form__submit:active {
+    transform: translateY(0);
+  }
+
+  .contact-form__submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .contact-form__submit-loading {
+    display: none;
+  }
+
+  .contact-form__submit.is-loading .contact-form__submit-text {
+    visibility: hidden;
+  }
+
+  .contact-form__submit.is-loading .contact-form__submit-loading {
+    display: flex;
+    position: absolute;
+  }
+
+  /* Note */
+  .contact-form__note {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: 0.9375rem;
+    color: #64748B;
+  }
+
+  /* Status messages */
+  .contact-form__status {
+    margin-top: 1.5rem;
+  }
+
+  .contact-form__status-success,
+  .contact-form__status-error {
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-radius: 0.625rem;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .contact-form__status-success {
+    background: #ECFDF5;
+    color: #047857;
+    border: 1px solid #A7F3D0;
+  }
+
+  .contact-form__status-error {
+    background: #FEF2F2;
+    color: #B91C1C;
+    border: 1px solid #FECACA;
+  }
+
+  .contact-form__status:not([hidden]) .contact-form__status-success.is-active,
+  .contact-form__status:not([hidden]) .contact-form__status-error.is-active {
+    display: flex;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .contact-form__input,
+    .contact-form__select,
+    .contact-form__textarea,
+    .contact-form__submit {
+      transition: none;
+    }
+
+    .contact-form__submit:hover {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  class ContactForm {
+    private form: HTMLFormElement;
+    private submitBtn: HTMLButtonElement;
+    private statusContainer: HTMLElement;
+    private fields: NodeListOf<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>;
+
+    constructor(form: HTMLFormElement) {
+      this.form = form;
+      this.submitBtn = form.querySelector('[data-submit-button]') as HTMLButtonElement;
+      this.statusContainer = form.querySelector('[data-form-status]') as HTMLElement;
+      this.fields = form.querySelectorAll('[data-validate]');
+
+      this.init();
+    }
+
+    private init(): void {
+      this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+
+      // Real-time validation
+      this.fields.forEach((field) => {
+        field.addEventListener('blur', () => this.validateField(field));
+        field.addEventListener('input', () => {
+          if (field.classList.contains('is-invalid')) {
+            this.validateField(field);
+          }
+        });
+      });
+    }
+
+    private validateField(field: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement): boolean {
+      const type = field.dataset.validate;
+      const errorEl = this.form.querySelector(`[data-error="${type}"]`) as HTMLElement;
+      let isValid = true;
+      let errorMessage = '';
+
+      // Check required
+      if (field.required && !field.value.trim()) {
+        isValid = false;
+        errorMessage = 'هذا الحقل مطلوب';
+      }
+
+      // Type-specific validation
+      if (isValid && field.value.trim()) {
+        switch (type) {
+          case 'email':
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(field.value)) {
+              isValid = false;
+              errorMessage = 'يرجى إدخال بريد إلكتروني صحيح';
+            }
+            break;
+          case 'name':
+            if (field.value.trim().length < 2) {
+              isValid = false;
+              errorMessage = 'يجب أن يكون الاسم حرفين على الأقل';
+            }
+            break;
+          case 'message':
+            if (field.value.trim().length < 10) {
+              isValid = false;
+              errorMessage = 'يجب أن تكون الرسالة 10 أحرف على الأقل';
+            }
+            break;
+        }
+      }
+
+      // Update UI
+      if (isValid) {
+        field.classList.remove('is-invalid');
+        if (errorEl) errorEl.textContent = '';
+      } else {
+        field.classList.add('is-invalid');
+        if (errorEl) errorEl.textContent = errorMessage;
+      }
+
+      return isValid;
+    }
+
+    private validateAll(): boolean {
+      let isValid = true;
+      this.fields.forEach((field) => {
+        if (!this.validateField(field)) {
+          isValid = false;
+        }
+      });
+      return isValid;
+    }
+
+    private async handleSubmit(e: Event): Promise<void> {
+      e.preventDefault();
+
+      if (!this.validateAll()) {
+        const firstInvalid = this.form.querySelector('.is-invalid') as HTMLElement;
+        if (firstInvalid) {
+          firstInvalid.focus();
+        }
+        return;
+      }
+
+      // Show loading state
+      this.submitBtn.classList.add('is-loading');
+      this.submitBtn.disabled = true;
+      this.hideStatus();
+
+      try {
+        const formData = new FormData(this.form);
+        const response = await fetch(this.form.action, {
+          method: this.form.method,
+          body: formData,
+        });
+
+        if (response.ok) {
+          this.showStatus('success');
+          this.form.reset();
+        } else {
+          this.showStatus('error');
+        }
+      } catch (error) {
+        this.showStatus('error');
+      } finally {
+        this.submitBtn.classList.remove('is-loading');
+        this.submitBtn.disabled = false;
+      }
+    }
+
+    private showStatus(type: 'success' | 'error'): void {
+      this.statusContainer.hidden = false;
+      const successEl = this.statusContainer.querySelector('[data-status="success"]') as HTMLElement;
+      const errorEl = this.statusContainer.querySelector('[data-status="error"]') as HTMLElement;
+
+      successEl.classList.remove('is-active');
+      errorEl.classList.remove('is-active');
+
+      if (type === 'success') {
+        successEl.classList.add('is-active');
+      } else {
+        errorEl.classList.add('is-active');
+      }
+    }
+
+    private hideStatus(): void {
+      this.statusContainer.hidden = true;
+      const successEl = this.statusContainer.querySelector('[data-status="success"]') as HTMLElement;
+      const errorEl = this.statusContainer.querySelector('[data-status="error"]') as HTMLElement;
+      successEl.classList.remove('is-active');
+      errorEl.classList.remove('is-active');
+    }
+  }
+
+  function initContactForms(): void {
+    const forms = document.querySelectorAll<HTMLFormElement>('[data-contact-form]');
+    forms.forEach((form) => new ContactForm(form));
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initContactForms);
+  } else {
+    initContactForms();
+  }
+
+  document.addEventListener('astro:page-load', initContactForms);
+</script>

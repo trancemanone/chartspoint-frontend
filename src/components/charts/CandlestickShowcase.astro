@@ -1,0 +1,340 @@
+---
+/**
+ * CandlestickShowcase.astro
+ *
+ * Full article section component displaying all 16 Japanese candlestick patterns
+ * organized by category. Designed for educational content within articles.
+ *
+ * Features:
+ * - Category organization (Single, Double, Triple candle patterns)
+ * - Signal type legend
+ * - Educational context and trading tips per category
+ * - Premium dark theme with institutional styling
+ * - Responsive grid layout
+ * - RTL-optimized for Arabic content
+ *
+ * @example
+ * <CandlestickShowcase
+ *   showIntro={true}
+ *   showLegend={true}
+ *   showTips={true}
+ * />
+ */
+
+import CandlestickPattern from './CandlestickPattern.astro';
+
+export interface Props {
+  /** Show introduction section */
+  showIntro?: boolean;
+  /** Show signal type legend */
+  showLegend?: boolean;
+  /** Show trading tips for each category */
+  showTips?: boolean;
+  /** Enable animations */
+  animated?: boolean;
+  /** Compact mode for smaller spaces */
+  compact?: boolean;
+}
+
+const {
+  showIntro = true,
+  showLegend = true,
+  showTips = true,
+  animated = true,
+  compact = false
+} = Astro.props;
+
+// Category configurations with all 16 patterns
+const CATEGORIES = {
+  single: {
+    id: 'single-candle',
+    title: 'أنماط الشمعة الواحدة',
+    subtitle: 'Single Candle Patterns',
+    description: 'أنماط بسيطة لكنها قوية تتكون من شمعة واحدة فقط. تُستخدم كإشارات مبكرة للتنبؤ بتغيير محتمل في اتجاه السوق.',
+    icon: '1',
+    patterns: [
+      'doji',
+      'hammer',
+      'hanging-man',
+      'shooting-star',
+      'marubozu-bullish',
+      'marubozu-bearish'
+    ] as const,
+    tip: 'تكون أنماط الشمعة الواحدة أقوى وأكثر موثوقية عند ظهورها بالقرب من مستويات الدعم والمقاومة الرئيسية. انتظر دائماً شمعة تأكيد قبل اتخاذ قرار التداول.',
+    color: 'teal'
+  },
+  double: {
+    id: 'double-candle',
+    title: 'أنماط الشمعتين',
+    subtitle: 'Double Candle Patterns',
+    description: 'أنماط تتكون من شمعتين متتاليتين توفر تأكيداً أقوى لإشارات الانعكاس. العلاقة بين الشمعتين هي المفتاح لفهم قوة الإشارة.',
+    icon: '2',
+    patterns: [
+      'engulfing-bullish',
+      'engulfing-bearish',
+      'harami-bullish',
+      'harami-bearish',
+      'tweezer-top',
+      'tweezer-bottom'
+    ] as const,
+    tip: 'في أنماط الشمعتين، انتظر دائماً إغلاق الشمعة الثانية بالكامل قبل تأكيد النمط. حجم الشمعة الثانية مقارنة بالأولى يحدد قوة الإشارة.',
+    color: 'coral'
+  },
+  triple: {
+    id: 'triple-candle',
+    title: 'أنماط الشموع الثلاثة',
+    subtitle: 'Triple Candle Patterns',
+    description: 'أنماط موثوقة للغاية تتكون من ثلاث شمعات. تعتبر من أقوى أنماط الانعكاس في التحليل الفني وتستخدم للتأكيد في التداول الاحترافي.',
+    icon: '3',
+    patterns: [
+      'morning-star',
+      'evening-star',
+      'three-white-soldiers',
+      'three-black-crows'
+    ] as const,
+    tip: 'أنماط الشموع الثلاثة من أقوى إشارات الانعكاس. استخدمها مع مؤشرات الحجم للتأكد من صحة الإشارة - الحجم المتزايد يعزز موثوقية النمط.',
+    color: 'gold'
+  }
+};
+
+const cardSize = compact ? 'sm' : 'md';
+---
+
+<section class="cp-candlestick-showcase" dir="rtl">
+  <!-- Introduction Section -->
+  {showIntro && (
+    <div class="mb-12 text-center max-w-3xl mx-auto">
+      <h2 class="font-heading font-bold text-3xl md:text-4xl text-navy-900 mb-4">
+        دليل أنماط الشموع اليابانية
+      </h2>
+      <p class="text-lg text-slate-600 leading-relaxed mb-6">
+        تعرّف على أهم 16 نمطاً من أنماط الشموع اليابانية المستخدمة في التحليل الفني.
+        هذه الأنماط تساعد المتداولين على تحديد نقاط الانعكاس المحتملة في السوق
+        واتخاذ قرارات تداول مدروسة.
+      </p>
+
+      <!-- Signal Legend (Top) -->
+      {showLegend && (
+        <div class="inline-flex items-center gap-6 px-6 py-4 rounded-2xl bg-slate-50 border border-slate-200">
+          <h4 class="text-sm font-medium text-slate-500">دليل الإشارات:</h4>
+          <div class="flex items-center gap-6">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+              <span class="text-sm text-slate-700">صعودي (Bullish)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-red-500"></span>
+              <span class="text-sm text-slate-700">هبوطي (Bearish)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-slate-400"></span>
+              <span class="text-sm text-slate-700">محايد (Neutral)</span>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )}
+
+  <!-- Categories -->
+  <div class="space-y-16 lg:space-y-20">
+    {Object.values(CATEGORIES).map((category) => (
+      <div class="cp-category-section" id={category.id}>
+        <!-- Category Header -->
+        <div
+          class:list={[
+            'relative overflow-hidden rounded-3xl p-8 lg:p-10 mb-8',
+            'bg-gradient-to-br from-navy-900 via-navy-800 to-slate-900'
+          ]}
+        >
+          <!-- Background Pattern -->
+          <div class="absolute inset-0 pointer-events-none opacity-[0.03]">
+            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id={`showcase-grid-${category.id}`} width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill={`url(#showcase-grid-${category.id})`}/>
+            </svg>
+          </div>
+
+          <!-- Accent Glows -->
+          <div class="absolute top-0 right-0 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute bottom-0 left-0 w-60 h-60 bg-teal-600/5 rounded-full blur-2xl pointer-events-none"></div>
+
+          <div class="relative z-10 flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+            <div class="flex-1">
+              <!-- Category Badge -->
+              <div class="flex items-center gap-3 mb-4">
+                <span class="w-12 h-12 rounded-xl bg-teal-600/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-xl">
+                  {category.icon}
+                </span>
+                <span class="text-xs font-mono text-slate-500 uppercase tracking-wider">
+                  {category.subtitle}
+                </span>
+              </div>
+
+              <!-- Title & Description -->
+              <h3 class="font-heading font-bold text-2xl md:text-3xl text-white mb-3">
+                {category.title}
+              </h3>
+              <p class="text-slate-400 text-lg leading-relaxed max-w-2xl">
+                {category.description}
+              </p>
+            </div>
+
+            <!-- Pattern Count Badge -->
+            <div class="flex-shrink-0 px-4 py-2 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+              <div class="text-center">
+                <span class="block text-3xl font-bold text-white">{category.patterns.length}</span>
+                <span class="text-xs text-slate-500">أنماط</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trading Tip -->
+          {showTips && category.tip && (
+            <div class="relative z-10 mt-8 p-5 rounded-xl bg-gradient-to-l from-teal-900/30 to-transparent border border-teal-500/20">
+              <div class="flex items-start gap-3">
+                <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-teal-500/20 flex items-center justify-center">
+                  <svg class="w-4 h-4 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-heading font-bold text-teal-400 text-sm mb-1">نصيحة التداول</h4>
+                  <p class="text-slate-300 text-sm leading-relaxed">
+                    {category.tip}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <!-- Pattern Cards Grid -->
+        <div
+          class:list={[
+            'grid gap-5',
+            category.patterns.length === 4
+              ? 'sm:grid-cols-2 lg:grid-cols-4'
+              : 'sm:grid-cols-2 lg:grid-cols-3'
+          ]}
+        >
+          {category.patterns.map((patternKey) => (
+            <CandlestickPattern
+              pattern={patternKey}
+              showAnimation={animated}
+              size={cardSize}
+              interactive={true}
+            />
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- Bottom Summary Section -->
+  <div class="mt-16 p-8 rounded-3xl bg-gradient-to-br from-slate-50 to-white border border-slate-200">
+    <div class="max-w-3xl mx-auto text-center">
+      <h3 class="font-heading font-bold text-2xl text-navy-900 mb-4">
+        كيفية استخدام أنماط الشموع في التداول
+      </h3>
+      <div class="text-slate-600 leading-relaxed space-y-4 text-right">
+        <p>
+          أنماط الشموع اليابانية ليست إشارات تداول مضمونة بذاتها، بل هي أدوات تساعد على فهم
+          سيكولوجية السوق ونوايا المتداولين. للحصول على أفضل النتائج:
+        </p>
+        <ul class="list-disc list-inside space-y-2 pr-4">
+          <li>استخدم الأنماط مع مستويات الدعم والمقاومة الفنية</li>
+          <li>تأكد من الإشارة باستخدام مؤشرات الحجم</li>
+          <li>انتظر إغلاق الشمعة قبل تأكيد النمط</li>
+          <li>ضع في اعتبارك الاتجاه العام للسوق (Trend)</li>
+          <li>استخدم إدارة المخاطر المناسبة دائماً</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════════
+     CANDLESTICK SHOWCASE STYLES
+     Full article section for pattern education
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .cp-candlestick-showcase {
+    /* Section isolation */
+    isolation: isolate;
+  }
+
+  /* Smooth scroll anchor offset for fixed header */
+  .cp-category-section {
+    scroll-margin-top: 100px;
+  }
+
+  /* Section fade-in animation */
+  .cp-category-section {
+    animation: showcaseFadeIn 0.6s ease-out;
+  }
+
+  @keyframes showcaseFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Staggered animation for pattern cards */
+  .cp-category-section .grid > * {
+    opacity: 0;
+    animation: cardFadeIn 0.5s ease-out forwards;
+  }
+
+  .cp-category-section .grid > *:nth-child(1) { animation-delay: 0.1s; }
+  .cp-category-section .grid > *:nth-child(2) { animation-delay: 0.15s; }
+  .cp-category-section .grid > *:nth-child(3) { animation-delay: 0.2s; }
+  .cp-category-section .grid > *:nth-child(4) { animation-delay: 0.25s; }
+  .cp-category-section .grid > *:nth-child(5) { animation-delay: 0.3s; }
+  .cp-category-section .grid > *:nth-child(6) { animation-delay: 0.35s; }
+
+  @keyframes cardFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(16px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .cp-category-section,
+    .cp-category-section .grid > * {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Mobile-first responsive adjustments */
+  @media (max-width: 640px) {
+    .cp-candlestick-showcase .inline-flex {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .cp-candlestick-showcase .inline-flex > .flex {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+  }
+</style>

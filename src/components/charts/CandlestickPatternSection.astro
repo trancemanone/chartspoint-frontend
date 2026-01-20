@@ -1,0 +1,237 @@
+---
+/**
+ * CandlestickPatternSection.astro
+ *
+ * Article-optimized section component for displaying candlestick pattern
+ * categories with premium fintech styling. Designed to be embedded within
+ * article content as educational visual aids.
+ *
+ * Features:
+ * - Category-based organization
+ * - Premium dark gradient backgrounds
+ * - Educational callout boxes
+ * - Trading context descriptions
+ * - Responsive card grids
+ *
+ * @example
+ * <!-- In article content -->
+ * <CandlestickPatternSection
+ *   category="single"
+ *   showLegend={true}
+ * />
+ */
+
+import CandlestickPattern from './CandlestickPattern.astro';
+
+export interface Props {
+  /** Pattern category to display */
+  category: 'single' | 'double' | 'triple' | 'reversal' | 'continuation';
+  /** Show signal legend */
+  showLegend?: boolean;
+  /** Section variant */
+  variant?: 'default' | 'compact' | 'featured';
+  /** Background style */
+  background?: 'dark' | 'light' | 'gradient';
+}
+
+// Category configurations
+const CATEGORY_CONFIG = {
+  single: {
+    title: 'أنماط الشمعة الواحدة',
+    subtitle: 'Single Candle Patterns',
+    icon: '1',
+    description: 'أنماط بسيطة لكنها قوية تتكون من شمعة واحدة فقط. تُستخدم كإشارات مبكرة لتغيير الاتجاه.',
+    patterns: ['doji', 'hammer', 'hanging-man', 'shooting-star', 'marubozu-bullish', 'marubozu-bearish'],
+    tip: 'تكون هذه الأنماط أقوى عند ظهورها بالقرب من مستويات الدعم والمقاومة الرئيسية.'
+  },
+  double: {
+    title: 'أنماط الشمعتين',
+    subtitle: 'Double Candle Patterns',
+    icon: '2',
+    description: 'أنماط تتكون من شمعتين متتاليتين توفر تأكيداً أقوى لإشارات الانعكاس.',
+    patterns: ['engulfing-bullish', 'engulfing-bearish', 'harami-bullish', 'harami-bearish', 'tweezer-top', 'tweezer-bottom'],
+    tip: 'انتظر إغلاق الشمعة الثانية قبل اتخاذ قرار التداول.'
+  },
+  triple: {
+    title: 'أنماط الشموع الثلاثة',
+    subtitle: 'Triple Candle Patterns',
+    icon: '3',
+    description: 'أنماط موثوقة للغاية تتكون من ثلاث شمعات وتعطي إشارات قوية لانعكاس الاتجاه.',
+    patterns: ['morning-star', 'evening-star', 'three-white-soldiers', 'three-black-crows'],
+    tip: 'هذه الأنماط من أقوى إشارات الانعكاس وتستخدم للتأكيد في التداول الاحترافي.'
+  },
+  reversal: {
+    title: 'أنماط الانعكاس',
+    subtitle: 'Reversal Patterns',
+    icon: 'R',
+    description: 'مجموعة من أهم أنماط الانعكاس التي تشير إلى تغيير محتمل في اتجاه السوق.',
+    patterns: ['hammer', 'shooting-star', 'engulfing-bullish', 'engulfing-bearish', 'morning-star', 'evening-star'],
+    tip: 'يفضل دائماً انتظار شمعة تأكيد بعد ظهور نمط الانعكاس.'
+  },
+  continuation: {
+    title: 'أنماط الاستمرار',
+    subtitle: 'Continuation Patterns',
+    icon: 'C',
+    description: 'أنماط تشير إلى استمرار الاتجاه الحالي بعد فترة تماسك.',
+    patterns: ['three-white-soldiers', 'three-black-crows', 'marubozu-bullish', 'marubozu-bearish'],
+    tip: 'استخدم هذه الأنماط لتعزيز المراكز في اتجاه الترند الرئيسي.'
+  }
+};
+
+const {
+  category,
+  showLegend = true,
+  variant = 'default',
+  background = 'gradient'
+} = Astro.props;
+
+const config = CATEGORY_CONFIG[category];
+
+// Background classes
+const bgClasses = {
+  dark: 'bg-navy-900',
+  light: 'bg-slate-50',
+  gradient: 'bg-gradient-to-br from-navy-900 via-navy-800 to-slate-900'
+};
+
+// Variant-specific classes
+const variantClasses = {
+  default: 'py-12 lg:py-16 px-6 lg:px-10 rounded-3xl',
+  compact: 'py-8 lg:py-10 px-5 lg:px-8 rounded-2xl',
+  featured: 'py-16 lg:py-20 px-8 lg:px-12 rounded-3xl'
+};
+---
+
+<section
+  class:list={[
+    'candlestick-section relative overflow-hidden',
+    bgClasses[background],
+    variantClasses[variant]
+  ]}
+>
+  <!-- Background Pattern -->
+  <div class="absolute inset-0 pointer-events-none opacity-[0.03]">
+    <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id={`section-grid-${category}`} width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill={`url(#section-grid-${category})`}/>
+    </svg>
+  </div>
+
+  <!-- Accent Glow -->
+  <div class="absolute top-0 right-0 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute bottom-0 left-0 w-64 h-64 bg-teal-600/5 rounded-full blur-2xl pointer-events-none"></div>
+
+  <div class="relative z-10">
+    <!-- Section Header -->
+    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-10">
+      <div class="flex-1">
+        <!-- Category Badge -->
+        <div class="flex items-center gap-3 mb-4">
+          <span class="w-10 h-10 rounded-xl bg-teal-600/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-lg">
+            {config.icon}
+          </span>
+          <span class="text-xs font-mono text-slate-500 uppercase tracking-wider">
+            {config.subtitle}
+          </span>
+        </div>
+
+        <!-- Title -->
+        <h2 class="font-heading font-bold text-2xl md:text-3xl text-white mb-3">
+          {config.title}
+        </h2>
+
+        <!-- Description -->
+        <p class="text-slate-400 text-lg leading-relaxed max-w-2xl">
+          {config.description}
+        </p>
+      </div>
+
+      <!-- Signal Legend -->
+      {showLegend && (
+        <div class="flex-shrink-0 p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+          <h4 class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-3">
+            دليل الإشارات
+          </h4>
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+              <span class="text-sm text-slate-300">صعودي (Bullish)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-red-500"></span>
+              <span class="text-sm text-slate-300">هبوطي (Bearish)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-slate-400"></span>
+              <span class="text-sm text-slate-300">محايد (Neutral)</span>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+
+    <!-- Pattern Cards Grid -->
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {config.patterns.map((patternKey) => (
+        <CandlestickPattern
+          pattern={patternKey as any}
+          showAnimation={true}
+          size="md"
+          interactive={true}
+        />
+      ))}
+    </div>
+
+    <!-- Trading Tip -->
+    {config.tip && (
+      <div class="mt-10 p-5 rounded-xl bg-gradient-to-l from-teal-900/30 to-transparent border border-teal-500/20">
+        <div class="flex items-start gap-3">
+          <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-teal-500/20 flex items-center justify-center">
+            <svg class="w-4 h-4 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <h4 class="font-heading font-bold text-teal-400 text-sm mb-1">نصيحة التداول</h4>
+            <p class="text-slate-300 text-sm leading-relaxed">
+              {config.tip}
+            </p>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .candlestick-section {
+    /* Ensure proper stacking */
+    isolation: isolate;
+  }
+
+  /* Smooth fade-in for the entire section */
+  .candlestick-section {
+    animation: sectionFadeIn 0.6s ease-out;
+  }
+
+  @keyframes sectionFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .candlestick-section {
+      animation: none;
+    }
+  }
+</style>

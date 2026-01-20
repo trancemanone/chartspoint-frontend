@@ -1,0 +1,242 @@
+---
+/**
+ * Candlestick Patterns Demo Page
+ *
+ * Showcase page for the Japanese candlestick pattern visualization components.
+ * Displays all patterns organized by category with premium fintech styling.
+ */
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+import CandlestickPattern from '@components/charts/CandlestickPattern.astro';
+import CandlestickPatternGrid from '@components/charts/CandlestickPatternGrid.astro';
+import CandlestickPatternSection from '@components/charts/CandlestickPatternSection.astro';
+
+const title = 'أنماط الشموع اليابانية - عرض تفاعلي';
+const description = 'اكتشف أهم أنماط الشموع اليابانية المستخدمة في التحليل الفني مع تصورات تفاعلية متحركة';
+---
+
+<BaseLayout title={title} description={description} pillar="basics">
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden py-16 lg:py-24 bg-gradient-to-br from-navy-900 via-navy-800 to-slate-900">
+    <!-- Background Grid -->
+    <div class="absolute inset-0 pointer-events-none opacity-[0.03]">
+      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="hero-grid" width="60" height="60" patternUnits="userSpaceOnUse">
+            <path d="M 60 0 L 0 0 0 60" fill="none" stroke="white" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#hero-grid)"/>
+      </svg>
+    </div>
+
+    <!-- Glow Effects -->
+    <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-2xl pointer-events-none"></div>
+
+    <div class="container mx-auto px-4 lg:px-8 relative z-10">
+      <div class="max-w-4xl">
+        <!-- Badge -->
+        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/20 border border-teal-500/30 text-teal-400 text-sm font-medium mb-6">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          التحليل الفني
+        </span>
+
+        <h1 class="font-heading font-extrabold text-4xl md:text-5xl lg:text-6xl text-white mb-6 leading-tight">
+          أنماط الشموع اليابانية
+        </h1>
+
+        <p class="text-xl text-slate-300 leading-relaxed mb-8 max-w-2xl">
+          تعرف على أهم أنماط الشموع اليابانية المستخدمة في التحليل الفني مع تصورات
+          تفاعلية متحركة تساعدك على فهم كل نمط وإشاراته.
+        </p>
+
+        <!-- Stats Row -->
+        <div class="flex flex-wrap gap-8">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-teal-500/20 border border-teal-500/30 flex items-center justify-center">
+              <span class="text-teal-400 font-bold text-lg">16</span>
+            </div>
+            <div>
+              <span class="text-white font-medium">نمط</span>
+              <span class="text-slate-400 text-sm block">من الأنماط الأساسية</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
+              <span class="text-emerald-400 font-bold text-lg">3</span>
+            </div>
+            <div>
+              <span class="text-white font-medium">فئات</span>
+              <span class="text-slate-400 text-sm block">حسب عدد الشموع</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wave Transition -->
+    <div class="absolute bottom-0 left-0 right-0">
+      <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full" preserveAspectRatio="none">
+        <path d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,20 1440,30 L1440,80 L0,80 Z" fill="#F6F8FA"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <div class="bg-surface-page">
+    <div class="container mx-auto px-4 lg:px-8 py-12 lg:py-16">
+
+      <!-- Individual Pattern Demo -->
+      <section class="mb-16">
+        <h2 class="font-heading font-bold text-2xl text-navy-900 mb-6">
+          عرض الأنماط الفردية
+        </h2>
+        <p class="text-slate-600 mb-8 max-w-2xl">
+          كل بطاقة تعرض نمطاً واحداً مع تفاصيله الكاملة. مرر المؤشر فوق البطاقة لرؤية المزيد من المعلومات.
+        </p>
+
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+          <CandlestickPattern pattern="hammer" size="md" />
+          <CandlestickPattern pattern="shooting-star" size="md" />
+          <CandlestickPattern pattern="engulfing-bullish" size="md" />
+          <CandlestickPattern pattern="morning-star" size="md" />
+        </div>
+      </section>
+
+      <!-- Single Candle Patterns Section -->
+      <section class="mb-16">
+        <CandlestickPatternSection category="single" showLegend={true} />
+      </section>
+
+      <!-- Double Candle Patterns Section -->
+      <section class="mb-16">
+        <CandlestickPatternSection category="double" showLegend={false} />
+      </section>
+
+      <!-- Triple Candle Patterns Section -->
+      <section class="mb-16">
+        <CandlestickPatternSection category="triple" showLegend={false} />
+      </section>
+
+      <!-- Reversal Patterns Section -->
+      <section class="mb-16">
+        <h2 class="font-heading font-bold text-2xl text-navy-900 mb-8 flex items-center gap-3">
+          <svg class="w-8 h-8 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+          </svg>
+          أنماط الانعكاس الرئيسية
+        </h2>
+        <CandlestickPatternSection category="reversal" showLegend={true} variant="featured" />
+      </section>
+
+      <!-- Size Variants Demo -->
+      <section class="mb-16">
+        <h2 class="font-heading font-bold text-2xl text-navy-900 mb-6">
+          أحجام العرض المختلفة
+        </h2>
+        <p class="text-slate-600 mb-8">
+          يمكن عرض الأنماط بأحجام مختلفة حسب السياق: صغير، متوسط، أو كبير.
+        </p>
+
+        <div class="flex flex-wrap gap-6 items-end">
+          <div>
+            <span class="text-sm text-slate-500 block mb-2">صغير (sm)</span>
+            <CandlestickPattern pattern="doji" size="sm" />
+          </div>
+          <div>
+            <span class="text-sm text-slate-500 block mb-2">متوسط (md)</span>
+            <CandlestickPattern pattern="doji" size="md" />
+          </div>
+          <div>
+            <span class="text-sm text-slate-500 block mb-2">كبير (lg)</span>
+            <CandlestickPattern pattern="doji" size="lg" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Usage Instructions -->
+      <section class="bg-white rounded-2xl shadow-card p-8 lg:p-10">
+        <h2 class="font-heading font-bold text-2xl text-navy-900 mb-6">
+          كيفية الاستخدام في المقالات
+        </h2>
+
+        <div class="prose prose-lg max-w-none">
+          <p class="text-slate-600 leading-relaxed mb-6">
+            يمكن استخدام هذه المكونات بسهولة في أي مقال أو صفحة من خلال استيرادها مباشرة:
+          </p>
+
+          <div class="bg-navy-900 rounded-xl p-6 overflow-x-auto mb-6">
+            <pre class="text-sm text-slate-300 font-mono" dir="ltr"><code>{`---
+import CandlestickPattern from '@components/charts/CandlestickPattern.astro';
+import CandlestickPatternSection from '@components/charts/CandlestickPatternSection.astro';
+---
+
+<!-- عرض نمط واحد -->
+<CandlestickPattern
+  pattern="hammer"
+  title="نموذج المطرقة"
+  showAnimation={true}
+  size="md"
+/>
+
+<!-- عرض فئة كاملة -->
+<CandlestickPatternSection
+  category="single"
+  showLegend={true}
+/>`}</code></pre>
+          </div>
+
+          <h3 class="font-heading font-bold text-lg text-navy-800 mb-4">
+            الأنماط المتاحة
+          </h3>
+
+          <div class="grid md:grid-cols-3 gap-4 text-sm">
+            <div class="bg-slate-50 rounded-lg p-4">
+              <h4 class="font-bold text-navy-800 mb-2">شمعة واحدة</h4>
+              <ul class="text-slate-600 space-y-1" dir="ltr">
+                <li>doji</li>
+                <li>hammer</li>
+                <li>hanging-man</li>
+                <li>shooting-star</li>
+                <li>marubozu-bullish</li>
+                <li>marubozu-bearish</li>
+              </ul>
+            </div>
+            <div class="bg-slate-50 rounded-lg p-4">
+              <h4 class="font-bold text-navy-800 mb-2">شمعتين</h4>
+              <ul class="text-slate-600 space-y-1" dir="ltr">
+                <li>engulfing-bullish</li>
+                <li>engulfing-bearish</li>
+                <li>harami-bullish</li>
+                <li>harami-bearish</li>
+                <li>tweezer-top</li>
+                <li>tweezer-bottom</li>
+              </ul>
+            </div>
+            <div class="bg-slate-50 rounded-lg p-4">
+              <h4 class="font-bold text-navy-800 mb-2">ثلاث شموع</h4>
+              <ul class="text-slate-600 space-y-1" dir="ltr">
+                <li>morning-star</li>
+                <li>evening-star</li>
+                <li>three-white-soldiers</li>
+                <li>three-black-crows</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  /* Demo page specific styles */
+  pre code {
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+</style>

@@ -1,0 +1,291 @@
+---
+/**
+ * CandlestickPatternGrid.astro
+ *
+ * Premium grid display for Japanese candlestick pattern visualizations.
+ * Organizes patterns by category (single, double, triple) with
+ * institutional-grade styling and filtering capabilities.
+ *
+ * Features:
+ * - Category-based pattern organization
+ * - Responsive grid layout (mobile-first)
+ * - Filter tabs by pattern type
+ * - Premium styling with brand accents
+ * - RTL-optimized for Arabic content
+ *
+ * @example
+ * <CandlestickPatternGrid
+ *   category="single"
+ *   showTitle={true}
+ * />
+ */
+
+import CandlestickPattern from './CandlestickPattern.astro';
+
+export interface Props {
+  /** Filter patterns by category */
+  category?: 'all' | 'single' | 'double' | 'triple';
+  /** Show section title */
+  showTitle?: boolean;
+  /** Custom title override */
+  title?: string;
+  /** Show category tabs for filtering */
+  showTabs?: boolean;
+  /** Pattern card size */
+  size?: 'sm' | 'md' | 'lg';
+  /** Enable animations */
+  animated?: boolean;
+  /** Number of columns for the grid */
+  columns?: 2 | 3 | 4;
+}
+
+// Pattern categories with their patterns
+const PATTERN_CATEGORIES = {
+  single: {
+    title: 'أنماط الشمعة الواحدة',
+    titleEn: 'Single Candle Patterns',
+    description: 'أنماط تتكون من شمعة واحدة فقط وتعطي إشارات مبكرة',
+    patterns: [
+      'doji',
+      'hammer',
+      'hanging-man',
+      'shooting-star',
+      'marubozu-bullish',
+      'marubozu-bearish'
+    ] as const
+  },
+  double: {
+    title: 'أنماط الشمعتين',
+    titleEn: 'Double Candle Patterns',
+    description: 'أنماط تتكون من شمعتين متتاليتين وتؤكد انعكاس الاتجاه',
+    patterns: [
+      'engulfing-bullish',
+      'engulfing-bearish',
+      'harami-bullish',
+      'harami-bearish',
+      'tweezer-top',
+      'tweezer-bottom'
+    ] as const
+  },
+  triple: {
+    title: 'أنماط الشموع الثلاثة',
+    titleEn: 'Triple Candle Patterns',
+    description: 'أنماط قوية تتكون من ثلاث شمعات وتعطي إشارات موثوقة',
+    patterns: [
+      'morning-star',
+      'evening-star',
+      'three-white-soldiers',
+      'three-black-crows'
+    ] as const
+  }
+} as const;
+
+const {
+  category = 'all',
+  showTitle = true,
+  title,
+  showTabs = false,
+  size = 'md',
+  animated = true,
+  columns = 3
+} = Astro.props;
+
+// Get patterns based on category
+const getPatterns = () => {
+  if (category === 'all') {
+    return [
+      ...PATTERN_CATEGORIES.single.patterns,
+      ...PATTERN_CATEGORIES.double.patterns,
+      ...PATTERN_CATEGORIES.triple.patterns
+    ];
+  }
+  return PATTERN_CATEGORIES[category].patterns;
+};
+
+const patterns = getPatterns();
+const categoryData = category !== 'all' ? PATTERN_CATEGORIES[category] : null;
+const displayTitle = title || categoryData?.title || 'أنماط الشموع اليابانية';
+
+// Grid column classes based on prop
+const columnClasses = {
+  2: 'sm:grid-cols-2',
+  3: 'sm:grid-cols-2 lg:grid-cols-3',
+  4: 'sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+};
+---
+
+<section class="cp-pattern-grid-section py-12 lg:py-16" dir="rtl">
+  <!-- Section Header -->
+  {showTitle && (
+    <div class="mb-10 text-center">
+      <h2 class="font-heading font-bold text-2xl md:text-3xl text-navy-900 mb-3">
+        {displayTitle}
+      </h2>
+      {categoryData?.description && (
+        <p class="text-slate-600 text-lg max-w-2xl mx-auto">
+          {categoryData.description}
+        </p>
+      )}
+    </div>
+  )}
+
+  <!-- Category Tabs (Optional) -->
+  {showTabs && (
+    <div class="mb-8 flex flex-wrap justify-center gap-2" role="tablist">
+      <button
+        class:list={[
+          'cp-pattern-tab px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-300 touch-target-sm',
+          category === 'all'
+            ? 'bg-teal-600 text-white shadow-button-brand'
+            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+        ]}
+        data-category="all"
+        role="tab"
+        aria-selected={category === 'all'}
+      >
+        جميع الأنماط ({PATTERN_CATEGORIES.single.patterns.length + PATTERN_CATEGORIES.double.patterns.length + PATTERN_CATEGORIES.triple.patterns.length})
+      </button>
+      <button
+        class:list={[
+          'cp-pattern-tab px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-300 touch-target-sm',
+          category === 'single'
+            ? 'bg-teal-600 text-white shadow-button-brand'
+            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+        ]}
+        data-category="single"
+        role="tab"
+        aria-selected={category === 'single'}
+      >
+        شمعة واحدة ({PATTERN_CATEGORIES.single.patterns.length})
+      </button>
+      <button
+        class:list={[
+          'cp-pattern-tab px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-300 touch-target-sm',
+          category === 'double'
+            ? 'bg-teal-600 text-white shadow-button-brand'
+            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+        ]}
+        data-category="double"
+        role="tab"
+        aria-selected={category === 'double'}
+      >
+        شمعتين ({PATTERN_CATEGORIES.double.patterns.length})
+      </button>
+      <button
+        class:list={[
+          'cp-pattern-tab px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-300 touch-target-sm',
+          category === 'triple'
+            ? 'bg-teal-600 text-white shadow-button-brand'
+            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+        ]}
+        data-category="triple"
+        role="tab"
+        aria-selected={category === 'triple'}
+      >
+        ثلاث شمعات ({PATTERN_CATEGORIES.triple.patterns.length})
+      </button>
+    </div>
+  )}
+
+  <!-- Patterns Grid -->
+  <div
+    class:list={[
+      'grid gap-5',
+      columnClasses[columns]
+    ]}
+    role="tabpanel"
+  >
+    {patterns.map((patternKey) => (
+      <CandlestickPattern
+        pattern={patternKey as any}
+        showAnimation={animated}
+        size={size}
+        interactive={true}
+      />
+    ))}
+  </div>
+</section>
+
+<style>
+  /* Grid responsive adjustments */
+  .cp-pattern-grid-section {
+    container-type: inline-size;
+  }
+
+  /* Ensure cards don't get too narrow */
+  @container (max-width: 640px) {
+    .cp-pattern-grid-section .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Tab active state indicator */
+  .cp-pattern-tab[aria-selected="true"] {
+    position: relative;
+  }
+
+  .cp-pattern-tab[aria-selected="true"]::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #0891B2;
+  }
+
+  /* Tab focus states */
+  .cp-pattern-tab:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.3);
+  }
+
+  .cp-pattern-tab:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.3);
+  }
+
+  /* Staggered animation for cards */
+  .cp-pattern-grid-section .grid > * {
+    opacity: 0;
+    animation: gridCardFadeIn 0.4s ease-out forwards;
+  }
+
+  .cp-pattern-grid-section .grid > *:nth-child(1) { animation-delay: 0.05s; }
+  .cp-pattern-grid-section .grid > *:nth-child(2) { animation-delay: 0.1s; }
+  .cp-pattern-grid-section .grid > *:nth-child(3) { animation-delay: 0.15s; }
+  .cp-pattern-grid-section .grid > *:nth-child(4) { animation-delay: 0.2s; }
+  .cp-pattern-grid-section .grid > *:nth-child(5) { animation-delay: 0.25s; }
+  .cp-pattern-grid-section .grid > *:nth-child(6) { animation-delay: 0.3s; }
+  .cp-pattern-grid-section .grid > *:nth-child(7) { animation-delay: 0.35s; }
+  .cp-pattern-grid-section .grid > *:nth-child(8) { animation-delay: 0.4s; }
+  .cp-pattern-grid-section .grid > *:nth-child(9) { animation-delay: 0.45s; }
+  .cp-pattern-grid-section .grid > *:nth-child(10) { animation-delay: 0.5s; }
+  .cp-pattern-grid-section .grid > *:nth-child(11) { animation-delay: 0.55s; }
+  .cp-pattern-grid-section .grid > *:nth-child(12) { animation-delay: 0.6s; }
+  .cp-pattern-grid-section .grid > *:nth-child(13) { animation-delay: 0.65s; }
+  .cp-pattern-grid-section .grid > *:nth-child(14) { animation-delay: 0.7s; }
+  .cp-pattern-grid-section .grid > *:nth-child(15) { animation-delay: 0.75s; }
+  .cp-pattern-grid-section .grid > *:nth-child(16) { animation-delay: 0.8s; }
+
+  @keyframes gridCardFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cp-pattern-grid-section .grid > * {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

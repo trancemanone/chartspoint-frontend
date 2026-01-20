@@ -1,0 +1,906 @@
+---
+/**
+ * CandlestickPattern.astro
+ *
+ * Institutional-grade Japanese candlestick pattern visualization component.
+ * Designed for CHARTSPOINT technical analysis education platform.
+ *
+ * Features:
+ * - Premium fintech aesthetic (Bloomberg/TradingView inspired)
+ * - Precise SVG candlestick drawings per UX specification
+ * - Animated wicks and bodies with staggered timing
+ * - Bilingual labels (Arabic primary + English secondary)
+ * - Signal badges with 5-point reliability meters
+ * - Hover states with glow effects
+ * - Reduced motion support for accessibility
+ * - Dark premium backgrounds with gradient effects
+ *
+ * SVG Specifications:
+ * - Body width: 24px
+ * - Wick width: 2px stroke
+ * - Border radius: 2px
+ * - Viewbox single: "0 0 120 200"
+ * - Viewbox double: "0 0 200 200"
+ * - Viewbox triple: "0 0 280 200"
+ * - Candle gap: 32px
+ *
+ * @example
+ * <CandlestickPattern
+ *   pattern="hammer"
+ *   title="نموذج المطرقة"
+ *   description="نموذج انعكاسي صعودي يظهر في نهاية الاتجاه الهابط"
+ *   showAnimation={true}
+ * />
+ */
+
+export interface Props {
+  /** Pattern identifier - determines which SVG visualization to render */
+  pattern:
+    | 'doji'
+    | 'hammer'
+    | 'hanging-man'
+    | 'shooting-star'
+    | 'marubozu-bullish'
+    | 'marubozu-bearish'
+    | 'engulfing-bullish'
+    | 'engulfing-bearish'
+    | 'harami-bullish'
+    | 'harami-bearish'
+    | 'tweezer-top'
+    | 'tweezer-bottom'
+    | 'morning-star'
+    | 'evening-star'
+    | 'three-white-soldiers'
+    | 'three-black-crows';
+  /** Arabic pattern name override */
+  title?: string;
+  /** Arabic description override */
+  description?: string;
+  /** Enable drawing animations */
+  showAnimation?: boolean;
+  /** Show expanded details on hover */
+  interactive?: boolean;
+  /** Size variant */
+  size?: 'sm' | 'md' | 'lg';
+}
+
+// Pattern configuration data
+interface PatternConfig {
+  nameAr: string;
+  nameEn: string;
+  signal: 'bullish' | 'bearish' | 'neutral';
+  signalAr: string;
+  type: 'single' | 'double' | 'triple';
+  typeAr: string;
+  reliability: 1 | 2 | 3 | 4 | 5;
+  description: string;
+}
+
+const PATTERN_DATA: Record<string, PatternConfig> = {
+  // Single Candle Patterns (6)
+  'doji': {
+    nameAr: 'دوجي',
+    nameEn: 'Doji',
+    signal: 'neutral',
+    signalAr: 'محايد',
+    type: 'single',
+    typeAr: 'شمعة واحدة',
+    reliability: 3,
+    description: 'يشير إلى تردد السوق وتوازن قوى العرض والطلب'
+  },
+  'hammer': {
+    nameAr: 'المطرقة',
+    nameEn: 'Hammer',
+    signal: 'bullish',
+    signalAr: 'صعودي',
+    type: 'single',
+    typeAr: 'شمعة واحدة',
+    reliability: 4,
+    description: 'نموذج انعكاسي صعودي يظهر في نهاية الاتجاه الهابط'
+  },
+  'hanging-man': {
+    nameAr: 'الرجل المشنوق',
+    nameEn: 'Hanging Man',
+    signal: 'bearish',
+    signalAr: 'هبوطي',
+    type: 'single',
+    typeAr: 'شمعة واحدة',
+    reliability: 3,
+    description: 'نموذج انعكاسي هبوطي يظهر في نهاية الاتجاه الصاعد'
+  },
+  'shooting-star': {
+    nameAr: 'الشهاب',
+    nameEn: 'Shooting Star',
+    signal: 'bearish',
+    signalAr: 'هبوطي',
+    type: 'single',
+    typeAr: 'شمعة واحدة',
+    reliability: 4,
+    description: 'نموذج انعكاسي هبوطي يدل على ضعف المشترين'
+  },
+  'marubozu-bullish': {
+    nameAr: 'ماروبوزو صاعد',
+    nameEn: 'Bullish Marubozu',
+    signal: 'bullish',
+    signalAr: 'صعودي قوي',
+    type: 'single',
+    typeAr: 'شمعة واحدة',
+    reliability: 5,
+    description: 'شمعة قوية بدون ظلال تدل على سيطرة المشترين'
+  },
+  'marubozu-bearish': {
+    nameAr: 'ماروبوزو هابط',
+    nameEn: 'Bearish Marubozu',
+    signal: 'bearish',
+    signalAr: 'هبوطي قوي',
+    type: 'single',
+    typeAr: 'شمعة واحدة',
+    reliability: 5,
+    description: 'شمعة قوية بدون ظلال تدل على سيطرة البائعين'
+  },
+  // Double Candle Patterns (6)
+  'engulfing-bullish': {
+    nameAr: 'الابتلاع الصعودي',
+    nameEn: 'Bullish Engulfing',
+    signal: 'bullish',
+    signalAr: 'صعودي قوي',
+    type: 'double',
+    typeAr: 'شمعتان',
+    reliability: 5,
+    description: 'نموذج انعكاسي قوي حيث تبتلع الشمعة الصاعدة السابقة'
+  },
+  'engulfing-bearish': {
+    nameAr: 'الابتلاع الهبوطي',
+    nameEn: 'Bearish Engulfing',
+    signal: 'bearish',
+    signalAr: 'هبوطي قوي',
+    type: 'double',
+    typeAr: 'شمعتان',
+    reliability: 5,
+    description: 'نموذج انعكاسي قوي حيث تبتلع الشمعة الهابطة السابقة'
+  },
+  'harami-bullish': {
+    nameAr: 'هارامي صعودي',
+    nameEn: 'Bullish Harami',
+    signal: 'bullish',
+    signalAr: 'صعودي',
+    type: 'double',
+    typeAr: 'شمعتان',
+    reliability: 3,
+    description: 'شمعة صغيرة داخل جسم الشمعة السابقة تشير لانعكاس محتمل'
+  },
+  'harami-bearish': {
+    nameAr: 'هارامي هبوطي',
+    nameEn: 'Bearish Harami',
+    signal: 'bearish',
+    signalAr: 'هبوطي',
+    type: 'double',
+    typeAr: 'شمعتان',
+    reliability: 3,
+    description: 'شمعة صغيرة داخل جسم الشمعة السابقة تشير لانعكاس محتمل'
+  },
+  'tweezer-top': {
+    nameAr: 'قمة الملقط',
+    nameEn: 'Tweezer Top',
+    signal: 'bearish',
+    signalAr: 'هبوطي',
+    type: 'double',
+    typeAr: 'شمعتان',
+    reliability: 4,
+    description: 'شمعتان بقمم متساوية تشيران لمقاومة قوية'
+  },
+  'tweezer-bottom': {
+    nameAr: 'قاع الملقط',
+    nameEn: 'Tweezer Bottom',
+    signal: 'bullish',
+    signalAr: 'صعودي',
+    type: 'double',
+    typeAr: 'شمعتان',
+    reliability: 4,
+    description: 'شمعتان بقيعان متساوية تشيران لدعم قوي'
+  },
+  // Triple Candle Patterns (4)
+  'morning-star': {
+    nameAr: 'نجمة الصباح',
+    nameEn: 'Morning Star',
+    signal: 'bullish',
+    signalAr: 'صعودي قوي',
+    type: 'triple',
+    typeAr: 'ثلاث شمعات',
+    reliability: 5,
+    description: 'نموذج انعكاسي قوي يتكون من ثلاث شمعات يشير لبداية صعود'
+  },
+  'evening-star': {
+    nameAr: 'نجمة المساء',
+    nameEn: 'Evening Star',
+    signal: 'bearish',
+    signalAr: 'هبوطي قوي',
+    type: 'triple',
+    typeAr: 'ثلاث شمعات',
+    reliability: 5,
+    description: 'نموذج انعكاسي قوي يتكون من ثلاث شمعات يشير لبداية هبوط'
+  },
+  'three-white-soldiers': {
+    nameAr: 'ثلاثة جنود بيض',
+    nameEn: 'Three White Soldiers',
+    signal: 'bullish',
+    signalAr: 'صعودي قوي جدا',
+    type: 'triple',
+    typeAr: 'ثلاث شمعات',
+    reliability: 5,
+    description: 'ثلاث شمعات صاعدة متتالية تؤكد قوة الاتجاه الصعودي'
+  },
+  'three-black-crows': {
+    nameAr: 'ثلاثة غربان سود',
+    nameEn: 'Three Black Crows',
+    signal: 'bearish',
+    signalAr: 'هبوطي قوي جدا',
+    type: 'triple',
+    typeAr: 'ثلاث شمعات',
+    reliability: 5,
+    description: 'ثلاث شمعات هابطة متتالية تؤكد قوة الاتجاه الهبوطي'
+  },
+};
+
+const {
+  pattern,
+  title,
+  description,
+  showAnimation = true,
+  interactive = true,
+  size = 'md'
+} = Astro.props;
+
+const config = PATTERN_DATA[pattern];
+const displayTitle = title || config?.nameAr || pattern;
+const displayDescription = description || config?.description || '';
+
+// Get viewbox based on pattern type
+const getViewbox = (type: 'single' | 'double' | 'triple') => {
+  switch (type) {
+    case 'single': return '0 0 120 200';
+    case 'double': return '0 0 200 200';
+    case 'triple': return '0 0 280 200';
+    default: return '0 0 200 200';
+  }
+};
+
+const viewbox = config ? getViewbox(config.type) : '0 0 200 200';
+
+// Size configurations
+const sizeClasses = {
+  sm: 'min-h-[300px]',
+  md: 'min-h-[360px]',
+  lg: 'min-h-[440px]'
+};
+
+const chartHeights = {
+  sm: 140,
+  md: 180,
+  lg: 220
+};
+
+// Signal color classes using UX spec colors
+const signalColors = {
+  bullish: {
+    badge: 'bg-cp-bull/20 text-cp-bull border-cp-bull/30',
+    glow: 'var(--cp-bull-glow)',
+    accent: 'var(--cp-bull-500)',
+    meter: 'bg-cp-bull'
+  },
+  bearish: {
+    badge: 'bg-cp-bear/20 text-cp-bear border-cp-bear/30',
+    glow: 'var(--cp-bear-glow)',
+    accent: 'var(--cp-bear-500)',
+    meter: 'bg-cp-bear'
+  },
+  neutral: {
+    badge: 'bg-cp-neutral/20 text-cp-neutral border-cp-neutral/30',
+    glow: 'var(--cp-neutral-glow)',
+    accent: 'var(--cp-neutral-500)',
+    meter: 'bg-cp-neutral'
+  }
+};
+
+const signalStyle = config ? signalColors[config.signal] : signalColors.neutral;
+---
+
+<div
+  class:list={[
+    'cp-candlestick-card',
+    'group relative rounded-2xl overflow-hidden',
+    'bg-gradient-to-b from-cp-ink-900 to-cp-ink-950',
+    'border border-white/10 hover:border-cp-gold/40',
+    'transition-all duration-500 ease-out',
+    interactive && 'cursor-pointer hover:scale-[1.02] hover:shadow-2xl',
+    sizeClasses[size]
+  ]}
+  data-pattern={pattern}
+  data-animated={showAnimation}
+  data-type={config?.type || 'single'}
+  tabindex="0"
+  role="article"
+  aria-label={`${displayTitle} - ${config?.nameEn || pattern} - ${config?.signalAr || ''}`}
+>
+  <!-- Chart Area Background (180px height per spec) -->
+  <div class="cp-chart-area relative" style={`height: ${chartHeights[size]}px;`}>
+    <!-- Grid Pattern Background -->
+    <svg class="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id={`cp-grid-${pattern}`} width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M 20 0 L 0 0 0 20" fill="none" stroke="white" stroke-width="0.5"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill={`url(#cp-grid-${pattern})`}/>
+    </svg>
+
+    <!-- Radial Glow Effect -->
+    <div
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full blur-3xl opacity-30 transition-opacity duration-500 group-hover:opacity-50"
+      style={`background: ${signalStyle.glow};`}
+    ></div>
+
+    <!-- SVG Candlestick Visualization -->
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <svg
+        class="cp-pattern-svg w-full h-full"
+        viewBox={viewbox}
+        xmlns="http://www.w3.org/2000/svg"
+        role="img"
+        aria-label={`${displayTitle} - ${config?.nameEn || pattern}`}
+        preserveAspectRatio="xMidYMid meet"
+      >
+        <defs>
+          <!-- Bullish (Green) Gradient -->
+          <linearGradient id={`cp-bull-grad-${pattern}`} x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="var(--cp-bull-500)"/>
+            <stop offset="100%" stop-color="var(--cp-bull-600)"/>
+          </linearGradient>
+
+          <!-- Bearish (Red) Gradient -->
+          <linearGradient id={`cp-bear-grad-${pattern}`} x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="var(--cp-bear-500)"/>
+            <stop offset="100%" stop-color="var(--cp-bear-600)"/>
+          </linearGradient>
+
+          <!-- Neutral Gradient -->
+          <linearGradient id={`cp-neutral-grad-${pattern}`} x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="var(--cp-neutral-500)"/>
+            <stop offset="100%" stop-color="#64748B"/>
+          </linearGradient>
+
+          <!-- Glow Filter for Hover -->
+          <filter id={`cp-glow-${pattern}`} x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+
+          <!-- Drop Shadow Filter -->
+          <filter id={`cp-shadow-${pattern}`} x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="black" flood-opacity="0.4"/>
+          </filter>
+        </defs>
+
+        <!-- Price Level Reference Lines -->
+        <g class="cp-price-levels" opacity="0.1">
+          <line x1="5%" y1="25%" x2="95%" y2="25%" stroke="white" stroke-width="0.5" stroke-dasharray="4,4"/>
+          <line x1="5%" y1="50%" x2="95%" y2="50%" stroke="white" stroke-width="0.5" stroke-dasharray="4,4"/>
+          <line x1="5%" y1="75%" x2="95%" y2="75%" stroke="white" stroke-width="0.5" stroke-dasharray="4,4"/>
+        </g>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             SINGLE CANDLE PATTERNS (viewbox: 120x200)
+             Body: 24px wide, centered at x=48 (48 to 72)
+             ═══════════════════════════════════════════════════════════════ -->
+
+        {pattern === 'doji' && (
+          <g class="cp-candles" filter={`url(#cp-shadow-${pattern})`}>
+            <!-- Doji: Thin line body with equal wicks -->
+            <line class="cp-wick cp-wick-1" x1="60" y1="30" x2="60" y2="170" stroke="var(--cp-neutral-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-1" x="48" y="97" width="24" height="6" fill={`url(#cp-neutral-grad-${pattern})`} rx="2"/>
+          </g>
+        )}
+
+        {pattern === 'hammer' && (
+          <g class="cp-candles" filter={`url(#cp-shadow-${pattern})`}>
+            <!-- Hammer: Small body at top, long lower wick (2x body) -->
+            <line class="cp-wick cp-wick-1" x1="60" y1="40" x2="60" y2="170" stroke="var(--cp-bull-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-1" x="48" y="40" width="24" height="30" fill={`url(#cp-bull-grad-${pattern})`} rx="2"/>
+          </g>
+        )}
+
+        {pattern === 'hanging-man' && (
+          <g class="cp-candles" filter={`url(#cp-shadow-${pattern})`}>
+            <!-- Hanging Man: Same shape as hammer, bearish context -->
+            <line class="cp-wick cp-wick-1" x1="60" y1="40" x2="60" y2="170" stroke="var(--cp-bear-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-1" x="48" y="40" width="24" height="30" fill={`url(#cp-bear-grad-${pattern})`} rx="2"/>
+          </g>
+        )}
+
+        {pattern === 'shooting-star' && (
+          <g class="cp-candles" filter={`url(#cp-shadow-${pattern})`}>
+            <!-- Shooting Star: Small body at bottom, long upper wick -->
+            <line class="cp-wick cp-wick-1" x1="60" y1="30" x2="60" y2="160" stroke="var(--cp-bear-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-1" x="48" y="130" width="24" height="30" fill={`url(#cp-bear-grad-${pattern})`} rx="2"/>
+          </g>
+        )}
+
+        {pattern === 'marubozu-bullish' && (
+          <g class="cp-candles" filter={`url(#cp-shadow-${pattern})`}>
+            <!-- Bullish Marubozu: Full body, no wicks -->
+            <rect class="cp-body cp-body-1" x="48" y="35" width="24" height="130" fill={`url(#cp-bull-grad-${pattern})`} rx="2"/>
+          </g>
+        )}
+
+        {pattern === 'marubozu-bearish' && (
+          <g class="cp-candles" filter={`url(#cp-shadow-${pattern})`}>
+            <!-- Bearish Marubozu: Full body, no wicks -->
+            <rect class="cp-body cp-body-1" x="48" y="35" width="24" height="130" fill={`url(#cp-bear-grad-${pattern})`} rx="2"/>
+          </g>
+        )}
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             DOUBLE CANDLE PATTERNS (viewbox: 200x200)
+             Candle 1 center: x=68 (body 56-80)
+             Candle 2 center: x=132 (body 120-144)
+             Gap: 32px between candle centers
+             ═══════════════════════════════════════════════════════════════ -->
+
+        {pattern === 'engulfing-bullish' && (
+          <g class="cp-candles" filter={`url(#cp-shadow-${pattern})`}>
+            <!-- First: Small bearish candle -->
+            <line class="cp-wick cp-wick-1" x1="68" y1="60" x2="68" y2="120" stroke="var(--cp-bear-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-1" x="56" y="70" width="24" height="40" fill={`url(#cp-bear-grad-${pattern})`} rx="2"/>
+            <!-- Second: Large bullish candle engulfing -->
+            <line class="cp-wick cp-wick-2" x1="132" y1="40" x2="132" y2="160" stroke="var(--cp-bull-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-2" x="120" y="50" width="24" height="100" fill={`url(#cp-bull-grad-${pattern})`} rx="2"/>
+          </g>
+        )}
+
+        {pattern === 'engulfing-bearish' && (
+          <g class="cp-candles" filter={`url(#cp-shadow-${pattern})`}>
+            <!-- First: Small bullish candle -->
+            <line class="cp-wick cp-wick-1" x1="68" y1="80" x2="68" y2="140" stroke="var(--cp-bull-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-1" x="56" y="90" width="24" height="40" fill={`url(#cp-bull-grad-${pattern})`} rx="2"/>
+            <!-- Second: Large bearish candle engulfing -->
+            <line class="cp-wick cp-wick-2" x1="132" y1="40" x2="132" y2="160" stroke="var(--cp-bear-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-2" x="120" y="50" width="24" height="100" fill={`url(#cp-bear-grad-${pattern})`} rx="2"/>
+          </g>
+        )}
+
+        {pattern === 'harami-bullish' && (
+          <g class="cp-candles" filter={`url(#cp-shadow-${pattern})`}>
+            <!-- First: Large bearish candle -->
+            <line class="cp-wick cp-wick-1" x1="68" y1="35" x2="68" y2="165" stroke="var(--cp-bear-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-1" x="56" y="50" width="24" height="100" fill={`url(#cp-bear-grad-${pattern})`} rx="2"/>
+            <!-- Second: Small bullish candle inside -->
+            <line class="cp-wick cp-wick-2" x1="132" y1="75" x2="132" y2="125" stroke="var(--cp-bull-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-2" x="120" y="80" width="24" height="40" fill={`url(#cp-bull-grad-${pattern})`} rx="2"/>
+          </g>
+        )}
+
+        {pattern === 'harami-bearish' && (
+          <g class="cp-candles" filter={`url(#cp-shadow-${pattern})`}>
+            <!-- First: Large bullish candle -->
+            <line class="cp-wick cp-wick-1" x1="68" y1="35" x2="68" y2="165" stroke="var(--cp-bull-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-1" x="56" y="50" width="24" height="100" fill={`url(#cp-bull-grad-${pattern})`} rx="2"/>
+            <!-- Second: Small bearish candle inside -->
+            <line class="cp-wick cp-wick-2" x1="132" y1="75" x2="132" y2="125" stroke="var(--cp-bear-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-2" x="120" y="80" width="24" height="40" fill={`url(#cp-bear-grad-${pattern})`} rx="2"/>
+          </g>
+        )}
+
+        {pattern === 'tweezer-top' && (
+          <g class="cp-candles" filter={`url(#cp-shadow-${pattern})`}>
+            <!-- First: Bullish candle with high at top -->
+            <line class="cp-wick cp-wick-1" x1="68" y1="40" x2="68" y2="130" stroke="var(--cp-bull-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-1" x="56" y="60" width="24" height="60" fill={`url(#cp-bull-grad-${pattern})`} rx="2"/>
+            <!-- Second: Bearish candle with same high -->
+            <line class="cp-wick cp-wick-2" x1="132" y1="40" x2="132" y2="140" stroke="var(--cp-bear-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-2" x="120" y="50" width="24" height="70" fill={`url(#cp-bear-grad-${pattern})`} rx="2"/>
+            <!-- Resistance level line -->
+            <line x1="40" y1="40" x2="160" y2="40" stroke="var(--cp-gold-500)" stroke-width="1.5" stroke-dasharray="6,3" opacity="0.7"/>
+          </g>
+        )}
+
+        {pattern === 'tweezer-bottom' && (
+          <g class="cp-candles" filter={`url(#cp-shadow-${pattern})`}>
+            <!-- First: Bearish candle with low at bottom -->
+            <line class="cp-wick cp-wick-1" x1="68" y1="70" x2="68" y2="160" stroke="var(--cp-bear-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-1" x="56" y="80" width="24" height="60" fill={`url(#cp-bear-grad-${pattern})`} rx="2"/>
+            <!-- Second: Bullish candle with same low -->
+            <line class="cp-wick cp-wick-2" x1="132" y1="60" x2="132" y2="160" stroke="var(--cp-bull-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-2" x="120" y="80" width="24" height="70" fill={`url(#cp-bull-grad-${pattern})`} rx="2"/>
+            <!-- Support level line -->
+            <line x1="40" y1="160" x2="160" y2="160" stroke="var(--cp-gold-500)" stroke-width="1.5" stroke-dasharray="6,3" opacity="0.7"/>
+          </g>
+        )}
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             TRIPLE CANDLE PATTERNS (viewbox: 280x200)
+             Candle 1 center: x=60 (body 48-72)
+             Candle 2 center: x=140 (body 128-152)
+             Candle 3 center: x=220 (body 208-232)
+             Gap: 80px between candle centers
+             ═══════════════════════════════════════════════════════════════ -->
+
+        {pattern === 'morning-star' && (
+          <g class="cp-candles" filter={`url(#cp-shadow-${pattern})`}>
+            <!-- First: Large bearish candle -->
+            <line class="cp-wick cp-wick-1" x1="60" y1="30" x2="60" y2="110" stroke="var(--cp-bear-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-1" x="48" y="40" width="24" height="60" fill={`url(#cp-bear-grad-${pattern})`} rx="2"/>
+            <!-- Second: Small doji/star (gap down) -->
+            <line class="cp-wick cp-wick-2" x1="140" y1="115" x2="140" y2="155" stroke="var(--cp-neutral-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-2" x="128" y="130" width="24" height="10" fill={`url(#cp-neutral-grad-${pattern})`} rx="2"/>
+            <!-- Third: Large bullish candle -->
+            <line class="cp-wick cp-wick-3" x1="220" y1="50" x2="220" y2="130" stroke="var(--cp-bull-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-3" x="208" y="60" width="24" height="60" fill={`url(#cp-bull-grad-${pattern})`} rx="2"/>
+          </g>
+        )}
+
+        {pattern === 'evening-star' && (
+          <g class="cp-candles" filter={`url(#cp-shadow-${pattern})`}>
+            <!-- First: Large bullish candle -->
+            <line class="cp-wick cp-wick-1" x1="60" y1="90" x2="60" y2="170" stroke="var(--cp-bull-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-1" x="48" y="100" width="24" height="60" fill={`url(#cp-bull-grad-${pattern})`} rx="2"/>
+            <!-- Second: Small doji/star (gap up) -->
+            <line class="cp-wick cp-wick-2" x1="140" y1="45" x2="140" y2="85" stroke="var(--cp-neutral-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-2" x="128" y="60" width="24" height="10" fill={`url(#cp-neutral-grad-${pattern})`} rx="2"/>
+            <!-- Third: Large bearish candle -->
+            <line class="cp-wick cp-wick-3" x1="220" y1="70" x2="220" y2="150" stroke="var(--cp-bear-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-3" x="208" y="80" width="24" height="60" fill={`url(#cp-bear-grad-${pattern})`} rx="2"/>
+          </g>
+        )}
+
+        {pattern === 'three-white-soldiers' && (
+          <g class="cp-candles" filter={`url(#cp-shadow-${pattern})`}>
+            <!-- First bullish candle (lowest) -->
+            <line class="cp-wick cp-wick-1" x1="60" y1="120" x2="60" y2="170" stroke="var(--cp-bull-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-1" x="48" y="125" width="24" height="40" fill={`url(#cp-bull-grad-${pattern})`} rx="2"/>
+            <!-- Second bullish candle (middle, higher) -->
+            <line class="cp-wick cp-wick-2" x1="140" y1="80" x2="140" y2="130" stroke="var(--cp-bull-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-2" x="128" y="85" width="24" height="40" fill={`url(#cp-bull-grad-${pattern})`} rx="2"/>
+            <!-- Third bullish candle (highest) -->
+            <line class="cp-wick cp-wick-3" x1="220" y1="40" x2="220" y2="90" stroke="var(--cp-bull-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-3" x="208" y="45" width="24" height="40" fill={`url(#cp-bull-grad-${pattern})`} rx="2"/>
+          </g>
+        )}
+
+        {pattern === 'three-black-crows' && (
+          <g class="cp-candles" filter={`url(#cp-shadow-${pattern})`}>
+            <!-- First bearish candle (highest) -->
+            <line class="cp-wick cp-wick-1" x1="60" y1="30" x2="60" y2="80" stroke="var(--cp-bear-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-1" x="48" y="35" width="24" height="40" fill={`url(#cp-bear-grad-${pattern})`} rx="2"/>
+            <!-- Second bearish candle (middle, lower) -->
+            <line class="cp-wick cp-wick-2" x1="140" y1="70" x2="140" y2="120" stroke="var(--cp-bear-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-2" x="128" y="75" width="24" height="40" fill={`url(#cp-bear-grad-${pattern})`} rx="2"/>
+            <!-- Third bearish candle (lowest) -->
+            <line class="cp-wick cp-wick-3" x1="220" y1="110" x2="220" y2="160" stroke="var(--cp-bear-500)" stroke-width="2" stroke-linecap="round"/>
+            <rect class="cp-body cp-body-3" x="208" y="115" width="24" height="40" fill={`url(#cp-bear-grad-${pattern})`} rx="2"/>
+          </g>
+        )}
+      </svg>
+    </div>
+  </div>
+
+  <!-- Content Area -->
+  <div class="relative z-10 p-5 pt-4 border-t border-white/5">
+    <!-- Header: Signal Badge + Reliability -->
+    <div class="flex items-center justify-between mb-3">
+      <!-- Signal Badge -->
+      {config && (
+        <span
+          class:list={[
+            'cp-signal-badge px-3 py-1.5 rounded-full text-xs font-bold border',
+            signalStyle.badge
+          ]}
+        >
+          {config.signalAr}
+        </span>
+      )}
+
+      <!-- Reliability Meter -->
+      {config && (
+        <div class="flex items-center gap-1.5" aria-label={`الموثوقية: ${config.reliability} من 5`}>
+          {[1, 2, 3, 4, 5].map((level) => (
+            <div
+              class:list={[
+                'cp-reliability-dot w-2.5 h-2.5 rounded-full transition-all duration-300',
+                level <= config.reliability ? signalStyle.meter : 'bg-slate-700'
+              ]}
+              aria-hidden="true"
+            ></div>
+          ))}
+        </div>
+      )}
+    </div>
+
+    <!-- Pattern Names -->
+    <div class="mb-2">
+      <h3 class="font-heading font-bold text-white text-lg leading-tight mb-0.5">
+        {displayTitle}
+      </h3>
+      {config && (
+        <span class="text-xs text-slate-500 font-mono tracking-wide">{config.nameEn}</span>
+      )}
+    </div>
+
+    <!-- Description -->
+    <p class="text-sm text-slate-400 leading-relaxed line-clamp-2 group-hover:line-clamp-none transition-all duration-300">
+      {displayDescription}
+    </p>
+  </div>
+
+  <!-- Gold Accent Bar (visible on hover) -->
+  <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cp-gold to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+  <!-- Hover Glow Overlay -->
+  <div
+    class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-2xl"
+    style={`box-shadow: inset 0 0 80px ${signalStyle.glow};`}
+  ></div>
+</div>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════════
+     CHARTSPOINT CANDLESTICK PATTERN CARD STYLES
+     Institutional-grade financial visualization
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  /* CSS Custom Properties - UX Design Specification Colors */
+  :root {
+    /* Backgrounds */
+    --cp-ink-950: #0A1628;
+    --cp-ink-900: #102941;
+
+    /* Bullish (Green) */
+    --cp-bull-500: #10B981;
+    --cp-bull-600: #059669;
+    --cp-bull-glow: rgba(16, 185, 129, 0.4);
+
+    /* Bearish (Red) */
+    --cp-bear-500: #EF4444;
+    --cp-bear-600: #DC2626;
+    --cp-bear-glow: rgba(239, 68, 68, 0.4);
+
+    /* Neutral */
+    --cp-neutral-500: #94A3B8;
+    --cp-neutral-glow: rgba(148, 163, 184, 0.3);
+
+    /* Gold Accent */
+    --cp-gold-500: #d5a035;
+
+    /* Teal Brand */
+    --cp-teal-400: #14B8A6;
+    --cp-teal-500: #0891B2;
+  }
+
+  .cp-candlestick-card {
+    /* Container query support */
+    container-type: inline-size;
+
+    /* Custom property scoping */
+    --animation-play-state: running;
+  }
+
+  /* Utility classes for UX spec colors */
+  .bg-cp-bull { background-color: var(--cp-bull-500); }
+  .bg-cp-bear { background-color: var(--cp-bear-500); }
+  .bg-cp-neutral { background-color: var(--cp-neutral-500); }
+  .bg-cp-gold { background-color: var(--cp-gold-500); }
+
+  .text-cp-bull { color: var(--cp-bull-500); }
+  .text-cp-bear { color: var(--cp-bear-500); }
+  .text-cp-neutral { color: var(--cp-neutral-500); }
+  .text-cp-gold { color: var(--cp-gold-500); }
+
+  .border-cp-gold\/40 { border-color: rgba(213, 160, 53, 0.4); }
+
+  .from-cp-ink-900 { --tw-gradient-from: var(--cp-ink-900); }
+  .to-cp-ink-950 { --tw-gradient-to: var(--cp-ink-950); }
+  .bg-gradient-to-b { background-image: linear-gradient(to bottom, var(--tw-gradient-from), var(--tw-gradient-to)); }
+
+  .via-cp-gold { --tw-gradient-via: var(--cp-gold-500); }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     CANDLESTICK DRAWING ANIMATIONS (UX Spec)
+     Wicks extend first, then bodies fill
+     Staggered delays for multi-candle patterns
+     ───────────────────────────────────────────────────────────────────────── */
+
+  /* Wick Extension Animation */
+  @keyframes cp-wick-extend {
+    0% {
+      stroke-dashoffset: 200;
+      opacity: 0;
+    }
+    30% {
+      opacity: 1;
+    }
+    100% {
+      stroke-dashoffset: 0;
+      opacity: 1;
+    }
+  }
+
+  /* Body Fill Animation */
+  @keyframes cp-body-fill {
+    0% {
+      transform: scaleY(0);
+      opacity: 0;
+    }
+    100% {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+  }
+
+  /* Apply animations when enabled */
+  .cp-candlestick-card[data-animated="true"] .cp-wick {
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+    animation: cp-wick-extend 0.6s ease-out forwards;
+    animation-play-state: var(--animation-play-state);
+  }
+
+  .cp-candlestick-card[data-animated="true"] .cp-body {
+    transform-origin: center;
+    transform: scaleY(0);
+    animation: cp-body-fill 0.4s ease-out forwards;
+    animation-play-state: var(--animation-play-state);
+  }
+
+  /* Stagger delays per UX spec */
+  /* Candle 1: wick 0ms, body 300ms */
+  .cp-candlestick-card[data-animated="true"] .cp-wick-1 {
+    animation-delay: 0ms;
+  }
+  .cp-candlestick-card[data-animated="true"] .cp-body-1 {
+    animation-delay: 300ms;
+  }
+
+  /* Candle 2: wick 150ms, body 450ms */
+  .cp-candlestick-card[data-animated="true"] .cp-wick-2 {
+    animation-delay: 150ms;
+  }
+  .cp-candlestick-card[data-animated="true"] .cp-body-2 {
+    animation-delay: 450ms;
+  }
+
+  /* Candle 3: wick 300ms, body 600ms */
+  .cp-candlestick-card[data-animated="true"] .cp-wick-3 {
+    animation-delay: 300ms;
+  }
+  .cp-candlestick-card[data-animated="true"] .cp-body-3 {
+    animation-delay: 600ms;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     HOVER EFFECTS
+     Glow pulse on hover, enhanced price levels visibility
+     ───────────────────────────────────────────────────────────────────────── */
+
+  .cp-candlestick-card:hover .cp-pattern-svg {
+    filter: url(#cp-glow);
+  }
+
+  .cp-candlestick-card:hover .cp-price-levels {
+    opacity: 0.2;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Glow pulse animation for reliability dots on hover */
+  @keyframes cp-glow-pulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 currentColor;
+    }
+    50% {
+      box-shadow: 0 0 8px 2px currentColor;
+    }
+  }
+
+  .cp-candlestick-card:hover .cp-reliability-dot {
+    animation: cp-glow-pulse 1.5s ease-in-out infinite;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     FOCUS STATES - Accessibility
+     Visible focus ring for keyboard navigation
+     ───────────────────────────────────────────────────────────────────────── */
+
+  .cp-candlestick-card:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(213, 160, 53, 0.5);
+  }
+
+  .cp-candlestick-card:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(213, 160, 53, 0.5);
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     REDUCED MOTION - Accessibility
+     Respect user preferences for reduced animations
+     ───────────────────────────────────────────────────────────────────────── */
+
+  @media (prefers-reduced-motion: reduce) {
+    .cp-candlestick-card[data-animated="true"] .cp-wick,
+    .cp-candlestick-card[data-animated="true"] .cp-body {
+      animation: none;
+      stroke-dasharray: none;
+      stroke-dashoffset: 0;
+      transform: scaleY(1);
+      opacity: 1;
+    }
+
+    .cp-candlestick-card {
+      transition: none;
+    }
+
+    .cp-candlestick-card:hover {
+      transform: none;
+    }
+
+    .cp-candlestick-card:hover .cp-reliability-dot {
+      animation: none;
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     RESPONSIVE ADJUSTMENTS
+     ───────────────────────────────────────────────────────────────────────── */
+
+  @container (max-width: 280px) {
+    .cp-candlestick-card h3 {
+      font-size: 0.95rem;
+    }
+
+    .cp-candlestick-card .cp-signal-badge {
+      font-size: 0.65rem;
+      padding: 0.25rem 0.5rem;
+    }
+  }
+</style>
+
+<script>
+  /**
+   * Intersection Observer for scroll-triggered animations
+   * Animations only start when card enters the viewport
+   */
+  document.addEventListener('DOMContentLoaded', () => {
+    // Respect reduced motion preferences
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const cards = document.querySelectorAll('.cp-candlestick-card[data-animated="true"]');
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const card = entry.target as HTMLElement;
+              // Enable animations
+              card.style.setProperty('--animation-play-state', 'running');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          root: null,
+          rootMargin: '0px 0px -50px 0px',
+          threshold: 0.2,
+        }
+      );
+
+      cards.forEach((card) => {
+        // Pause animations initially until card is in view
+        (card as HTMLElement).style.setProperty('--animation-play-state', 'paused');
+        observer.observe(card);
+      });
+    }
+  });
+</script>

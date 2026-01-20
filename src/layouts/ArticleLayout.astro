@@ -22,8 +22,12 @@ import TableOfContents from '@components/content/TableOfContents.astro';
 import FAQAccordion from '@components/content/FAQAccordion.astro';
 import AuthorBio from '@components/author/AuthorBio.astro';
 import RelatedArticles from '@components/content/RelatedArticles.astro';
+import CandlestickShowcase from '@components/charts/CandlestickShowcase.astro';
 import type { Article, TOCItem } from '@lib/types';
 import { PILLAR_NAMES_AR, CLUSTER_NAMES_AR } from '@lib/content-structure';
+
+// Special article slugs that need custom visual components
+const CANDLESTICK_ARTICLE_SLUG = 'japanese-candlestick-patterns';
 
 export interface Props {
   article: Article;
@@ -407,6 +411,13 @@ const breadcrumbSchema = JSON.stringify({
               />
 
             </div>
+
+            <!-- Candlestick Patterns Visual Showcase (for specific article) -->
+            {article.slug === CANDLESTICK_ARTICLE_SLUG && (
+              <section class="mt-12 -mx-4 sm:-mx-6 lg:-mx-8">
+                <CandlestickShowcase />
+              </section>
+            )}
 
             <!-- FAQ Section -->
             {article.faqs.length > 0 && (

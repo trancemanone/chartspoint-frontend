@@ -1,0 +1,839 @@
+---
+/**
+ * TableOfContents.astro
+ * Premium Fintech Table of Contents for ITQQAN
+ *
+ * Features:
+ * - Clean, institutional fintech aesthetic
+ * - Clickable anchor links with smooth scroll
+ * - H2/H3 visual hierarchy with indentation
+ * - Active section highlighting on scroll
+ * - Desktop: Sticky sidebar, always visible
+ * - Mobile: Collapsible accordion panel
+ * - RTL support for Arabic layout
+ * - 48px minimum touch targets for accessibility (40-70 age group)
+ */
+
+export interface TOCItem {
+  id: string;
+  text: string;
+  level: 2 | 3;
+}
+
+export interface Props {
+  items: TOCItem[];
+  title?: string;
+  /** Pillar color theme: learn (blue), accounts (gold), trust (purple) */
+  pillar?: 'learn' | 'accounts' | 'trust';
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  items,
+  title = 'محتويات المقال',
+  pillar = 'learn',
+  class: className = '',
+} = Astro.props;
+
+// Pillar-specific accent colors
+const pillarColors = {
+  learn: { accent: '#3B82F6', accentLight: '#EFF6FF' },
+  accounts: { accent: '#d5a035', accentLight: '#FDF8EC' },
+  trust: { accent: '#7C2D3C', accentLight: '#FDF2F4' },
+};
+
+const colors = pillarColors[pillar];
+
+// Generate unique ID for accessibility
+const tocId = `toc-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+{/* ══════════════════════════════════════════════════════════════════════════
+    DESKTOP TOC - Sticky Sidebar
+    ══════════════════════════════════════════════════════════════════════════ */}
+<nav
+  class:list={['toc', className]}
+  aria-labelledby={`${tocId}-title`}
+  data-toc
+  data-pillar={pillar}
+>
+  {/* Header */}
+  <header class="toc__header">
+    <h2 id={`${tocId}-title`} class="toc__title">
+      <svg
+        class="toc__icon"
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <line x1="8" y1="6" x2="21" y2="6"></line>
+        <line x1="8" y1="12" x2="21" y2="12"></line>
+        <line x1="8" y1="18" x2="21" y2="18"></line>
+        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+      </svg>
+      <span>{title}</span>
+    </h2>
+  </header>
+
+  {/* TOC List */}
+  <ul class="toc__list" role="list">
+    {items.map((item) => (
+      <li class={`toc__item toc__item--h${item.level}`}>
+        <a
+          href={`#${item.id}`}
+          class="toc__link"
+          data-toc-link={item.id}
+          data-level={item.level}
+        >
+          {item.level === 2 ? (
+            <span class="toc__h2-marker" aria-hidden="true"></span>
+          ) : (
+            <span class="toc__h3-marker" aria-hidden="true"></span>
+          )}
+          <span class="toc__text">{item.text}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  {/* Progress indicator */}
+  <div class="toc__progress" aria-hidden="true">
+    <div class="toc__progress-bar" data-toc-progress></div>
+  </div>
+</nav>
+
+{/* ══════════════════════════════════════════════════════════════════════════
+    MOBILE TOC - Collapsible Accordion
+    ══════════════════════════════════════════════════════════════════════════ */}
+<div class="toc-mobile" data-toc-mobile data-pillar={pillar}>
+  <button
+    type="button"
+    class="toc-mobile__toggle"
+    aria-expanded="false"
+    aria-controls={`${tocId}-mobile-panel`}
+  >
+    <span class="toc-mobile__toggle-content">
+      <svg
+        class="toc-mobile__icon"
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <line x1="8" y1="6" x2="21" y2="6"></line>
+        <line x1="8" y1="12" x2="21" y2="12"></line>
+        <line x1="8" y1="18" x2="21" y2="18"></line>
+        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+      </svg>
+      <span class="toc-mobile__title">{title}</span>
+    </span>
+    <svg
+      class="toc-mobile__chevron"
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+  </button>
+
+  <div
+    id={`${tocId}-mobile-panel`}
+    class="toc-mobile__panel"
+    hidden
+  >
+    <ul class="toc-mobile__list" role="list">
+      {items.map((item) => (
+        <li class={`toc-mobile__item toc-mobile__item--h${item.level}`}>
+          <a
+            href={`#${item.id}`}
+            class="toc-mobile__link"
+            data-toc-link-mobile={item.id}
+            data-level={item.level}
+          >
+            {item.level === 2 ? (
+              <span class="toc-mobile__h2-marker" aria-hidden="true"></span>
+            ) : (
+              <span class="toc-mobile__h3-marker" aria-hidden="true"></span>
+            )}
+            <span class="toc-mobile__text">{item.text}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</div>
+
+<style define:vars={{ accentColor: colors.accent, accentLight: colors.accentLight }}>
+  /* ══════════════════════════════════════════════════════════════════════════
+     CSS CUSTOM PROPERTIES
+     ══════════════════════════════════════════════════════════════════════════ */
+
+  :root {
+    --toc-navy: #1B365D;
+    --toc-navy-light: #243B53;
+    --toc-gray-100: #F3F4F6;
+    --toc-gray-200: #E5E7EB;
+    --toc-gray-400: #9CA3AF;
+    --toc-gray-500: #6B7280;
+    --toc-gray-600: #4B5563;
+    --toc-gray-700: #374151;
+    --toc-gold: #d5a035;
+    --toc-transition: 200ms ease;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════
+     DESKTOP TOC
+     ══════════════════════════════════════════════════════════════════════════ */
+
+  .toc {
+    display: none;
+    position: sticky;
+    top: 6rem;
+    max-height: calc(100vh - 8rem);
+    overflow-y: auto;
+    background: #FFFFFF;
+    border-radius: 1rem;
+    border: 1px solid var(--toc-gray-200);
+    box-shadow: 0 4px 16px rgba(27, 54, 93, 0.06);
+
+    /* Scrollbar styling */
+    scrollbar-width: thin;
+    scrollbar-color: var(--toc-gray-300) transparent;
+  }
+
+  @media (min-width: 1024px) {
+    .toc {
+      display: block;
+    }
+  }
+
+  .toc::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .toc::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .toc::-webkit-scrollbar-thumb {
+    background: var(--toc-gray-300);
+    border-radius: 4px;
+  }
+
+  /* Header */
+  .toc__header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: 1.25rem 1.5rem 1rem;
+    background: #FFFFFF;
+    border-bottom: 1px solid var(--toc-gray-100);
+  }
+
+  .toc__title {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    margin: 0;
+    font-family: var(--font-heading, 'Noto Kufi Arabic', sans-serif);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--toc-navy);
+    letter-spacing: 0.01em;
+  }
+
+  .toc__icon {
+    color: var(--accentColor);
+    flex-shrink: 0;
+  }
+
+  /* List */
+  .toc__list {
+    list-style: none;
+    padding: 0.75rem 0 1.25rem;
+    margin: 0;
+  }
+
+  .toc__item {
+    margin: 0;
+  }
+
+  /* H2 items */
+  .toc__item--h2 {
+    margin-top: 0.125rem;
+  }
+
+  .toc__item--h2:first-child {
+    margin-top: 0;
+  }
+
+  /* H3 items - indented */
+  .toc__item--h3 {
+    padding-right: 1rem;
+  }
+
+  /* Link base styles */
+  .toc__link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    min-height: 48px;
+    transition: background var(--toc-transition), color var(--toc-transition);
+    cursor: pointer;
+  }
+
+  .toc__link:hover {
+    background: var(--accentLight);
+  }
+
+  .toc__link:focus-visible {
+    outline: none;
+    background: var(--accentLight);
+    box-shadow: inset 3px 0 0 var(--accentColor);
+  }
+
+  /* H2 marker - square */
+  .toc__h2-marker {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    background: var(--toc-navy);
+    border-radius: 2px;
+    transition: background var(--toc-transition), transform var(--toc-transition);
+  }
+
+  .toc__link:hover .toc__h2-marker {
+    background: var(--accentColor);
+    transform: scale(1.1);
+  }
+
+  /* H3 marker - circle */
+  .toc__h3-marker {
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    background: var(--toc-gray-400);
+    border-radius: 50%;
+    transition: background var(--toc-transition), transform var(--toc-transition);
+  }
+
+  .toc__link:hover .toc__h3-marker {
+    background: var(--accentColor);
+    transform: scale(1.2);
+  }
+
+  /* Text */
+  .toc__text {
+    font-family: var(--font-body, 'Tajawal', sans-serif);
+    line-height: 1.5;
+    transition: color var(--toc-transition);
+  }
+
+  .toc__item--h2 .toc__text {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--toc-navy);
+  }
+
+  .toc__item--h3 .toc__text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--toc-gray-600);
+  }
+
+  .toc__link:hover .toc__text {
+    color: var(--toc-navy);
+  }
+
+  /* Active state */
+  .toc__link.is-active {
+    background: var(--accentLight);
+    box-shadow: inset 3px 0 0 var(--accentColor);
+  }
+
+  .toc__link.is-active .toc__h2-marker,
+  .toc__link.is-active .toc__h3-marker {
+    background: var(--accentColor);
+  }
+
+  .toc__link.is-active .toc__text {
+    color: var(--toc-navy);
+    font-weight: 700;
+  }
+
+  /* Progress indicator */
+  .toc__progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--toc-gray-100);
+    pointer-events: none;
+  }
+
+  .toc__progress-bar {
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(180deg, var(--accentColor) 0%, var(--toc-gold) 100%);
+    transition: height 100ms ease;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════
+     MOBILE TOC
+     ══════════════════════════════════════════════════════════════════════════ */
+
+  .toc-mobile {
+    display: block;
+    margin-bottom: 1.5rem;
+    background: #FFFFFF;
+    border-radius: 0.875rem;
+    border: 1px solid var(--toc-gray-200);
+    box-shadow: 0 2px 8px rgba(27, 54, 93, 0.04);
+    overflow: hidden;
+  }
+
+  @media (min-width: 1024px) {
+    .toc-mobile {
+      display: none;
+    }
+  }
+
+  /* Toggle button - 56px touch target */
+  .toc-mobile__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 1rem 1.25rem;
+    font-family: var(--font-heading, 'Noto Kufi Arabic', sans-serif);
+    text-align: right;
+    background: #FFFFFF;
+    border: none;
+    cursor: pointer;
+    min-height: 56px;
+    transition: background var(--toc-transition);
+  }
+
+  .toc-mobile__toggle:hover {
+    background: var(--toc-gray-100);
+  }
+
+  .toc-mobile__toggle:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--accentColor);
+  }
+
+  .toc-mobile__toggle-content {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
+
+  .toc-mobile__icon {
+    color: var(--accentColor);
+    flex-shrink: 0;
+  }
+
+  .toc-mobile__title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--toc-navy);
+  }
+
+  .toc-mobile__chevron {
+    color: var(--toc-gray-500);
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+  }
+
+  .toc-mobile__toggle[aria-expanded="true"] .toc-mobile__chevron {
+    transform: rotate(180deg);
+  }
+
+  /* Panel */
+  .toc-mobile__panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .toc-mobile__panel[hidden] {
+    display: block;
+    visibility: hidden;
+  }
+
+  .toc-mobile__panel.is-expanded {
+    visibility: visible;
+    max-height: 500px;
+  }
+
+  /* List */
+  .toc-mobile__list {
+    list-style: none;
+    padding: 0.5rem 1rem 1rem;
+    margin: 0;
+    border-top: 1px solid var(--toc-gray-100);
+  }
+
+  .toc-mobile__item--h3 {
+    padding-right: 1rem;
+  }
+
+  /* Mobile Link - 48px touch target */
+  .toc-mobile__link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    min-height: 48px;
+    transition: background var(--toc-transition);
+  }
+
+  .toc-mobile__link:hover {
+    background: var(--accentLight);
+  }
+
+  .toc-mobile__link:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--accentColor);
+  }
+
+  /* Mobile H2 marker */
+  .toc-mobile__h2-marker {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    background: var(--toc-navy);
+    border-radius: 2px;
+    transition: background var(--toc-transition);
+  }
+
+  .toc-mobile__link:hover .toc-mobile__h2-marker {
+    background: var(--accentColor);
+  }
+
+  /* Mobile H3 marker */
+  .toc-mobile__h3-marker {
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    background: var(--toc-gray-400);
+    border-radius: 50%;
+    transition: background var(--toc-transition);
+  }
+
+  .toc-mobile__link:hover .toc-mobile__h3-marker {
+    background: var(--accentColor);
+  }
+
+  /* Mobile text */
+  .toc-mobile__text {
+    font-family: var(--font-body, 'Tajawal', sans-serif);
+    line-height: 1.5;
+    transition: color var(--toc-transition);
+  }
+
+  .toc-mobile__item--h2 .toc-mobile__text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--toc-navy);
+  }
+
+  .toc-mobile__item--h3 .toc-mobile__text {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--toc-gray-600);
+  }
+
+  .toc-mobile__link:hover .toc-mobile__text {
+    color: var(--toc-navy);
+  }
+
+  /* Mobile active state */
+  .toc-mobile__link.is-active {
+    background: var(--accentLight);
+  }
+
+  .toc-mobile__link.is-active .toc-mobile__h2-marker,
+  .toc-mobile__link.is-active .toc-mobile__h3-marker {
+    background: var(--accentColor);
+  }
+
+  .toc-mobile__link.is-active .toc-mobile__text {
+    color: var(--toc-navy);
+    font-weight: 700;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════
+     REDUCED MOTION
+     ══════════════════════════════════════════════════════════════════════════ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .toc__link,
+    .toc__h2-marker,
+    .toc__h3-marker,
+    .toc__progress-bar,
+    .toc-mobile__panel,
+    .toc-mobile__chevron,
+    .toc-mobile__link,
+    .toc-mobile__h2-marker,
+    .toc-mobile__h3-marker {
+      transition: none;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════
+     PRINT STYLES
+     ══════════════════════════════════════════════════════════════════════════ */
+
+  @media print {
+    .toc,
+    .toc-mobile {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  /**
+   * TableOfContents Client-Side Logic
+   *
+   * Features:
+   * - IntersectionObserver for active heading tracking
+   * - Smooth scroll with header offset
+   * - Mobile accordion toggle
+   * - Reading progress indicator
+   * - Closes mobile panel after click
+   * - Updates URL hash without scroll jump
+   */
+
+  class TableOfContents {
+    private observer: IntersectionObserver | null = null;
+    private tocLinks: NodeListOf<HTMLAnchorElement>;
+    private tocLinksMobile: NodeListOf<HTMLAnchorElement>;
+    private headings: HTMLElement[] = [];
+    private mobileToggle: HTMLButtonElement | null;
+    private mobilePanel: HTMLElement | null;
+    private progressBar: HTMLElement | null;
+
+    constructor() {
+      this.tocLinks = document.querySelectorAll('[data-toc-link]');
+      this.tocLinksMobile = document.querySelectorAll('[data-toc-link-mobile]');
+      this.mobileToggle = document.querySelector('.toc-mobile__toggle');
+      this.mobilePanel = document.querySelector('.toc-mobile__panel');
+      this.progressBar = document.querySelector('[data-toc-progress]');
+
+      this.init();
+    }
+
+    private init(): void {
+      this.collectHeadings();
+      this.setupIntersectionObserver();
+      this.setupSmoothScroll();
+      this.setupMobileToggle();
+      this.setupProgressIndicator();
+    }
+
+    private collectHeadings(): void {
+      this.tocLinks.forEach((link) => {
+        const id = link.dataset.tocLink;
+        if (id) {
+          const heading = document.getElementById(id);
+          if (heading) {
+            this.headings.push(heading);
+          }
+        }
+      });
+    }
+
+    private setupIntersectionObserver(): void {
+      if (this.headings.length === 0) return;
+
+      const options: IntersectionObserverInit = {
+        rootMargin: '-100px 0px -60% 0px',
+        threshold: [0, 1],
+      };
+
+      this.observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            this.setActiveLink(entry.target.id);
+          }
+        });
+      }, options);
+
+      this.headings.forEach((heading) => {
+        this.observer?.observe(heading);
+      });
+    }
+
+    private setActiveLink(activeId: string): void {
+      // Update desktop TOC
+      this.tocLinks.forEach((link) => {
+        if (link.dataset.tocLink === activeId) {
+          link.classList.add('is-active');
+          link.setAttribute('aria-current', 'true');
+        } else {
+          link.classList.remove('is-active');
+          link.removeAttribute('aria-current');
+        }
+      });
+
+      // Update mobile TOC
+      this.tocLinksMobile.forEach((link) => {
+        if (link.dataset.tocLinkMobile === activeId) {
+          link.classList.add('is-active');
+          link.setAttribute('aria-current', 'true');
+        } else {
+          link.classList.remove('is-active');
+          link.removeAttribute('aria-current');
+        }
+      });
+    }
+
+    private setupSmoothScroll(): void {
+      const allLinks = [...this.tocLinks, ...this.tocLinksMobile];
+
+      allLinks.forEach((link) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const href = link.getAttribute('href');
+          if (!href) return;
+
+          const targetId = href.slice(1);
+          const target = document.getElementById(targetId);
+
+          if (target) {
+            // Close mobile panel if open
+            if (this.mobilePanel && !this.mobilePanel.hidden) {
+              this.closeMobilePanel();
+            }
+
+            // Smooth scroll with offset for sticky header
+            const headerOffset = 100;
+            const elementPosition = target.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth',
+            });
+
+            // Set focus to target for accessibility
+            target.setAttribute('tabindex', '-1');
+            target.focus({ preventScroll: true });
+
+            // Update URL hash without jumping
+            history.pushState(null, '', href);
+          }
+        });
+      });
+    }
+
+    private setupMobileToggle(): void {
+      if (!this.mobileToggle || !this.mobilePanel) return;
+
+      this.mobileToggle.addEventListener('click', () => {
+        const isExpanded = this.mobileToggle?.getAttribute('aria-expanded') === 'true';
+
+        if (isExpanded) {
+          this.closeMobilePanel();
+        } else {
+          this.openMobilePanel();
+        }
+      });
+
+      // Close on Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && this.mobilePanel && !this.mobilePanel.hidden) {
+          this.closeMobilePanel();
+          this.mobileToggle?.focus();
+        }
+      });
+    }
+
+    private openMobilePanel(): void {
+      if (!this.mobileToggle || !this.mobilePanel) return;
+
+      this.mobileToggle.setAttribute('aria-expanded', 'true');
+      this.mobilePanel.hidden = false;
+
+      // Trigger reflow for animation
+      void this.mobilePanel.offsetHeight;
+      this.mobilePanel.classList.add('is-expanded');
+    }
+
+    private closeMobilePanel(): void {
+      if (!this.mobileToggle || !this.mobilePanel) return;
+
+      this.mobileToggle.setAttribute('aria-expanded', 'false');
+      this.mobilePanel.classList.remove('is-expanded');
+
+      // Wait for animation to complete before hiding
+      setTimeout(() => {
+        if (this.mobileToggle?.getAttribute('aria-expanded') === 'false') {
+          this.mobilePanel!.hidden = true;
+        }
+      }, 300);
+    }
+
+    private setupProgressIndicator(): void {
+      if (!this.progressBar) return;
+
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = (scrollTop / docHeight) * 100;
+
+        this.progressBar!.style.height = `${scrollPercent}%`;
+      }, { passive: true });
+    }
+
+    public destroy(): void {
+      this.observer?.disconnect();
+    }
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => new TableOfContents());
+  } else {
+    new TableOfContents();
+  }
+
+  // Re-initialize on Astro page transitions
+  document.addEventListener('astro:page-load', () => {
+    new TableOfContents();
+  });
+</script>

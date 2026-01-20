@@ -1,0 +1,381 @@
+---
+/**
+ * Card.astro
+ * Premium reusable card component for ITQQAN fintech platform
+ *
+ * Features:
+ * - Multiple variants: default, elevated, featured, glass
+ * - Header, body, footer slots for flexible content
+ * - Interactive option with hover effects
+ * - Pillar color-coding support
+ * - Full RTL compatibility
+ * - Optimized shadows and transitions
+ */
+
+import type { PillarSlug } from '@lib/types';
+
+export interface Props {
+  /** Card visual variant */
+  variant?: 'default' | 'elevated' | 'featured' | 'glass';
+  /** Enable hover interaction effects */
+  interactive?: boolean;
+  /** Pillar color for right border accent */
+  pillar?: PillarSlug;
+  /** Remove default padding (useful when using slots with custom padding) */
+  noPadding?: boolean;
+  /** Link href - wraps entire card in anchor */
+  href?: string;
+  /** Additional CSS classes */
+  class?: string;
+  /** Accessible label for the card */
+  ariaLabel?: string;
+}
+
+const {
+  variant = 'default',
+  interactive = false,
+  pillar,
+  noPadding = false,
+  href,
+  class: className = '',
+  ariaLabel,
+  ...rest
+} = Astro.props;
+
+// Build class list
+const classes = [
+  'card',
+  `card--${variant}`,
+  interactive && 'card--interactive',
+  pillar && `card--pillar-${pillar}`,
+  noPadding && 'card--no-padding',
+  className,
+].filter(Boolean).join(' ');
+
+// Check if slots are provided
+const hasHeader = Astro.slots.has('header');
+const hasFooter = Astro.slots.has('footer');
+
+// Wrapper element - use article for semantic content, div otherwise
+const WrapperTag = href ? 'a' : 'article';
+const wrapperAttrs = href ? { href } : {};
+---
+
+<WrapperTag
+  class={classes}
+  aria-label={ariaLabel}
+  {...wrapperAttrs}
+  {...rest}
+>
+  {/* Card Header */}
+  {hasHeader && (
+    <header class="card__header">
+      <slot name="header" />
+    </header>
+  )}
+
+  {/* Card Body (Default Slot) */}
+  <div class="card__body">
+    <slot />
+  </div>
+
+  {/* Card Footer */}
+  {hasFooter && (
+    <footer class="card__footer">
+      <slot name="footer" />
+    </footer>
+  )}
+
+  {/* Featured Card Decoration */}
+  {variant === 'featured' && (
+    <div class="card__featured-accent" aria-hidden="true" />
+  )}
+</WrapperTag>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════════
+     BASE CARD STYLES
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background-color: #FFFFFF;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: 1rem;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+
+    /* Premium shadow */
+    box-shadow:
+      0 2px 8px rgba(15, 23, 42, 0.04),
+      0 4px 16px rgba(15, 23, 42, 0.04);
+
+    /* Smooth transitions */
+    transition:
+      box-shadow 0.3s cubic-bezier(0.45, 0, 0.15, 1),
+      transform 0.3s cubic-bezier(0.45, 0, 0.15, 1),
+      border-color 0.3s ease;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     VARIANT: DEFAULT
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .card--default {
+    /* Base styles already applied */
+  }
+
+  .card--default:hover {
+    box-shadow:
+      0 8px 24px rgba(15, 23, 42, 0.08),
+      0 16px 48px rgba(15, 23, 42, 0.06);
+    border-color: rgba(226, 232, 240, 1);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     VARIANT: ELEVATED
+     Higher prominence with stronger shadows
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .card--elevated {
+    border: none;
+    box-shadow:
+      0 8px 30px rgba(15, 23, 42, 0.08),
+      0 16px 60px rgba(15, 23, 42, 0.04);
+  }
+
+  .card--elevated:hover {
+    box-shadow:
+      0 12px 40px rgba(15, 23, 42, 0.12),
+      0 24px 80px rgba(15, 23, 42, 0.06);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     VARIANT: FEATURED
+     Gold accent for premium content
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .card--featured {
+    border-color: #FCEAC4;
+    overflow: hidden;
+  }
+
+  .card--featured::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(
+      135deg,
+      rgba(242, 196, 100, 0.12) 0%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+
+  .card__featured-accent {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #F2C464 0%, #E5A836 100%);
+  }
+
+  .card--featured:hover {
+    border-color: #F8D994;
+    box-shadow:
+      0 8px 24px rgba(15, 23, 42, 0.08),
+      0 0 0 1px rgba(229, 168, 54, 0.2);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     VARIANT: GLASS
+     Glassmorphism effect for overlays
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .card--glass {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px rgba(15, 23, 42, 0.08);
+  }
+
+  .card--glass:hover {
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.12);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     PILLAR COLORS
+     Right border accent based on content pillar
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .card--pillar-learn {
+    border-right-width: 4px;
+    border-right-color: #3B82F6;
+  }
+
+  .card--pillar-learn:hover {
+    box-shadow:
+      0 8px 24px rgba(15, 23, 42, 0.08),
+      0 0 0 1px rgba(59, 130, 246, 0.1);
+  }
+
+  .card--pillar-accounts {
+    border-right-width: 4px;
+    border-right-color: #d5a035;
+  }
+
+  .card--pillar-accounts:hover {
+    box-shadow:
+      0 8px 24px rgba(15, 23, 42, 0.08),
+      0 0 0 1px rgba(213, 160, 53, 0.1);
+  }
+
+  .card--pillar-trust {
+    border-right-width: 4px;
+    border-right-color: #7C2D3C;
+  }
+
+  .card--pillar-trust:hover {
+    box-shadow:
+      0 8px 24px rgba(15, 23, 42, 0.08),
+      0 0 0 1px rgba(124, 45, 60, 0.1);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     INTERACTIVE MODIFIER
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .card--interactive {
+    cursor: pointer;
+  }
+
+  .card--interactive:hover {
+    transform: translateY(-4px);
+  }
+
+  .card--interactive:active {
+    transform: translateY(-2px);
+  }
+
+  .card--interactive:focus-visible {
+    outline: none;
+    box-shadow:
+      0 8px 24px rgba(15, 23, 42, 0.08),
+      0 0 0 3px #FFFFFF,
+      0 0 0 6px rgba(213, 160, 53, 0.6);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     CARD SECTIONS
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .card__header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #F1F5F9;
+    background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+  }
+
+  .card__body {
+    padding: 1.5rem;
+    flex: 1;
+  }
+
+  .card__footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #F1F5F9;
+    background-color: rgba(248, 250, 252, 0.5);
+  }
+
+  /* No padding modifier */
+  .card--no-padding .card__body {
+    padding: 0;
+  }
+
+  .card--no-padding .card__header,
+  .card--no-padding .card__footer {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     RESPONSIVE ADJUSTMENTS
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media (min-width: 768px) {
+    .card__header {
+      padding: 1.75rem 2rem;
+    }
+
+    .card__body {
+      padding: 2rem;
+    }
+
+    .card__footer {
+      padding: 1.25rem 2rem;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     TOUCH DEVICE OPTIMIZATIONS
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media (hover: none) and (pointer: coarse) {
+    .card--interactive:hover {
+      transform: none;
+    }
+
+    .card--interactive:active {
+      transform: scale(0.99);
+    }
+
+    .card:hover {
+      box-shadow:
+        0 2px 8px rgba(15, 23, 42, 0.04),
+        0 4px 16px rgba(15, 23, 42, 0.04);
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     REDUCED MOTION
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .card {
+      transition: none;
+    }
+
+    .card--interactive:hover,
+    .card--interactive:active {
+      transform: none;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     PRINT STYLES
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media print {
+    .card {
+      box-shadow: none;
+      border: 1px solid #CBD5E1;
+    }
+
+    .card--glass {
+      background: #FFFFFF;
+      backdrop-filter: none;
+    }
+
+    .card__featured-accent {
+      display: none;
+    }
+  }
+</style>

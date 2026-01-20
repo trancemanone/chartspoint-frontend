@@ -1,0 +1,415 @@
+---
+/**
+ * PillarHero.astro
+ *
+ * Premium institutional-grade hero section for ITQQAN pillar pages.
+ * Designed to convey trust, authority, and sophistication befitting
+ * a $200M fintech company targeting investors aged 40-70.
+ *
+ * Design Philosophy:
+ * - Deep navy foundations convey institutional authority
+ * - Subtle financial motifs (grids, chart patterns) reinforce fintech identity
+ * - Refined accent colors differentiate each pillar while maintaining cohesion
+ * - Animated elements are subtle and purposeful, never distracting
+ * - Typography and spacing optimized for mature audiences
+ *
+ * Color System:
+ * - Learn: Navy to Sapphire - Knowledge, wisdom, depth
+ * - Accounts: Navy to Emerald - Growth, prosperity, action
+ * - Trust: Navy to Burgundy/Gold - Security, premium, authority
+ */
+
+export interface Props {
+  pillar: 'learn' | 'accounts' | 'trust';
+  title: string;
+  description: string;
+  articleCount: number;
+  clusterCount: number;
+}
+
+const { pillar, title, description, articleCount, clusterCount } = Astro.props;
+
+// Pillar-specific configurations
+const pillarConfig = {
+  learn: {
+    // Deep navy to sophisticated sapphire
+    gradient: 'from-[#0A1628] via-[#0F2847] to-[#1A3A5C]',
+    accentGradient: 'from-[#2563EB] to-[#3B82F6]',
+    glowColor: 'rgba(59, 130, 246, 0.15)',
+    patternOpacity: '0.04',
+    iconBg: 'bg-gradient-to-br from-[#1E40AF]/30 to-[#3B82F6]/20',
+    iconBorder: 'border-[#3B82F6]/30',
+    statBg: 'bg-[#1E40AF]/20',
+    waveColor: '#F8F9FA',
+  },
+  accounts: {
+    // Deep navy with gold accents
+    gradient: 'from-[#0A1628] via-[#102941] to-[#1a3a5c]',
+    accentGradient: 'from-[#e8bc5a] to-[#d5a035]',
+    glowColor: 'rgba(213, 160, 53, 0.12)',
+    patternOpacity: '0.035',
+    iconBg: 'bg-gradient-to-br from-[#b8892a]/30 to-[#d5a035]/20',
+    iconBorder: 'border-[#d5a035]/30',
+    statBg: 'bg-[#b8892a]/20',
+    waveColor: '#F8F9FA',
+  },
+  trust: {
+    // Deep navy to sophisticated burgundy/wine with gold accents
+    gradient: 'from-[#0A1628] via-[#1A1525] to-[#2D1B2E]',
+    accentGradient: 'from-[#7C2D3C] to-[#9B3A4D]',
+    glowColor: 'rgba(124, 45, 60, 0.12)',
+    patternOpacity: '0.03',
+    iconBg: 'bg-gradient-to-br from-[#7C2D3C]/30 to-[#E5A836]/20',
+    iconBorder: 'border-[#E5A836]/40',
+    statBg: 'bg-[#7C2D3C]/20',
+    waveColor: '#F8F9FA',
+  },
+};
+
+const config = pillarConfig[pillar];
+---
+
+<section class={`pillar-hero relative overflow-hidden py-20 lg:py-32 bg-gradient-to-br ${config.gradient}`} data-pillar={pillar}>
+
+  <!-- Sophisticated Background Layers -->
+
+  <!-- Layer 1: Ambient Glow -->
+  <div class="absolute inset-0 pointer-events-none">
+    <div
+      class="absolute top-0 right-0 w-[800px] h-[800px] rounded-full blur-[120px] opacity-60"
+      style={`background: ${config.glowColor};`}
+    ></div>
+    <div
+      class="absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full blur-[100px] opacity-40"
+      style={`background: ${config.glowColor};`}
+    ></div>
+  </div>
+
+  <!-- Layer 2: Financial Grid Pattern -->
+  <div class="absolute inset-0 pointer-events-none" style={`opacity: ${config.patternOpacity};`}>
+    <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id={`grid-${pillar}`} width="60" height="60" patternUnits="userSpaceOnUse">
+          <!-- Main grid lines -->
+          <path d="M 60 0 L 0 0 0 60" fill="none" stroke="white" stroke-width="0.5" opacity="0.6"/>
+          <!-- Subtle subdivisions -->
+          <path d="M 30 0 L 30 60 M 0 30 L 60 30" fill="none" stroke="white" stroke-width="0.25" opacity="0.3"/>
+        </pattern>
+        <!-- Radial fade mask -->
+        <radialGradient id={`fade-${pillar}`} cx="70%" cy="30%" r="80%">
+          <stop offset="0%" stop-color="white" stop-opacity="1"/>
+          <stop offset="100%" stop-color="white" stop-opacity="0"/>
+        </radialGradient>
+        <mask id={`gridMask-${pillar}`}>
+          <rect width="100%" height="100%" fill={`url(#fade-${pillar})`}/>
+        </mask>
+      </defs>
+      <rect width="100%" height="100%" fill={`url(#grid-${pillar})`} mask={`url(#gridMask-${pillar})`}/>
+    </svg>
+  </div>
+
+  <!-- Layer 3: Pillar-Specific Patterns -->
+  {pillar === 'learn' && (
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+      <!-- Chart line pattern suggesting market analysis -->
+      <svg class="absolute bottom-0 left-0 w-full h-64 opacity-[0.06]" viewBox="0 0 1440 256" preserveAspectRatio="none">
+        <path
+          d="M0,128 Q180,64 360,128 T720,96 T1080,160 T1440,100"
+          fill="none"
+          stroke="white"
+          stroke-width="2"
+          class="hero-chart-line"
+        />
+        <path
+          d="M0,180 Q240,120 480,160 T960,140 T1440,180"
+          fill="none"
+          stroke="white"
+          stroke-width="1.5"
+          stroke-dasharray="8,4"
+          class="hero-chart-line-secondary"
+        />
+      </svg>
+      <!-- Floating data points -->
+      <div class="hero-particles absolute inset-0">
+        <div class="hero-particle absolute top-[20%] right-[15%] w-2 h-2 bg-[#3B82F6]/40 rounded-full"></div>
+        <div class="hero-particle absolute top-[35%] right-[25%] w-1.5 h-1.5 bg-white/20 rounded-full" style="animation-delay: 0.5s;"></div>
+        <div class="hero-particle absolute top-[45%] right-[40%] w-2.5 h-2.5 bg-[#3B82F6]/30 rounded-full" style="animation-delay: 1s;"></div>
+        <div class="hero-particle absolute top-[25%] right-[55%] w-1 h-1 bg-white/30 rounded-full" style="animation-delay: 1.5s;"></div>
+        <div class="hero-particle absolute top-[55%] right-[20%] w-1.5 h-1.5 bg-[#3B82F6]/25 rounded-full" style="animation-delay: 2s;"></div>
+      </div>
+    </div>
+  )}
+
+  {pillar === 'accounts' && (
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+      <!-- Trading floor grid pattern -->
+      <svg class="absolute inset-0 w-full h-full opacity-[0.05]" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <pattern id="trading-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+            <rect width="20" height="20" fill="none" stroke="white" stroke-width="0.3"/>
+            <circle cx="10" cy="10" r="0.5" fill="white" opacity="0.5"/>
+          </pattern>
+        </defs>
+        <rect width="100" height="100" fill="url(#trading-grid)"/>
+      </svg>
+      <!-- Rising bar chart suggestion -->
+      <div class="absolute bottom-0 right-0 w-[500px] h-[300px] opacity-[0.04]">
+        <svg viewBox="0 0 500 300" class="w-full h-full">
+          <rect x="50" y="200" width="40" height="100" fill="white" rx="4"/>
+          <rect x="120" y="150" width="40" height="150" fill="white" rx="4"/>
+          <rect x="190" y="120" width="40" height="180" fill="white" rx="4"/>
+          <rect x="260" y="80" width="40" height="220" fill="white" rx="4"/>
+          <rect x="330" y="40" width="40" height="260" fill="white" rx="4"/>
+          <rect x="400" y="20" width="40" height="280" fill="white" rx="4"/>
+        </svg>
+      </div>
+      <!-- Growth particles -->
+      <div class="hero-particles absolute inset-0">
+        <div class="hero-particle-rise absolute bottom-[30%] right-[20%] w-2 h-2 bg-[#d5a035]/40 rounded-full"></div>
+        <div class="hero-particle-rise absolute bottom-[40%] right-[35%] w-1.5 h-1.5 bg-white/20 rounded-full" style="animation-delay: 0.7s;"></div>
+        <div class="hero-particle-rise absolute bottom-[25%] right-[50%] w-2 h-2 bg-[#e8bc5a]/30 rounded-full" style="animation-delay: 1.4s;"></div>
+        <div class="hero-particle-rise absolute bottom-[35%] right-[65%] w-1 h-1 bg-white/25 rounded-full" style="animation-delay: 2.1s;"></div>
+      </div>
+    </div>
+  )}
+
+  {pillar === 'trust' && (
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+      <!-- Shield/security pattern -->
+      <div class="absolute top-[10%] right-[10%] w-[400px] h-[400px] opacity-[0.03]">
+        <svg viewBox="0 0 400 400" class="w-full h-full">
+          <!-- Central shield outline -->
+          <path
+            d="M200,40 L340,100 L340,200 Q340,320 200,380 Q60,320 60,200 L60,100 Z"
+            fill="none"
+            stroke="white"
+            stroke-width="2"
+          />
+          <!-- Inner shield detail -->
+          <path
+            d="M200,80 L300,125 L300,195 Q300,285 200,335 Q100,285 100,195 L100,125 Z"
+            fill="none"
+            stroke="white"
+            stroke-width="1"
+            stroke-dasharray="10,5"
+          />
+          <!-- Checkmark -->
+          <path
+            d="M150,200 L185,240 L260,160"
+            fill="none"
+            stroke="white"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+      <!-- Gold accent lines -->
+      <div class="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#E5A836]/20 to-transparent"></div>
+      <div class="absolute bottom-8 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#E5A836]/10 to-transparent"></div>
+      <!-- Trust particles -->
+      <div class="hero-particles absolute inset-0">
+        <div class="hero-particle absolute top-[25%] right-[20%] w-2 h-2 bg-[#E5A836]/30 rounded-full"></div>
+        <div class="hero-particle absolute top-[40%] right-[30%] w-1.5 h-1.5 bg-white/20 rounded-full" style="animation-delay: 0.6s;"></div>
+        <div class="hero-particle absolute top-[30%] right-[45%] w-1 h-1 bg-[#E5A836]/20 rounded-full" style="animation-delay: 1.2s;"></div>
+        <div class="hero-particle absolute top-[50%] right-[15%] w-2 h-2 bg-white/15 rounded-full" style="animation-delay: 1.8s;"></div>
+      </div>
+    </div>
+  )}
+
+  <!-- Layer 4: Gradient Mesh Overlay -->
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-white/[0.02] to-transparent rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-tl from-white/[0.015] to-transparent rounded-full blur-2xl"></div>
+  </div>
+
+  <!-- Content Container -->
+  <div class="container mx-auto px-4 lg:px-8 relative z-10">
+
+    <!-- Breadcrumbs -->
+    <nav class="mb-10" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-white/60 text-[15px]">
+        <li>
+          <a href="/" class="hover:text-white/90 transition-colors duration-200">الرئيسية</a>
+        </li>
+        <li class="flex items-center gap-2">
+          <svg class="w-4 h-4 rotate-180 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+          <span class="text-white font-medium">{title}</span>
+        </li>
+      </ol>
+    </nav>
+
+    <div class="max-w-4xl">
+
+      <!-- Pillar Icon -->
+      <div class={`w-20 h-20 ${config.iconBg} backdrop-blur-sm rounded-2xl flex items-center justify-center mb-8 border ${config.iconBorder}`}>
+        {pillar === 'learn' && (
+          <svg class="w-10 h-10 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+        )}
+        {pillar === 'accounts' && (
+          <svg class="w-10 h-10 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+          </svg>
+        )}
+        {pillar === 'trust' && (
+          <svg class="w-10 h-10 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+        )}
+      </div>
+
+      <!-- Title with subtle gradient text -->
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 tracking-tight">
+        {title}
+      </h1>
+
+      <!-- Description -->
+      <p class="text-xl md:text-2xl text-white/75 leading-relaxed mb-10 max-w-3xl">
+        {description}
+      </p>
+
+      <!-- Stats Row -->
+      <div class="flex flex-wrap gap-8 mb-2">
+        <div class="flex items-center gap-3">
+          <div class={`w-12 h-12 ${config.statBg} backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/10`}>
+            <svg class="w-5 h-5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-2xl font-bold text-white">{articleCount}</span>
+            <span class="text-white/60 text-lg mr-2">مقال</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class={`w-12 h-12 ${config.statBg} backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/10`}>
+            <svg class="w-5 h-5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-2xl font-bold text-white">{clusterCount}</span>
+            <span class="text-white/60 text-lg mr-2">مجالات</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Premium Wave Transition -->
+  <div class="absolute bottom-0 left-0 right-0">
+    <svg
+      viewBox="0 0 1440 120"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      class="w-full h-auto"
+      preserveAspectRatio="none"
+    >
+      <path
+        d="M0,60 C240,120 480,0 720,60 C960,120 1200,0 1440,60 L1440,120 L0,120 Z"
+        fill={config.waveColor}
+        opacity="0.5"
+      />
+      <path
+        d="M0,80 C360,20 720,100 1080,40 C1260,10 1380,30 1440,50 L1440,120 L0,120 Z"
+        fill={config.waveColor}
+      />
+    </svg>
+  </div>
+
+</section>
+
+<style>
+  /* Premium Hero Animations */
+
+  /* Floating particles animation */
+  .hero-particle {
+    animation: heroFloat 6s ease-in-out infinite;
+  }
+
+  @keyframes heroFloat {
+    0%, 100% {
+      transform: translateY(0) scale(1);
+      opacity: 0.4;
+    }
+    50% {
+      transform: translateY(-20px) scale(1.1);
+      opacity: 0.7;
+    }
+  }
+
+  /* Rising particles for Accounts pillar */
+  .hero-particle-rise {
+    animation: heroRise 8s ease-in-out infinite;
+  }
+
+  @keyframes heroRise {
+    0% {
+      transform: translateY(0) scale(1);
+      opacity: 0.3;
+    }
+    50% {
+      transform: translateY(-40px) scale(1.2);
+      opacity: 0.6;
+    }
+    100% {
+      transform: translateY(-80px) scale(0.8);
+      opacity: 0;
+    }
+  }
+
+  /* Chart line animation for Learn pillar */
+  .hero-chart-line {
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
+    animation: drawLine 3s ease-out forwards;
+  }
+
+  .hero-chart-line-secondary {
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
+    animation: drawLine 4s ease-out 0.5s forwards;
+  }
+
+  @keyframes drawLine {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  /* Subtle pulse for icon container */
+  .pillar-hero [class*="iconBg"] {
+    animation: subtlePulse 4s ease-in-out infinite;
+  }
+
+  @keyframes subtlePulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
+    50% {
+      box-shadow: 0 0 40px 0 rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-particle,
+    .hero-particle-rise,
+    .hero-chart-line,
+    .hero-chart-line-secondary {
+      animation: none;
+    }
+
+    .hero-chart-line,
+    .hero-chart-line-secondary {
+      stroke-dasharray: none;
+      stroke-dashoffset: 0;
+    }
+  }
+</style>

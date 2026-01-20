@@ -1,0 +1,34 @@
+---
+/**
+ * IconAuthor - User with pen
+ * Represents content authors
+ */
+interface Props {
+  class?: string;
+  size?: number;
+  strokeWidth?: number;
+}
+
+const { class: className = '', size = 24, strokeWidth = 1.75 } = Astro.props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={className}
+  width={size}
+  height={size}
+  aria-hidden="true"
+>
+  <!-- Head -->
+  <circle cx="10" cy="8" r="4" />
+  <!-- Shoulders -->
+  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+  <!-- Pen -->
+  <path d="M19 3l2 2-5 5-2.5.5.5-2.5 5-5z" />
+</svg>

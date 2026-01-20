@@ -1,0 +1,489 @@
+---
+/**
+ * ClusterLayout.astro
+ *
+ * Sophisticated cluster page layout for ITQQAN content clusters.
+ * Displays all articles within a specific cluster of a pillar.
+ *
+ * Features:
+ * - Breadcrumbs navigation
+ * - Cluster description with pillar context
+ * - Article cards grid with filtering/sorting
+ * - Pagination for large article sets
+ * - Related clusters navigation
+ * - Trust signals and stats
+ */
+
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '@components/navigation/Breadcrumbs.astro';
+import ArticleCard from '@components/content/ArticleCard.astro';
+import type { PillarSlug, Article } from '@lib/types';
+import { PILLARS, PILLAR_NAMES_AR, CLUSTER_NAMES_AR, CONTENT_STRUCTURE } from '@lib/content-structure';
+
+export interface Props {
+  pillar: PillarSlug;
+  cluster: string;
+  articles: Article[];
+  /** Total article count if paginated */
+  totalArticles?: number;
+  /** Current page number */
+  currentPage?: number;
+  /** Total pages */
+  totalPages?: number;
+}
+
+const {
+  pillar,
+  cluster,
+  articles,
+  totalArticles = articles.length,
+  currentPage = 1,
+  totalPages = 1,
+} = Astro.props;
+
+const pillarData = PILLARS[pillar];
+const clusterName = CLUSTER_NAMES_AR[cluster] || cluster;
+
+// Get sibling clusters for navigation
+const allClusters = Object.keys(CONTENT_STRUCTURE[pillar]);
+const currentClusterIndex = allClusters.indexOf(cluster);
+const siblingClusters = allClusters.filter(c => c !== cluster);
+
+// Breadcrumbs
+const breadcrumbs = [
+  { label: 'الرئيسية', href: '/' },
+  { label: PILLAR_NAMES_AR[pillar], href: `/${pillar}` },
+  { label: clusterName, href: `/${pillar}/${cluster}`, current: true },
+];
+
+// Pillar-specific styling
+const pillarStyles = {
+  learn: {
+    bg: 'bg-learn-50',
+    bgLight: 'bg-learn-50/50',
+    bgGradient: 'from-learn-100 via-learn-50 to-white',
+    border: 'border-learn-500',
+    borderLight: 'border-learn-200',
+    text: 'text-learn-600',
+    textDark: 'text-learn-700',
+    accent: 'bg-learn-500',
+    accentHover: 'hover:bg-learn-600',
+    badge: 'badge-learn',
+    cardClass: 'pillar-card-learn',
+  },
+  accounts: {
+    bg: 'bg-accounts-50',
+    bgLight: 'bg-accounts-50/50',
+    bgGradient: 'from-accounts-100 via-accounts-50 to-white',
+    border: 'border-accounts-500',
+    borderLight: 'border-accounts-200',
+    text: 'text-accounts-600',
+    textDark: 'text-accounts-700',
+    accent: 'bg-accounts-500',
+    accentHover: 'hover:bg-accounts-600',
+    badge: 'badge-accounts',
+    cardClass: 'pillar-card-accounts',
+  },
+  trust: {
+    bg: 'bg-trust-50',
+    bgLight: 'bg-trust-50/50',
+    bgGradient: 'from-trust-100 via-trust-50 to-white',
+    border: 'border-trust-500',
+    borderLight: 'border-trust-200',
+    text: 'text-trust-600',
+    textDark: 'text-trust-700',
+    accent: 'bg-trust-500',
+    accentHover: 'hover:bg-trust-600',
+    badge: 'badge-trust',
+    cardClass: 'pillar-card-trust',
+  },
+}[pillar];
+
+// Cluster descriptions
+const clusterDescriptions: Record<string, string> = {
+  // Learn clusters
+  start: 'دليلك الشامل للبدء في عالم الاستثمار. تعلم الأساسيات وابدأ رحلتك المالية بثقة.',
+  stocks: 'كل ما تحتاج معرفته عن الاستثمار في الأسهم السعودية والعالمية.',
+  gold: 'استراتيجيات الاستثمار في الذهب وكيفية حماية ثروتك.',
+  funds: 'فهم صناديق الاستثمار وأنواعها وكيفية اختيار الأنسب لك.',
+  plan: 'بناء خطة استثمارية متوازنة تناسب أهدافك المالية.',
+  analysis: 'أدوات التحليل الفني والأساسي لاتخاذ قرارات استثمارية واعية.',
+  courses: 'أفضل الدورات والموارد التعليمية للمستثمر العربي.',
+  // Accounts clusters
+  open: 'خطوات فتح حساب استثماري في السوق السعودي بسهولة.',
+  platform: 'مقارنة شاملة لمنصات التداول المتاحة في المملكة.',
+  apps: 'أفضل تطبيقات الاستثمار والتداول على الجوال.',
+  brokers: 'دليل الوسطاء الماليين المرخصين في السعودية.',
+  sectors: 'استكشاف القطاعات الاستثمارية المختلفة وفرصها.',
+  // Trust clusters
+  license: 'كيفية التحقق من التراخيص والجهات الرقابية.',
+  checks: 'خطوات العناية الواجبة قبل أي قرار استثماري.',
+  scams: 'حماية نفسك من الاحتيال المالي والنصب.',
+  'funds-protection': 'آليات حماية أموال المستثمرين في السوق السعودي.',
+  privacy: 'حماية بياناتك الشخصية في عالم الاستثمار الرقمي.',
+};
+
+const description = clusterDescriptions[cluster] || `مقالات شاملة عن ${clusterName} لمساعدتك في رحلتك الاستثمارية.`;
+
+// Page schema
+const pageSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": clusterName,
+  "description": description,
+  "url": `https://itqqan.com/${pillar}/${cluster}`,
+  "inLanguage": "ar",
+  "isPartOf": {
+    "@type": "WebPage",
+    "name": PILLAR_NAMES_AR[pillar],
+    "url": `https://itqqan.com/${pillar}`
+  },
+  "numberOfItems": totalArticles,
+});
+
+// Breadcrumb schema
+const breadcrumbSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": breadcrumbs.map((item, index) => ({
+    "@type": "ListItem",
+    "position": index + 1,
+    "name": item.label,
+    "item": item.current ? undefined : `https://itqqan.com${item.href}`
+  }))
+});
+
+// Calculate article stats
+const totalReadingTime = articles.reduce((acc, article) => acc + (article.readingTime || 5), 0);
+const avgReadingTime = articles.length > 0 ? Math.round(totalReadingTime / articles.length) : 0;
+---
+
+<BaseLayout
+  title={`${clusterName} - ${PILLAR_NAMES_AR[pillar]}`}
+  description={description}
+  canonical={`https://itqqan.com/${pillar}/${cluster}`}
+  schema={pageSchema}
+  pillar={pillar}
+>
+  <div class="cluster-page">
+    <!-- Hero Section -->
+    <section class={`relative overflow-hidden bg-gradient-to-b ${pillarStyles.bgGradient} py-12 lg:py-20`}>
+      <!-- Decorative Background -->
+      <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute top-0 right-0 w-72 h-72 bg-gradient-to-bl from-white/50 to-transparent rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-white/30 to-transparent rounded-full blur-3xl"></div>
+      </div>
+
+      <div class="container mx-auto px-4 lg:px-8 relative">
+        <!-- Breadcrumbs -->
+        <Breadcrumbs items={breadcrumbs} />
+
+        <!-- Hero Content -->
+        <div class="mt-8 lg:mt-12 max-w-4xl">
+          <!-- Pillar Context Badge -->
+          <div class="flex items-center gap-3 mb-6">
+            <div class={`w-1.5 h-8 rounded-full ${pillarStyles.accent}`}></div>
+            <a
+              href={`/${pillar}`}
+              class={`badge ${pillarStyles.badge} hover:opacity-80 transition-opacity`}
+            >
+              {PILLAR_NAMES_AR[pillar]}
+            </a>
+          </div>
+
+          <!-- Cluster Title -->
+          <h1 class="text-h1-mobile md:text-h1-desktop lg:text-display-lg font-heading font-extrabold text-navy-900 mb-6 text-balance">
+            {clusterName}
+          </h1>
+
+          <!-- Description -->
+          <p class="text-body-lg lg:text-body-xl text-slate-600 leading-relaxed max-w-3xl mb-8">
+            {description}
+          </p>
+
+          <!-- Stats Row -->
+          <div class="flex flex-wrap items-center gap-6 lg:gap-8 pb-8 border-b border-slate-200">
+            <div class="flex items-center gap-2 text-slate-600">
+              <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span class="font-medium">{totalArticles.toLocaleString('ar-SA')} مقالة</span>
+            </div>
+            <div class="flex items-center gap-2 text-slate-600">
+              <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>متوسط القراءة: {avgReadingTime} دقائق</span>
+            </div>
+            <div class={`badge ${pillarStyles.badge}`}>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              محتوى موثوق
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Articles Grid Section -->
+    <section class="py-12 lg:py-16 bg-surface-page">
+      <div class="container mx-auto px-4 lg:px-8">
+        {articles.length > 0 ? (
+          <>
+            <!-- Articles Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {articles.map((article, index) => (
+                <article
+                  class={`${pillarStyles.cardClass} card-interactive animate-fade-in-up`}
+                  style={`animation-delay: ${index * 50}ms;`}
+                >
+                  <ArticleCard article={article} />
+                </article>
+              ))}
+            </div>
+
+            <!-- Pagination -->
+            {totalPages > 1 && (
+              <nav class="mt-12 flex justify-center" aria-label="التنقل بين الصفحات">
+                <div class="flex items-center gap-2">
+                  {/* Previous Page */}
+                  {currentPage > 1 ? (
+                    <a
+                      href={currentPage === 2 ? `/${pillar}/${cluster}` : `/${pillar}/${cluster}/page/${currentPage - 1}`}
+                      class="btn btn-secondary btn-sm"
+                      aria-label="الصفحة السابقة"
+                    >
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                      السابق
+                    </a>
+                  ) : (
+                    <span class="btn btn-ghost btn-sm opacity-50 cursor-not-allowed">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                      السابق
+                    </span>
+                  )}
+
+                  {/* Page Numbers */}
+                  <div class="flex items-center gap-1 mx-4">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <a
+                        href={page === 1 ? `/${pillar}/${cluster}` : `/${pillar}/${cluster}/page/${page}`}
+                        class={`
+                          w-10 h-10 flex items-center justify-center rounded-lg font-medium transition-all
+                          ${page === currentPage
+                            ? `${pillarStyles.accent} text-white`
+                            : 'text-slate-600 hover:bg-slate-100'
+                          }
+                        `}
+                        aria-current={page === currentPage ? 'page' : undefined}
+                      >
+                        {page.toLocaleString('ar-SA')}
+                      </a>
+                    ))}
+                  </div>
+
+                  {/* Next Page */}
+                  {currentPage < totalPages ? (
+                    <a
+                      href={`/${pillar}/${cluster}/page/${currentPage + 1}`}
+                      class="btn btn-secondary btn-sm"
+                      aria-label="الصفحة التالية"
+                    >
+                      التالي
+                      <svg class="w-5 h-5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </a>
+                  ) : (
+                    <span class="btn btn-ghost btn-sm opacity-50 cursor-not-allowed">
+                      التالي
+                      <svg class="w-5 h-5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </span>
+                  )}
+                </div>
+              </nav>
+            )}
+          </>
+        ) : (
+          <!-- Empty State -->
+          <div class="content-box text-center py-16 max-w-lg mx-auto">
+            <div class={`w-20 h-20 mx-auto mb-6 rounded-2xl ${pillarStyles.bgLight} flex items-center justify-center`}>
+              <svg class={`w-10 h-10 ${pillarStyles.text}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h2 class="text-xl font-heading font-bold text-navy-900 mb-3">
+              المقالات قادمة قريبا
+            </h2>
+            <p class="text-slate-600 mb-6">
+              نعمل على إعداد محتوى متميز لهذا القسم. تابعنا للحصول على آخر المقالات.
+            </p>
+            <a
+              href={`/${pillar}`}
+              class={`btn ${pillarStyles.accent} text-white ${pillarStyles.accentHover}`}
+            >
+              استكشف {PILLAR_NAMES_AR[pillar]}
+              <svg class="w-5 h-5 mr-2 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- Related Clusters Section -->
+    {siblingClusters.length > 0 && (
+      <section class="py-12 lg:py-16 bg-white border-t border-slate-100">
+        <div class="container mx-auto px-4 lg:px-8">
+          <div class="text-center mb-10">
+            <h2 class="text-h2-mobile md:text-h2-desktop font-heading font-bold text-navy-900 mb-3">
+              استكشف المزيد في {PILLAR_NAMES_AR[pillar]}
+            </h2>
+            <p class="text-slate-600 max-w-2xl mx-auto">
+              اكتشف مجموعات أخرى من المحتوى التعليمي المتميز
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 max-w-5xl mx-auto">
+            {siblingClusters.slice(0, 6).map((c) => (
+              <a
+                href={`/${pillar}/${c}`}
+                class={`
+                  group flex items-center gap-4 p-5 rounded-xl
+                  bg-slate-50 border ${pillarStyles.borderLight}
+                  hover:${pillarStyles.bgLight} hover:border-current
+                  transition-all duration-200
+                `}
+              >
+                <div class={`
+                  w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0
+                  ${pillarStyles.bg} ${pillarStyles.text}
+                  group-hover:${pillarStyles.accent} group-hover:text-white
+                  transition-colors
+                `}>
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h3 class="font-heading font-bold text-navy-800 group-hover:text-navy-900 truncate">
+                    {CLUSTER_NAMES_AR[c] || c}
+                  </h3>
+                </div>
+                <svg
+                  class={`w-5 h-5 ${pillarStyles.text} opacity-0 group-hover:opacity-100 transition-opacity rotate-180 flex-shrink-0`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            ))}
+          </div>
+
+          <div class="text-center mt-8">
+            <a
+              href={`/${pillar}`}
+              class={`
+                inline-flex items-center gap-2 px-6 py-3 rounded-xl
+                border-2 ${pillarStyles.border} ${pillarStyles.text} font-medium
+                hover:${pillarStyles.accent} hover:text-white hover:border-transparent
+                transition-all duration-200
+              `}
+            >
+              عرض جميع المجموعات
+              <svg class="w-5 h-5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- CTA Section -->
+    <section class="section-navy py-16 lg:py-20">
+      <div class="container mx-auto px-4 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center">
+          <h2 class="text-h2-mobile md:text-h2-desktop font-heading font-bold text-white mb-4">
+            ابدأ رحلتك الاستثمارية اليوم
+          </h2>
+          <p class="text-navy-200 text-lg mb-8 max-w-2xl mx-auto">
+            انضم لآلاف المستثمرين العرب واحصل على المعرفة والأدوات اللازمة لاتخاذ قرارات مالية واعية.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="/accounts/open/steps"
+              class="btn btn-lg bg-white text-navy-900 hover:bg-slate-100"
+            >
+              افتح حسابك الآن
+              <svg class="w-5 h-5 mr-2 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+            <a
+              href="/learn"
+              class="btn btn-lg border-2 border-navy-400 text-white hover:bg-navy-800"
+            >
+              تصفح المقالات
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Additional Schema -->
+  <Fragment slot="schema">
+    <script type="application/ld+json" set:html={breadcrumbSchema} />
+  </Fragment>
+</BaseLayout>
+
+<style>
+  /* Staggered animation for article cards */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    opacity: 0;
+    animation: fadeInUp 0.4s ease-out forwards;
+  }
+
+  /* Pillar card hover effects */
+  .pillar-card-learn:hover,
+  .pillar-card-accounts:hover,
+  .pillar-card-trust:hover {
+    transform: translateY(-4px);
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-in-up {
+      opacity: 1;
+      animation: none;
+    }
+
+    .pillar-card-learn:hover,
+    .pillar-card-accounts:hover,
+    .pillar-card-trust:hover {
+      transform: none;
+    }
+  }
+</style>

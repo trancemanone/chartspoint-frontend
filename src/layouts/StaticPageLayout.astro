@@ -1,0 +1,176 @@
+---
+/**
+ * StaticPageLayout.astro
+ *
+ * Layout for static WordPress pages (About, Contact, FAQ, Privacy, Terms, etc.)
+ * Uses the same design language as the rest of the site with a clean, readable format.
+ *
+ * Features:
+ * - RTL Arabic support
+ * - WordPress content rendering with .prose styling
+ * - Simple hero section with page title
+ * - Consistent navigation and footer via BaseLayout
+ */
+
+import BaseLayout from './BaseLayout.astro';
+
+export interface Props {
+  title: string;
+  content: string;
+  description?: string;
+  lastModified?: string;
+  noIndex?: boolean;
+}
+
+const {
+  title,
+  content,
+  description,
+  lastModified,
+  noIndex = false,
+} = Astro.props;
+
+// Format the last modified date for display
+const formattedDate = lastModified
+  ? new Date(lastModified).toLocaleDateString('ar-SA', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  : null;
+
+// Generate page schema
+const pageSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": title,
+  "description": description || `${title} - إتقان`,
+  "url": Astro.url.href,
+  "inLanguage": "ar",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "إتقان",
+    "url": "https://itqqan.com"
+  },
+  ...(lastModified && { "dateModified": lastModified })
+});
+---
+
+<BaseLayout
+  title={title}
+  description={description || `${title} - إتقان`}
+  schema={pageSchema}
+  noIndex={noIndex}
+>
+  <!-- Page Hero Section -->
+  <section class="static-page-hero relative overflow-hidden bg-gradient-to-bl from-navy-900 via-navy-800 to-navy-900 pt-16 pb-20 lg:pt-20 lg:pb-24">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+    </div>
+
+    <!-- Gold Accent Line -->
+    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gold-500 to-transparent"></div>
+
+    <div class="container mx-auto px-4 relative">
+      <div class="max-w-3xl mx-auto text-center">
+        <!-- Page Title -->
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-4 leading-tight">
+          {title}
+        </h1>
+
+        {formattedDate && (
+          <p class="text-white/60 text-sm">
+            آخر تحديث: {formattedDate}
+          </p>
+        )}
+      </div>
+    </div>
+
+    <!-- Bottom Wave -->
+    <div class="absolute bottom-0 left-0 right-0">
+      <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto">
+        <path d="M0 30L48 27.9C96 25.8 192 21.5 288 23.4C384 25.3 480 33.3 576 35.9C672 38.5 768 35.7 864 32C960 28.3 1056 23.7 1152 25.4C1248 27 1344 34.9 1392 38.8L1440 42.8V60H1392C1344 60 1248 60 1152 60C1056 60 960 60 864 60C768 60 672 60 576 60C480 60 384 60 288 60C192 60 96 60 48 60H0V30Z" fill="#F8F9FA"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section class="static-page-content py-12 lg:py-16 bg-[#f8f9fa]">
+    <div class="container mx-auto px-4">
+      <article class="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-100 p-8 md:p-12">
+        <div class="prose prose-lg max-w-none" set:html={content} />
+      </article>
+
+      <!-- Back to Home Link -->
+      <div class="max-w-3xl mx-auto mt-8 text-center">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 text-navy-700 hover:text-gold-600 transition-colors font-medium"
+        >
+          <svg class="w-5 h-5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          <span>العودة للرئيسية</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Static Page Specific Styles */
+  .static-page-content :global(.prose) {
+    --tw-prose-body: #334155;
+    --tw-prose-headings: #102A43;
+    --tw-prose-links: #d5a035;
+    --tw-prose-bold: #1E293B;
+  }
+
+  .static-page-content :global(.prose h2) {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #e2e8f0;
+  }
+
+  .static-page-content :global(.prose h3) {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .static-page-content :global(.prose p) {
+    line-height: 1.9;
+    margin-bottom: 1.25rem;
+  }
+
+  .static-page-content :global(.prose ul),
+  .static-page-content :global(.prose ol) {
+    margin-bottom: 1.5rem;
+  }
+
+  .static-page-content :global(.prose li) {
+    margin-bottom: 0.5rem;
+    line-height: 1.8;
+  }
+
+  .static-page-content :global(.prose a) {
+    color: #d5a035;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: color 0.2s ease;
+  }
+
+  .static-page-content :global(.prose a:hover) {
+    color: #b8922e;
+  }
+
+  /* Ensure proper RTL list markers */
+  .static-page-content :global(.prose ul) {
+    list-style-position: inside;
+  }
+
+  .static-page-content :global(.prose ol) {
+    list-style-position: inside;
+  }
+</style>

@@ -1,0 +1,1007 @@
+/**
+ * ═══════════════════════════════════════════════════════════════════════════
+ * CHARTSPOINT RTL (Right-to-Left) Styles
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * Comprehensive RTL support for Arabic technical analysis content.
+ * Ensures proper text direction, alignment, and layout mirroring.
+ *
+ * ARABIC UX BEST PRACTICES FOR AGES 40-70:
+ * 1. Reading flow starts from top-right, moves to bottom-left
+ * 2. Primary actions should be on the right side (natural starting point)
+ * 3. Navigation menus expand from right to left
+ * 4. Progress indicators flow from right to left
+ * 5. Form fields should have labels on the right
+ * 6. Icons representing direction (arrows, chevrons) must be mirrored
+ * 7. Icons representing objects (home, user, phone) should NOT be mirrored
+ * 8. Charts flow left-to-right universally (financial standard)
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BASE RTL DIRECTION
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+html {
+  direction: rtl;
+}
+
+/* Ensure proper Unicode bidirectional algorithm handling */
+body {
+  unicode-bidi: embed;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TEXT ALIGNMENT DEFAULTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+body,
+p,
+li,
+td,
+th,
+label,
+figcaption {
+  text-align: right;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FLEXBOX RTL ADJUSTMENTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.flex-row-rtl {
+  flex-direction: row-reverse;
+}
+
+/* Reverse flex for specific layouts */
+.flex-reverse-rtl {
+  flex-direction: row-reverse;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LISTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+ul,
+ol {
+  padding-right: 1.5rem;
+  padding-left: 0;
+}
+
+ul li::marker,
+ol li::marker {
+  unicode-bidi: isolate;
+}
+
+/* Nested lists */
+ul ul,
+ol ol,
+ul ol,
+ol ul {
+  padding-right: 1.5rem;
+  padding-left: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ICONS & DIRECTIONAL ELEMENTS
+   ═══════════════════════════════════════════════════════════════════════════
+
+   IMPORTANT: Icons fall into two categories:
+   1. DIRECTIONAL icons (arrows, chevrons, play) - MUST be mirrored
+   2. OBJECT icons (home, user, phone, search) - should NOT be mirrored
+
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Breadcrumb separator */
+.breadcrumb-separator {
+  transform: scaleX(-1);
+}
+
+/* Generic icon flip for RTL - use sparingly */
+.icon-rtl,
+.icon-mirror {
+  transform: scaleX(-1);
+}
+
+/*
+ * DIRECTIONAL ICONS - Must be mirrored for Arabic
+ * These indicate direction or movement
+ */
+.chevron-right,
+.arrow-right,
+.icon-arrow-right,
+.icon-chevron-right,
+.icon-forward,
+.icon-next,
+.icon-external-link,
+.icon-logout,
+.icon-reply,
+.icon-redo {
+  transform: scaleX(-1);
+}
+
+.chevron-left,
+.arrow-left,
+.icon-arrow-left,
+.icon-chevron-left,
+.icon-back,
+.icon-prev,
+.icon-undo {
+  transform: scaleX(1);
+}
+
+/* Back/Forward navigation */
+.nav-back {
+  transform: scaleX(-1);
+}
+
+.nav-forward {
+  transform: scaleX(1);
+}
+
+/*
+ * OBJECT ICONS - Do NOT mirror these
+ * These represent real-world objects that have a fixed appearance
+ */
+.icon-no-mirror,
+.icon-home,
+.icon-user,
+.icon-phone,
+.icon-search,
+.icon-settings,
+.icon-mail,
+.icon-calendar,
+.icon-clock,
+.icon-heart,
+.icon-star,
+.icon-check,
+.icon-x,
+.icon-plus,
+.icon-minus,
+.icon-bell,
+.icon-lock,
+.icon-unlock,
+.icon-eye,
+.icon-download,
+.icon-upload,
+.icon-trash,
+.icon-edit,
+.icon-copy,
+.icon-share,
+.icon-filter,
+.icon-sort,
+.icon-chart,
+.icon-graph,
+.icon-wallet,
+.icon-credit-card,
+.icon-bank,
+.icon-document,
+.icon-folder {
+  transform: none !important;
+}
+
+/*
+ * SPECIAL CASES for Arabic Financial Context
+ * Stock market charts flow left-to-right universally
+ */
+.chart-container,
+.stock-chart,
+.price-graph {
+  direction: ltr;
+}
+
+/* Currency and numbers should remain LTR for universal readability */
+.price,
+.amount,
+.percentage,
+.stock-price,
+.market-value {
+  direction: ltr;
+  unicode-bidi: embed;
+  text-align: left;  /* Numbers align left even in RTL context */
+}
+
+/* But wrap them in RTL context properly */
+.price-wrapper,
+.amount-wrapper {
+  direction: rtl;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FORM ELEMENTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Text inputs - RTL direction */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="search"],
+input[type="password"],
+input[type="url"],
+textarea {
+  text-align: right;
+  direction: rtl;
+}
+
+/* Number inputs - LTR direction for readability */
+input[type="number"] {
+  text-align: left;
+  direction: ltr;
+}
+
+/* Phone inputs - LTR direction */
+input[type="tel"] {
+  direction: ltr;
+  text-align: left;
+}
+
+/* Email inputs - LTR for email addresses */
+input[type="email"] {
+  direction: ltr;
+  text-align: left;
+}
+
+/* URL inputs - LTR */
+input[type="url"] {
+  direction: ltr;
+  text-align: left;
+}
+
+/* Search inputs */
+input[type="search"] {
+  text-align: right;
+  direction: rtl;
+}
+
+/* Select dropdowns */
+select {
+  text-align: right;
+  direction: rtl;
+}
+
+/* Placeholder text alignment */
+input::placeholder,
+textarea::placeholder {
+  text-align: right;
+}
+
+/* Form labels with icons */
+.form-label-icon {
+  flex-direction: row-reverse;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TABLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+table {
+  direction: rtl;
+}
+
+th,
+td {
+  text-align: right;
+}
+
+/* Table cell padding adjustment for RTL */
+.table-cell-first {
+  padding-right: 1.5rem;
+  padding-left: 1rem;
+}
+
+.table-cell-last {
+  padding-right: 1rem;
+  padding-left: 1.5rem;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   FINTECH TABLE RTL SUPPORT
+   ───────────────────────────────────────────────────────────────────────── */
+
+.fintech-table {
+  direction: rtl;
+}
+
+.fintech-table th,
+.fintech-table td {
+  text-align: right;
+}
+
+/* Number cells remain LTR for universal readability */
+.fintech-table .cell-number,
+.fintech-table .cell-currency,
+.fintech-table .cell-percentage {
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: embed;
+}
+
+/* Recommended column badge positioning for RTL */
+.fintech-table--comparison thead .col-recommended::before {
+  right: 50%;
+  left: auto;
+  transform: translateX(50%);
+}
+
+/* Highlight border on right (start) side */
+.fintech-table .cell-highlight::after {
+  right: 0;
+  left: auto;
+}
+
+/* Status badge icon position for RTL */
+.status-badge::before {
+  margin-right: 0;
+  margin-left: 6px;
+}
+
+/* Action buttons alignment */
+.fintech-table .cell-action {
+  text-align: center;
+}
+
+/* Table action button icon spacing */
+.table-action-btn svg,
+.table-action-btn .icon {
+  margin-right: 0;
+  margin-left: 6px;
+}
+
+/* Sortable header icon position */
+.fintech-table th[data-sortable]::before {
+  margin-right: 8px;
+  margin-left: 0;
+}
+
+/* Empty state alignment */
+.fintech-table .empty-state {
+  text-align: center;
+}
+
+/* Caption alignment */
+.fintech-table caption {
+  text-align: right;
+}
+
+/* Mobile stacked table label positioning */
+@media (max-width: 480px) {
+  .fintech-table-container--stack .fintech-table tbody td::before {
+    margin-right: 0;
+    margin-left: 16px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BORDER RADIUS ADJUSTMENTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Rounded corners for RTL (right side is start) */
+.rounded-r-rtl {
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.rounded-l-rtl {
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+
+.rounded-start {
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.rounded-end {
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BORDER ADJUSTMENTS FOR RTL
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Card/section borders (right border in RTL = start border) */
+.border-r-pillar,
+.border-start-pillar {
+  border-right-width: 4px;
+  border-left-width: 0;
+}
+
+.border-l-pillar,
+.border-end-pillar {
+  border-left-width: 4px;
+  border-right-width: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCROLL & PADDING
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Scroll padding for fixed header */
+html {
+  scroll-padding-top: 5rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ARTICLE CONTENT SPECIFIC
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Blockquotes - border on right (start) side */
+.article-content blockquote,
+blockquote {
+  border-right: 4px solid var(--color-gold-400, #F2C464);
+  border-left: 0;
+  padding-right: 1.5rem;
+  padding-left: 0;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+/* Code blocks should remain LTR */
+.article-content pre,
+.article-content code,
+pre,
+code {
+  direction: ltr;
+  text-align: left;
+}
+
+/* Inline code within RTL text */
+.article-content p code,
+.article-content li code {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   NAVIGATION & DROPDOWNS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Dropdown menu positioning */
+.dropdown-menu {
+  right: 0;
+  left: auto;
+}
+
+/* Mega menu positioning */
+.mega-menu {
+  right: 0;
+  left: auto;
+}
+
+/* Submenu positioning */
+.submenu {
+  right: 100%;
+  left: auto;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   NOTIFICATIONS & TOASTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Toast/notification positioning */
+.toast,
+.notification {
+  right: 1rem;
+  left: auto;
+}
+
+/* Toast slide-in animation */
+.toast-enter {
+  transform: translateX(-100%);
+}
+
+.toast-enter-active {
+  transform: translateX(0);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MODALS & DIALOGS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Modal close button - position on left (end) side */
+.modal-close {
+  left: 1rem;
+  right: auto;
+}
+
+/* Modal header with close button */
+.modal-header-rtl {
+  flex-direction: row-reverse;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SIDEBARS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Sidebar positioning */
+.sidebar,
+.sidebar-right {
+  right: 0;
+  left: auto;
+}
+
+.sidebar-left {
+  left: 0;
+  right: auto;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOBILE MENU
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Mobile menu slide direction (from right in RTL) */
+.mobile-menu {
+  right: 0;
+  left: auto;
+  transform: translateX(100%);
+}
+
+.mobile-menu.is-open {
+  transform: translateX(0);
+}
+
+/* Alternative: slide from left */
+.mobile-menu-left {
+  left: 0;
+  right: auto;
+  transform: translateX(-100%);
+}
+
+.mobile-menu-left.is-open {
+  transform: translateX(0);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROGRESS INDICATORS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Progress bar - keep LTR for proper fill direction */
+.progress-bar {
+  direction: ltr;
+}
+
+/* Reading progress at top */
+.reading-progress {
+  direction: ltr;
+  right: 0;
+  left: auto;
+}
+
+/* Step indicators */
+.step-indicator {
+  flex-direction: row-reverse;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PAGINATION
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Pagination controls - reverse order for RTL */
+.pagination {
+  flex-direction: row-reverse;
+}
+
+.pagination-prev {
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+
+.pagination-next {
+  margin-right: 0.5rem;
+  margin-left: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BUTTONS WITH ICONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Button with icon on the end (left in RTL) */
+.btn-icon-end {
+  flex-direction: row-reverse;
+}
+
+.btn-icon-end .btn-icon {
+  margin-right: 0.5rem;
+  margin-left: 0;
+}
+
+/* Button with icon on the start (right in RTL) */
+.btn-icon-start .btn-icon {
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BADGES & TAGS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Badge with icon */
+.badge-icon {
+  flex-direction: row-reverse;
+}
+
+.badge-icon svg,
+.badge-icon .icon {
+  margin-right: 0;
+  margin-left: 0.375rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CARDS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Card with side accent */
+.card-accent-start {
+  border-right-width: 4px;
+  border-left-width: 0;
+}
+
+.card-accent-end {
+  border-left-width: 4px;
+  border-right-width: 0;
+}
+
+/* Card media on side */
+.card-media-start {
+  flex-direction: row-reverse;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FLOATING ELEMENTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Floating action buttons */
+.fab {
+  left: 1.5rem;
+  right: auto;
+}
+
+.fab-right {
+  right: 1.5rem;
+  left: auto;
+}
+
+/* Floating labels */
+.floating-label {
+  right: 1rem;
+  left: auto;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TIMELINE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Timeline - line on right side for RTL */
+.timeline {
+  padding-right: 2rem;
+  padding-left: 0;
+  border-right: 2px solid var(--color-border-default, #E2E8F0);
+  border-left: none;
+}
+
+.timeline-item::before {
+  right: -2.5rem;
+  left: auto;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ACCORDIONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Accordion header icon position */
+.accordion-header {
+  flex-direction: row;
+}
+
+.accordion-icon {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TABS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Tabs - start alignment */
+.tabs {
+  justify-content: flex-start;
+}
+
+/* Vertical tabs - right side */
+.tabs-vertical {
+  border-right: 1px solid var(--color-border-default, #E2E8F0);
+  border-left: none;
+}
+
+.tabs-vertical .tab-item {
+  border-right: 2px solid transparent;
+  border-left: none;
+}
+
+.tabs-vertical .tab-item.active {
+  border-right-color: var(--color-brand-500, #d5a035);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SPECIAL CONTENT TYPES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Mathematical formulas - keep LTR */
+.math,
+.formula,
+.equation {
+  direction: ltr;
+  text-align: left;
+}
+
+/* Currency display */
+.currency {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+/* Phone numbers */
+.phone {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   UTILITY CLASSES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Force LTR direction */
+.ltr {
+  direction: ltr;
+}
+
+/* Force RTL direction */
+.rtl {
+  direction: rtl;
+}
+
+/* Logical start/end margin */
+.ms-auto {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+.me-auto {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+/* Logical start/end padding */
+.ps-4 {
+  padding-right: 1rem;
+  padding-left: 0;
+}
+
+.pe-4 {
+  padding-left: 1rem;
+  padding-right: 0;
+}
+
+/* Text alignment logical */
+.text-start-logical {
+  text-align: right;
+}
+
+.text-end-logical {
+  text-align: left;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ARABIC READING FLOW OPTIMIZATION
+   ═══════════════════════════════════════════════════════════════════════════
+
+   Arabic users scan pages in an F-pattern mirrored (right-to-left):
+   1. First horizontal line at top-right
+   2. Second horizontal line below
+   3. Vertical scan down the right side
+
+   Important content should be placed accordingly.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Primary content area - optimized for Arabic reading flow */
+.content-primary {
+  text-align: right;
+}
+
+/* Hero section - key message on right */
+.hero-content {
+  text-align: right;
+}
+
+/* Card grids - first card appears on right */
+.card-grid {
+  direction: rtl;
+}
+
+/* Feature lists - bullet points on right */
+.feature-list {
+  padding-right: 1.5rem;
+  padding-left: 0;
+}
+
+.feature-list li {
+  text-align: right;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ARABIC NAVIGATION PATTERNS FOR OLDER USERS (40-70)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/*
+ * Primary navigation - Right-aligned for Arabic
+ * Logo on right, menu items flow left
+ */
+.nav-primary {
+  flex-direction: row-reverse;
+}
+
+.nav-primary .nav-logo {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.nav-primary .nav-menu {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+/*
+ * Breadcrumbs - Flow right to left
+ * Home > Category > Subcategory > Current
+ * becomes in Arabic:
+ * Current < Subcategory < Category < Home
+ */
+.breadcrumbs {
+  direction: rtl;
+  flex-direction: row;
+}
+
+.breadcrumbs li {
+  display: inline-flex;
+  align-items: center;
+}
+
+.breadcrumbs li:not(:last-child)::after {
+  content: '\203A';  /* Single right-pointing angle */
+  transform: scaleX(-1);  /* Mirror for RTL */
+  margin: 0 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/*
+ * Stepper/Progress indicators - Flow right to left
+ * Step 1 on right, final step on left
+ */
+.stepper {
+  flex-direction: row-reverse;
+}
+
+.stepper-step {
+  text-align: center;
+}
+
+.stepper-connector {
+  transform: scaleX(-1);
+}
+
+/*
+ * Pagination - Numbers flow naturally, but prev/next reversed
+ */
+.pagination {
+  direction: rtl;
+}
+
+.pagination-prev {
+  order: 1;  /* Appears on left in RTL */
+}
+
+.pagination-next {
+  order: -1;  /* Appears on right in RTL */
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ARABIC FORM PATTERNS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/*
+ * Form layout - Labels above inputs, right-aligned
+ * This is the most comfortable pattern for Arabic readers
+ */
+.form-group {
+  text-align: right;
+}
+
+.form-group label {
+  display: block;
+  text-align: right;
+  margin-bottom: 0.5rem;
+}
+
+/*
+ * Inline form with label - Label on right of input
+ */
+.form-inline {
+  flex-direction: row-reverse;
+}
+
+.form-inline label {
+  margin-left: 0.75rem;
+  margin-right: 0;
+}
+
+/*
+ * Form actions - Primary button on right, secondary on left
+ */
+.form-actions {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 1rem;
+}
+
+/*
+ * Input with icon - Icon on right (start) side
+ */
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon .input {
+  padding-right: 3rem;
+  padding-left: 1rem;
+}
+
+.input-with-icon .input-icon {
+  position: absolute;
+  right: 1rem;
+  left: auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/*
+ * Input with action button (e.g., password show/hide)
+ * Button on left (end) side
+ */
+.input-with-action .input {
+  padding-left: 3rem;
+  padding-right: 1rem;
+}
+
+.input-with-action .input-action {
+  position: absolute;
+  left: 0.5rem;
+  right: auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PRINT STYLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media print {
+  /* Maintain RTL for printing */
+  html,
+  body {
+    direction: rtl;
+  }
+
+  /* Reset transforms for print */
+  .icon-rtl,
+  .chevron-right,
+  .arrow-right {
+    transform: none;
+  }
+}

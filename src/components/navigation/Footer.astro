@@ -1,0 +1,607 @@
+---
+/**
+ * Footer Component - Premium Dark Navy Design
+ *
+ * A sophisticated, institutional-grade footer for itqqan.com featuring:
+ * - 4-column layout: About, Pillars, Resources, Legal
+ * - Trust badges and certifications
+ * - Social links
+ * - Newsletter signup form
+ * - Copyright with current year
+ *
+ * Optimized for Arabic readers ages 40-70 with WCAG AAA compliance.
+ */
+
+interface FooterLink {
+  label: string;
+  href: string;
+  external?: boolean;
+}
+
+interface SocialLink {
+  label: string;
+  href: string;
+  icon: 'twitter' | 'linkedin' | 'youtube' | 'telegram';
+}
+
+// About section content
+const aboutDescription = 'منصة التعليم المالي الرائدة للمستثمر العربي. نساعدك على اتخاذ قرارات استثمارية مدروسة وآمنة.';
+
+// Pillar links
+const pillarLinks: FooterLink[] = [
+  { label: 'تعلم الاستثمار', href: '/learn' },
+  { label: 'فتح الحسابات', href: '/accounts' },
+  { label: 'الثقة والأمان', href: '/trust' },
+  { label: 'أساسيات الأسهم', href: '/learn/stocks' },
+  { label: 'مقارنة الوسطاء', href: '/accounts/brokers' },
+];
+
+// Resources section
+const resourceLinks: FooterLink[] = [
+  { label: 'الأسئلة الشائعة', href: '/faq' },
+  { label: 'اتصل بنا', href: '/contact' },
+  { label: 'من نحن', href: '/about' },
+];
+
+// Legal section
+const legalLinks: FooterLink[] = [
+  { label: 'سياسة الخصوصية', href: '/privacy' },
+  { label: 'الشروط والأحكام', href: '/terms' },
+  { label: 'إخلاء المسؤولية', href: '/disclaimer' },
+  { label: 'سياسة ملفات تعريف الارتباط', href: '/cookies' },
+];
+
+// Social links
+const socialLinks: SocialLink[] = [
+  { label: 'تويتر', href: 'https://twitter.com/itqqan', icon: 'twitter' },
+  { label: 'لينكد إن', href: 'https://linkedin.com/company/itqqan', icon: 'linkedin' },
+  { label: 'يوتيوب', href: 'https://youtube.com/@itqqan', icon: 'youtube' },
+  { label: 'تيليجرام', href: 'https://t.me/itqqan', icon: 'telegram' },
+];
+
+// Trust badges
+const trustBadges = [
+  { label: 'محتوى موثوق', icon: 'verified' },
+  { label: 'SSL مشفر', icon: 'shield' },
+  { label: 'خصوصية محمية', icon: 'lock' },
+];
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer
+  class="footer-wrapper"
+  role="contentinfo"
+  aria-label="تذييل الموقع"
+>
+  <!-- Main Footer Content -->
+  <div class="footer-main">
+    <div class="container mx-auto px-4 lg:px-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-6">
+
+        <!-- Column 1: About & Newsletter (spans 4 cols) -->
+        <div class="lg:col-span-4">
+          <!-- Logo -->
+          <a
+            href="/"
+            class="footer-logo inline-flex items-center gap-3 mb-5"
+            aria-label="إتقان - الصفحة الرئيسية"
+          >
+            <img
+              src="https://cms.itqqan.com/wp-content/uploads/2026/01/white-logo-itqaan.png"
+              alt="إتقان"
+              class="h-12 w-auto object-contain"
+              width="120"
+              height="48"
+              loading="lazy"
+            />
+          </a>
+
+          <!-- Description -->
+          <p class="footer-description text-navy-200 text-[1.0625rem] leading-relaxed mb-6 max-w-xs">
+            {aboutDescription}
+          </p>
+
+          <!-- Newsletter Form -->
+          <div class="newsletter-section">
+            <h3 class="text-white font-semibold text-lg mb-3">
+              اشترك في نشرتنا البريدية
+            </h3>
+            <form class="newsletter-form" data-newsletter-form>
+              <div class="newsletter-input-group">
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="البريد الإلكتروني"
+                  required
+                  class="newsletter-input"
+                  aria-label="البريد الإلكتروني"
+                  autocomplete="email"
+                />
+                <button
+                  type="submit"
+                  class="newsletter-btn group"
+                  aria-label="اشترك الآن"
+                >
+                  <span class="hidden sm:inline">اشترك</span>
+                  <svg class="icon icon--sm sm:hidden icon--animated" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+              </div>
+              <p class="newsletter-hint text-navy-300 text-sm mt-2">
+                نحترم خصوصيتك. لا رسائل مزعجة.
+              </p>
+            </form>
+          </div>
+
+          <!-- Social Links -->
+          <div class="social-section mt-6">
+            <h3 class="text-white font-semibold text-lg mb-3">
+              تابعنا
+            </h3>
+            <div class="social-links flex items-center gap-3">
+              {socialLinks.map((link) => (
+                <a
+                  href={link.href}
+                  class="social-link group"
+                  aria-label={`تابعنا على ${link.label}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {link.icon === 'twitter' && (
+                    <svg class="icon icon--sm icon--white icon--animated" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                  )}
+                  {link.icon === 'linkedin' && (
+                    <svg class="icon icon--sm icon--white icon--animated" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                  )}
+                  {link.icon === 'youtube' && (
+                    <svg class="icon icon--sm icon--white icon--animated" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                  )}
+                  {link.icon === 'telegram' && (
+                    <svg class="icon icon--sm icon--white icon--animated" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                    </svg>
+                  )}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2: Pillars (spans 2 cols) -->
+        <nav class="lg:col-span-2" aria-label="أقسام الموقع">
+          <h2 class="footer-heading">
+            الأقسام الرئيسية
+          </h2>
+          <ul class="footer-links" role="list">
+            {pillarLinks.map((link) => (
+              <li>
+                <a href={link.href} class="footer-link">
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <!-- Column 3: Resources (spans 3 cols) -->
+        <nav class="lg:col-span-3" aria-label="المصادر">
+          <h2 class="footer-heading">
+            المصادر
+          </h2>
+          <ul class="footer-links" role="list">
+            {resourceLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="footer-link"
+                  {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                >
+                  {link.label}
+                  {link.external && (
+                    <svg class="inline-block w-3.5 h-3.5 mr-1 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  )}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <!-- Column 4: Legal (spans 3 cols) -->
+        <nav class="lg:col-span-3" aria-label="الصفحات القانونية">
+          <h2 class="footer-heading">
+            قانوني
+          </h2>
+          <ul class="footer-links" role="list">
+            {legalLinks.map((link) => (
+              <li>
+                <a href={link.href} class="footer-link">
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <!-- Trust Badges -->
+          <div class="trust-badges mt-8">
+            <h3 class="text-navy-300 text-sm font-medium mb-3 uppercase tracking-wider">
+              ضمانات الأمان
+            </h3>
+            <div class="flex flex-wrap gap-3">
+              {trustBadges.map((badge) => (
+                <div class="trust-badge group">
+                  {badge.icon === 'verified' && (
+                    <svg class="icon icon--xs icon--gold" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                      <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                  )}
+                  {badge.icon === 'shield' && (
+                    <svg class="icon icon--xs icon--gold" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                      <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                  )}
+                  {badge.icon === 'lock' && (
+                    <svg class="icon icon--xs icon--gold" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                      <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                    </svg>
+                  )}
+                  <span>{badge.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="footer-bottom">
+    <div class="container mx-auto px-4 lg:px-6">
+      <div class="footer-bottom-content">
+        <!-- Copyright -->
+        <p class="copyright">
+          جميع الحقوق محفوظة &copy; {currentYear} إتقان
+        </p>
+
+        <!-- Financial Disclaimer -->
+        <p class="disclaimer">
+          المعلومات المقدمة على هذا الموقع هي لأغراض تعليمية فقط ولا تشكل نصيحة مالية أو استثمارية.
+          يرجى استشارة مستشار مالي مرخص قبل اتخاذ أي قرارات استثمارية.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════════
+     FOOTER BASE STYLES
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .footer-wrapper {
+    background: linear-gradient(180deg, #102941 0%, #0a1f33 100%);
+    margin-top: auto;
+  }
+
+  .footer-main {
+    padding: 4rem 0 3rem;
+  }
+
+  @media (min-width: 1024px) {
+    .footer-main {
+      padding: 5rem 0 4rem;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     LOGO STYLES
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .footer-logo:focus-visible {
+    outline: none;
+    border-radius: 0.75rem;
+  }
+
+  .footer-logo:focus-visible .logo-mark {
+    box-shadow: 0 0 0 3px transparent, 0 0 0 6px theme('colors.gold.400');
+  }
+
+  .footer-logo:hover .logo-mark {
+    transform: scale(1.02);
+  }
+
+  .logo-mark {
+    transition: transform 0.2s ease;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     NEWSLETTER STYLES
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .newsletter-input-group {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .newsletter-input {
+    flex: 1;
+    min-width: 0;
+    min-height: 48px;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.75rem;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+  }
+
+  .newsletter-input::placeholder {
+    color: theme('colors.navy.300');
+  }
+
+  .newsletter-input:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  .newsletter-input:focus {
+    outline: none;
+    border-color: theme('colors.gold.400');
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 0 3px rgba(213, 160, 53, 0.25);
+  }
+
+  .newsletter-btn {
+    min-height: 48px;
+    padding: 0.75rem 1.25rem;
+    background: linear-gradient(135deg, #e8bc5a 0%, #d5a035 100%);
+    color: theme('colors.navy.900');
+    font-weight: 600;
+    font-size: 0.9375rem;
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .newsletter-btn:hover {
+    background: linear-gradient(135deg, #d5a035 0%, #b8892a 100%);
+    transform: translateY(-1px);
+  }
+
+  .newsletter-btn:active {
+    transform: translateY(0);
+  }
+
+  .newsletter-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px transparent, 0 0 0 6px theme('colors.gold.400');
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     SOCIAL LINK STYLES
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0.75rem;
+    color: theme('colors.navy.200');
+    transition: all 0.2s ease;
+  }
+
+  .social-link:hover {
+    background: rgba(213, 160, 53, 0.15);
+    border-color: rgba(213, 160, 53, 0.4);
+    transform: translateY(-2px);
+  }
+
+  .social-link:hover .icon {
+    color: #d5a035;
+  }
+
+  .social-link:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px transparent, 0 0 0 6px theme('colors.gold.400');
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     LINK COLUMN STYLES
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .footer-heading {
+    font-family: theme('fontFamily.heading');
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.01em;
+    position: relative;
+    padding-right: 12px;
+  }
+
+  /* Gold accent bar before heading */
+  .footer-heading::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 4px;
+    width: 3px;
+    height: 18px;
+    background: linear-gradient(180deg, #d5a035 0%, rgba(213, 160, 53, 0.4) 100%);
+    border-radius: 2px;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .footer-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0;
+    min-height: 40px;
+    color: theme('colors.navy.200');
+    font-size: 1rem;
+    line-height: 1.3;
+    transition: color 0.2s ease, padding-right 0.2s ease;
+  }
+
+  .footer-link:hover {
+    color: #d5a035;
+    padding-right: 0.25rem;
+  }
+
+  .footer-link:focus-visible {
+    outline: none;
+    color: white;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     TRUST BADGE STYLES - White icons on dark navy background for WCAG AA
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .trust-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(213, 160, 53, 0.12);
+    border: 1px solid rgba(213, 160, 53, 0.25);
+    border-radius: 0.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  .trust-badge svg,
+  .trust-badge .icon--brand {
+    color: #d5a035;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     BOTTOM BAR STYLES
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .footer-bottom {
+    position: relative;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 1.5rem 0;
+  }
+
+  /* Gold gradient accent line at top of footer bottom */
+  .footer-bottom::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #d5a035 50%, transparent 100%);
+    opacity: 0.6;
+  }
+
+  .footer-bottom-content {
+    text-align: center;
+  }
+
+  .copyright {
+    color: theme('colors.navy.200');
+    font-size: 0.9375rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .disclaimer {
+    color: theme('colors.navy.400');
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    max-width: 56rem;
+    margin: 0 auto;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     RESPONSIVE ADJUSTMENTS
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media (max-width: 639px) {
+    .footer-wrapper nav {
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .footer-wrapper nav:first-of-type {
+      border-top: none;
+      padding-top: 0;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     REDUCED MOTION
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .footer-link,
+    .social-link,
+    .newsletter-btn,
+    .newsletter-input,
+    .logo-mark {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  // Newsletter form handling
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('[data-newsletter-form]') as HTMLFormElement;
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const email = formData.get('email') as string;
+
+      // Basic validation
+      if (!email || !email.includes('@')) {
+        return;
+      }
+
+      // Here you would typically send to your newsletter service
+      // For now, we'll just show a success state
+      const btn = form.querySelector('.newsletter-btn') as HTMLButtonElement;
+      const originalText = btn.innerHTML;
+
+      btn.innerHTML = `
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+      `;
+      btn.disabled = true;
+
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        form.reset();
+      }, 2000);
+    });
+  });
+</script>

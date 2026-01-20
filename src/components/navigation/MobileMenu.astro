@@ -1,0 +1,1171 @@
+---
+/**
+ * MobileMenu Component - Premium Fintech Mobile Navigation
+ *
+ * A sophisticated, institutional-grade mobile navigation featuring:
+ * - Slide from right animation (RTL-optimized)
+ * - Glassmorphism backdrop with blur effect
+ * - Three pillars with distinct colors (Learn: Blue, Accounts: Gold, Trust: Purple)
+ * - Expandable/collapsible clusters under each pillar (dynamic from types.ts)
+ * - Hamburger to X transformation
+ * - Touch-friendly (48px minimum targets) for ages 40-70
+ * - Full accessibility (ARIA, keyboard nav, focus trap)
+ * - Close on outside click, swipe, or navigation
+ *
+ * Design Philosophy:
+ * Premium fintech aesthetic with navy (#1B365D) and gold (#E5A836) accents.
+ * Every interaction is smooth and deliberate, befitting a $200M institution.
+ */
+
+import { CLUSTERS, type PillarSlug } from '../../lib/types';
+
+export interface Props {
+  currentPillar?: 'learn' | 'accounts' | 'trust';
+}
+
+const { currentPillar } = Astro.props;
+
+// Get clusters for each pillar from the types definition
+const learnClusters = CLUSTERS.filter(c => c.pillar === 'learn');
+const accountsClusters = CLUSTERS.filter(c => c.pillar === 'accounts');
+const trustClusters = CLUSTERS.filter(c => c.pillar === 'trust');
+
+// Navigation structure with pillar colors and dynamic clusters
+const navigation = [
+  {
+    id: 'learn' as PillarSlug,
+    label: 'تعلم',
+    href: '/learn',
+    description: 'أساسيات الاستثمار والتعليم المالي',
+    colorHex: '#3B82F6',
+    colorRgb: '59, 130, 246',
+    icon: 'book',
+    clusters: learnClusters.map(cluster => ({
+      label: cluster.nameAr,
+      href: `/learn/${cluster.slug}`,
+    })),
+  },
+  {
+    id: 'accounts' as PillarSlug,
+    label: 'حسابات',
+    href: '/accounts',
+    description: 'افتح حسابك واختر المنصة المناسبة',
+    colorHex: '#d5a035',
+    colorRgb: '213, 160, 53',
+    icon: 'wallet',
+    clusters: accountsClusters.map(cluster => ({
+      label: cluster.nameAr,
+      href: `/accounts/${cluster.slug}`,
+    })),
+  },
+  {
+    id: 'trust' as PillarSlug,
+    label: 'ثقة',
+    href: '/trust',
+    description: 'تأكد من سلامة استثماراتك',
+    colorHex: '#7C2D3C',
+    colorRgb: '124, 45, 60',
+    icon: 'shield',
+    clusters: trustClusters.map(cluster => ({
+      label: cluster.nameAr,
+      href: `/trust/${cluster.slug}`,
+    })),
+  },
+];
+
+// Quick links for bottom section
+const quickLinks = [
+  { label: 'من نحن', href: '/about', icon: 'info' },
+  { label: 'اتصل بنا', href: '/contact', icon: 'phone' },
+  { label: 'الأسئلة الشائعة', href: '/faq', icon: 'help' },
+];
+
+// Icon paths
+const iconPaths: Record<string, string> = {
+  book: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253',
+  wallet: 'M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3',
+  shield: 'M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z',
+  info: 'M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z',
+  phone: 'M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z',
+  help: 'M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z',
+};
+---
+
+<!-- Mobile Menu Overlay - Glassmorphism backdrop -->
+<div
+  id="mobile-menu-overlay"
+  class="mobile-overlay"
+  aria-hidden="true"
+  data-mobile-overlay
+></div>
+
+<!-- Mobile Menu Panel - Slides from right (RTL) -->
+<aside
+  id="mobile-menu"
+  class="mobile-menu"
+  role="dialog"
+  aria-modal="true"
+  aria-label="قائمة التنقل الرئيسية"
+  aria-hidden="true"
+  data-mobile-menu
+>
+  <!-- Menu Header with Logo and Close Button -->
+  <header class="mobile-menu__header">
+    <a
+      href="/"
+      class="mobile-menu__logo"
+      aria-label="إتقان - الصفحة الرئيسية"
+      data-mobile-link
+    >
+      <div class="mobile-menu__logo-mark">
+        <img
+          src="https://cms.itqqan.com/wp-content/uploads/2026/01/600_x_600_logo_itqqan.png"
+          alt=""
+          class="w-9 h-9 rounded-lg object-contain"
+          width="36"
+          height="36"
+          loading="lazy"
+        />
+      </div>
+      <span class="mobile-menu__logo-text">إتقان</span>
+    </a>
+
+    <button
+      type="button"
+      class="mobile-menu__close"
+      aria-label="إغلاق القائمة"
+      data-mobile-close
+    >
+      <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </header>
+
+  <!-- Scrollable Navigation Content -->
+  <nav class="mobile-menu__nav" role="navigation" aria-label="التنقل الرئيسي">
+    <div class="mobile-menu__content">
+      <!-- Pillars Section -->
+      <div class="mobile-menu__pillars">
+        {navigation.map((pillar, index) => (
+          <div
+            class="mobile-pillar"
+            data-pillar-section={pillar.id}
+            style={`--pillar-color: ${pillar.colorHex}; --pillar-rgb: ${pillar.colorRgb}; --pillar-index: ${index}`}
+          >
+            <!-- Pillar Header / Accordion Trigger -->
+            <button
+              type="button"
+              class:list={[
+                'mobile-pillar__trigger',
+                currentPillar === pillar.id && 'is-active'
+              ]}
+              aria-expanded="false"
+              aria-controls={`pillar-content-${pillar.id}`}
+              data-pillar-trigger={pillar.id}
+            >
+              <div class="mobile-pillar__icon">
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  aria-hidden="true"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" d={iconPaths[pillar.icon]} />
+                </svg>
+              </div>
+
+              <div class="mobile-pillar__info">
+                <span class="mobile-pillar__label">{pillar.label}</span>
+                <span class="mobile-pillar__desc">{pillar.description}</span>
+              </div>
+
+              <div class="mobile-pillar__chevron">
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </button>
+
+            <!-- Pillar Content / Cluster Links -->
+            <div
+              id={`pillar-content-${pillar.id}`}
+              class="mobile-pillar__content"
+              data-pillar-content={pillar.id}
+              hidden
+            >
+              <!-- View All Pillar Link -->
+              <a
+                href={pillar.href}
+                class="mobile-cluster mobile-cluster--all"
+                data-mobile-link
+              >
+                <span class="mobile-cluster__text">عرض جميع مقالات {pillar.label}</span>
+                <svg
+                  class="mobile-cluster__arrow"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+              </a>
+
+              <!-- Individual Cluster Links -->
+              {pillar.clusters.map((cluster, clusterIndex) => (
+                <a
+                  href={cluster.href}
+                  class="mobile-cluster"
+                  data-mobile-link
+                  style={`--cluster-index: ${clusterIndex}`}
+                >
+                  <span class="mobile-cluster__dot" aria-hidden="true"></span>
+                  <span class="mobile-cluster__text">{cluster.label}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Divider -->
+      <div class="mobile-menu__divider" aria-hidden="true"></div>
+
+      <!-- Quick Links Section -->
+      <div class="mobile-menu__quick-links">
+        <span class="mobile-menu__section-label">روابط سريعة</span>
+        <div class="mobile-quick-links">
+          {quickLinks.map((link) => (
+            <a href={link.href} class="mobile-quick-link" data-mobile-link>
+              <svg
+                class="mobile-quick-link__icon"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="1.5"
+                aria-hidden="true"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d={iconPaths[link.icon]} />
+              </svg>
+              <span>{link.label}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Footer with CTA -->
+  <footer class="mobile-menu__footer">
+    <a
+      href="/accounts/open/steps"
+      class="mobile-menu__cta"
+      data-mobile-link
+    >
+      <span>افتح حسابك الاستثماري</span>
+      <svg
+        class="w-5 h-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+        aria-hidden="true"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+      </svg>
+    </a>
+    <p class="mobile-menu__footer-text">
+      ابدأ رحلتك الاستثمارية اليوم مع إتقان
+    </p>
+  </footer>
+</aside>
+
+<style>
+  /* ==========================================================================
+     CSS CUSTOM PROPERTIES
+     ========================================================================== */
+
+  :root {
+    --mobile-menu-width: min(85vw, 400px);
+    --mobile-menu-bg: #FFFFFF;
+    --mobile-menu-header-height: 72px;
+    --mobile-menu-footer-height: auto;
+    --mobile-overlay-bg: rgba(15, 23, 42, 0.6);
+    --mobile-transition-duration: 350ms;
+    --mobile-transition-timing: cubic-bezier(0.32, 0.72, 0, 1);
+
+    /* Fintech color palette */
+    --color-navy: #1B365D;
+    --color-navy-light: #243B53;
+    --color-gold: #E5A836;
+    --color-gold-light: #F2C464;
+  }
+
+  /* ==========================================================================
+     OVERLAY STYLES - Glassmorphism backdrop
+     ========================================================================== */
+
+  .mobile-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 400;
+    background: var(--mobile-overlay-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity var(--mobile-transition-duration) ease,
+      visibility var(--mobile-transition-duration) ease;
+    /* Prevent iOS scroll bounce */
+    overscroll-behavior: contain;
+  }
+
+  .mobile-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* ==========================================================================
+     MOBILE MENU PANEL - Slide from right (RTL)
+     ========================================================================== */
+
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: var(--mobile-menu-width);
+    z-index: 500;
+    background: var(--mobile-menu-bg);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    /* RTL: Slide from right */
+    transform: translateX(100%);
+    transition: transform var(--mobile-transition-duration) var(--mobile-transition-timing);
+
+    /* Premium shadow when open */
+    box-shadow: none;
+  }
+
+  .mobile-menu.is-open {
+    transform: translateX(0);
+    box-shadow:
+      -8px 0 32px rgba(15, 23, 42, 0.12),
+      -2px 0 8px rgba(15, 23, 42, 0.08);
+  }
+
+  .mobile-menu[aria-hidden="true"] {
+    visibility: hidden;
+  }
+
+  .mobile-menu.is-open[aria-hidden="false"] {
+    visibility: visible;
+  }
+
+  /* ==========================================================================
+     HEADER SECTION
+     ========================================================================== */
+
+  .mobile-menu__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--mobile-menu-header-height);
+    padding: 0 1.25rem;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    background: linear-gradient(180deg, #FFFFFF 0%, #FAFBFC 100%);
+    flex-shrink: 0;
+  }
+
+  .mobile-menu__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    padding: 0.5rem;
+    margin: -0.5rem;
+    border-radius: 0.75rem;
+    transition: background 0.2s ease;
+  }
+
+  .mobile-menu__logo:hover {
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  .mobile-menu__logo:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(213, 160, 53, 0.35);
+  }
+
+  .mobile-menu__logo-mark {
+    width: 40px;
+    height: 40px;
+    border-radius: 0.625rem;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .mobile-menu__logo-text {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-navy);
+  }
+
+  .mobile-menu__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 0.75rem;
+    color: #475569;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .mobile-menu__close:hover {
+    background: rgba(0, 0, 0, 0.06);
+    color: #1E293B;
+  }
+
+  .mobile-menu__close:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(213, 160, 53, 0.35);
+  }
+
+  .mobile-menu__close:active {
+    transform: scale(0.95);
+  }
+
+  /* ==========================================================================
+     NAVIGATION SECTION - Scrollable
+     ========================================================================== */
+
+  .mobile-menu__nav {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  .mobile-menu__content {
+    padding: 1.25rem;
+  }
+
+  /* ==========================================================================
+     PILLAR SECTIONS
+     ========================================================================== */
+
+  .mobile-menu__pillars {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .mobile-pillar {
+    border-radius: 1rem;
+    overflow: hidden;
+    background: #F8FAFC;
+    transition: background 0.2s ease;
+  }
+
+  .mobile-pillar:has(.mobile-pillar__trigger[aria-expanded="true"]) {
+    background: rgba(var(--pillar-rgb), 0.06);
+  }
+
+  /* ==========================================================================
+     PILLAR TRIGGER BUTTON
+     ========================================================================== */
+
+  .mobile-pillar__trigger {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    min-height: 72px;
+    padding: 1rem 1.25rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: right;
+    transition: all 0.2s ease;
+  }
+
+  .mobile-pillar__trigger:hover {
+    background: rgba(0, 0, 0, 0.02);
+  }
+
+  .mobile-pillar__trigger:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 3px rgba(213, 160, 53, 0.35);
+    border-radius: 1rem;
+  }
+
+  .mobile-pillar__trigger.is-active {
+    background: rgba(var(--pillar-rgb), 0.08);
+  }
+
+  .mobile-pillar__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 0.75rem;
+    background: rgba(213, 160, 53, 0.12);
+    color: #d5a035;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+
+  .mobile-pillar__trigger:hover .mobile-pillar__icon,
+  .mobile-pillar__trigger[aria-expanded="true"] .mobile-pillar__icon {
+    background: rgba(213, 160, 53, 0.18);
+    transform: scale(1.02);
+  }
+
+  .mobile-pillar__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .mobile-pillar__label {
+    display: block;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1E293B;
+    margin-bottom: 0.125rem;
+  }
+
+  .mobile-pillar__desc {
+    display: block;
+    font-size: 0.875rem;
+    color: #64748B;
+    line-height: 1.4;
+  }
+
+  .mobile-pillar__chevron {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: #94A3B8;
+    flex-shrink: 0;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .mobile-pillar__trigger[aria-expanded="true"] .mobile-pillar__chevron {
+    transform: rotate(180deg);
+    color: var(--pillar-color);
+  }
+
+  /* ==========================================================================
+     PILLAR CONTENT / CLUSTERS
+     ========================================================================== */
+
+  .mobile-pillar__content {
+    padding: 0.5rem 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .mobile-pillar__content[hidden] {
+    display: none;
+  }
+
+  /* Animate content appearance */
+  .mobile-pillar__content:not([hidden]) {
+    animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ==========================================================================
+     CLUSTER LINKS
+     ========================================================================== */
+
+  .mobile-cluster {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 48px;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    color: #334155;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    animation: fadeInCluster 0.25s ease forwards;
+    animation-delay: calc(var(--cluster-index, 0) * 40ms);
+    opacity: 0;
+  }
+
+  @keyframes fadeInCluster {
+    from {
+      opacity: 0;
+      transform: translateX(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .mobile-cluster:hover {
+    background: rgba(255, 255, 255, 0.8);
+    color: #1E293B;
+  }
+
+  .mobile-cluster:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(var(--pillar-rgb), 0.25);
+  }
+
+  .mobile-cluster:active {
+    transform: scale(0.98);
+  }
+
+  .mobile-cluster__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #d5a035;
+    opacity: 0.6;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+
+  .mobile-cluster:hover .mobile-cluster__dot {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+
+  .mobile-cluster__text {
+    flex: 1;
+  }
+
+  /* "View All" link styling */
+  .mobile-cluster--all {
+    justify-content: space-between;
+    color: #d5a035;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    border-right: 3px solid #d5a035;
+    padding-right: calc(1rem - 3px);
+    opacity: 1;
+    animation: none;
+  }
+
+  .mobile-cluster--all:hover {
+    background: rgba(213, 160, 53, 0.08);
+  }
+
+  .mobile-cluster__arrow {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+
+  .mobile-cluster--all:hover .mobile-cluster__arrow {
+    transform: translateX(-4px);
+  }
+
+  /* ==========================================================================
+     DIVIDER
+     ========================================================================== */
+
+  .mobile-menu__divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, #E2E8F0 50%, transparent 100%);
+    margin: 1.5rem 0;
+  }
+
+  /* ==========================================================================
+     QUICK LINKS SECTION
+     ========================================================================== */
+
+  .mobile-menu__section-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94A3B8;
+    margin-bottom: 0.75rem;
+    padding-right: 0.25rem;
+  }
+
+  .mobile-quick-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .mobile-quick-link {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    min-height: 48px;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    color: #475569;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .mobile-quick-link:hover {
+    background: #F1F5F9;
+    color: #1E293B;
+  }
+
+  .mobile-quick-link:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(213, 160, 53, 0.35);
+  }
+
+  .mobile-quick-link__icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #d5a035;
+    flex-shrink: 0;
+    transition: color 0.2s ease;
+  }
+
+  .mobile-quick-link:hover .mobile-quick-link__icon {
+    color: #b8892a;
+  }
+
+  /* ==========================================================================
+     FOOTER SECTION
+     ========================================================================== */
+
+  .mobile-menu__footer {
+    padding: 1.25rem;
+    border-top: 1px solid rgba(226, 232, 240, 0.8);
+    background: linear-gradient(180deg, #FAFBFC 0%, #F1F5F9 100%);
+    flex-shrink: 0;
+    /* Safe area for notched devices */
+    padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .mobile-menu__cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    width: 100%;
+    min-height: 56px;
+    padding: 1rem 1.5rem;
+    border-radius: 0.875rem;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--color-navy);
+    background: linear-gradient(135deg, var(--color-gold-light) 0%, var(--color-gold) 100%);
+    box-shadow:
+      0 4px 14px rgba(213, 160, 53, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transition: all 0.2s ease;
+  }
+
+  .mobile-menu__cta:hover {
+    background: linear-gradient(135deg, var(--color-gold) 0%, #b8892a 100%);
+    box-shadow: 0 6px 20px rgba(213, 160, 53, 0.45);
+    transform: translateY(-1px);
+  }
+
+  .mobile-menu__cta:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 3px #FFFFFF,
+      0 0 0 6px var(--color-gold),
+      0 4px 14px rgba(213, 160, 53, 0.35);
+  }
+
+  .mobile-menu__cta:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(213, 160, 53, 0.35);
+  }
+
+  .mobile-menu__footer-text {
+    text-align: center;
+    font-size: 0.875rem;
+    color: #64748B;
+    margin-top: 0.75rem;
+  }
+
+  /* ==========================================================================
+     REDUCED MOTION PREFERENCES
+     ========================================================================== */
+
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-overlay,
+    .mobile-menu,
+    .mobile-pillar__chevron,
+    .mobile-pillar__icon,
+    .mobile-cluster,
+    .mobile-cluster__dot,
+    .mobile-cluster__arrow,
+    .mobile-quick-link,
+    .mobile-menu__cta,
+    .mobile-menu__close,
+    .mobile-menu__logo {
+      transition: none !important;
+      animation: none !important;
+    }
+
+    .mobile-pillar__content:not([hidden]) {
+      animation: none;
+    }
+
+    .mobile-cluster {
+      opacity: 1;
+    }
+  }
+
+  /* ==========================================================================
+     LANDSCAPE ORIENTATION OPTIMIZATIONS
+     ========================================================================== */
+
+  @media (max-height: 500px) and (orientation: landscape) {
+    .mobile-menu__header {
+      height: 56px;
+      padding: 0 1rem;
+    }
+
+    .mobile-menu__content {
+      padding: 0.75rem 1rem;
+    }
+
+    .mobile-pillar__trigger {
+      min-height: 56px;
+      padding: 0.75rem 1rem;
+    }
+
+    .mobile-pillar__icon {
+      width: 36px;
+      height: 36px;
+    }
+
+    .mobile-cluster,
+    .mobile-quick-link {
+      min-height: 44px;
+      padding: 0.5rem 0.75rem;
+    }
+
+    .mobile-menu__footer {
+      padding: 0.75rem 1rem;
+      padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    }
+
+    .mobile-menu__cta {
+      min-height: 48px;
+      padding: 0.75rem 1rem;
+    }
+  }
+
+  /* ==========================================================================
+     LARGE MOBILE / SMALL TABLET
+     ========================================================================== */
+
+  @media (min-width: 414px) {
+    :root {
+      --mobile-menu-width: min(80vw, 420px);
+    }
+
+    .mobile-menu__content {
+      padding: 1.5rem;
+    }
+
+    .mobile-pillar__trigger {
+      min-height: 76px;
+    }
+  }
+
+  /* ==========================================================================
+     HIDE ON DESKTOP (handled by MegaMenu)
+     ========================================================================== */
+
+  @media (min-width: 1024px) {
+    .mobile-overlay,
+    .mobile-menu {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  /**
+   * Mobile Menu Controller
+   *
+   * Handles:
+   * - Open/close animations
+   * - Accordion behavior for pillars
+   * - Focus trap when menu is open
+   * - Close on outside click
+   * - Close on swipe gesture
+   * - Close on navigation
+   * - Body scroll lock
+   */
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // DOM Elements
+    const overlay = document.querySelector('[data-mobile-overlay]') as HTMLElement;
+    const menu = document.querySelector('[data-mobile-menu]') as HTMLElement;
+    const closeBtn = document.querySelector('[data-mobile-close]') as HTMLButtonElement;
+    const pillarTriggers = document.querySelectorAll('[data-pillar-trigger]');
+    const mobileLinks = document.querySelectorAll('[data-mobile-link]');
+
+    // State
+    let isOpen = false;
+    let openPillarId: string | null = null;
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    // ========================================
+    // MENU OPEN/CLOSE
+    // ========================================
+
+    function openMenu() {
+      if (isOpen) return;
+      isOpen = true;
+
+      // Update DOM
+      overlay?.classList.add('is-open');
+      menu?.classList.add('is-open');
+      menu?.setAttribute('aria-hidden', 'false');
+
+      // Lock body scroll
+      document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+
+      // Focus the close button after animation
+      setTimeout(() => {
+        closeBtn?.focus();
+      }, 100);
+    }
+
+    function closeMenu() {
+      if (!isOpen) return;
+      isOpen = false;
+
+      // Update DOM
+      overlay?.classList.remove('is-open');
+      menu?.classList.remove('is-open');
+      menu?.setAttribute('aria-hidden', 'true');
+
+      // Unlock body scroll
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+
+      // Dispatch event for Header to reset toggle state
+      document.dispatchEvent(new CustomEvent('mobile-menu:closed'));
+
+      // Close any open pillars
+      closeAllPillars();
+    }
+
+    // ========================================
+    // PILLAR ACCORDION
+    // ========================================
+
+    function togglePillar(pillarId: string) {
+      const trigger = document.querySelector(`[data-pillar-trigger="${pillarId}"]`) as HTMLButtonElement;
+      const content = document.querySelector(`[data-pillar-content="${pillarId}"]`) as HTMLElement;
+
+      if (!trigger || !content) return;
+
+      const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+
+      // Close any other open pillar
+      if (!isExpanded && openPillarId && openPillarId !== pillarId) {
+        closePillar(openPillarId);
+      }
+
+      if (isExpanded) {
+        // Close this pillar
+        trigger.setAttribute('aria-expanded', 'false');
+        content.hidden = true;
+        openPillarId = null;
+      } else {
+        // Open this pillar
+        trigger.setAttribute('aria-expanded', 'true');
+        content.hidden = false;
+        openPillarId = pillarId;
+
+        // Scroll pillar into view if needed
+        setTimeout(() => {
+          trigger.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 50);
+      }
+    }
+
+    function closePillar(pillarId: string) {
+      const trigger = document.querySelector(`[data-pillar-trigger="${pillarId}"]`) as HTMLButtonElement;
+      const content = document.querySelector(`[data-pillar-content="${pillarId}"]`) as HTMLElement;
+
+      if (trigger && content) {
+        trigger.setAttribute('aria-expanded', 'false');
+        content.hidden = true;
+      }
+
+      if (openPillarId === pillarId) {
+        openPillarId = null;
+      }
+    }
+
+    function closeAllPillars() {
+      pillarTriggers.forEach((trigger) => {
+        const pillarId = trigger.getAttribute('data-pillar-trigger');
+        if (pillarId) {
+          closePillar(pillarId);
+        }
+      });
+    }
+
+    // ========================================
+    // FOCUS TRAP
+    // ========================================
+
+    function trapFocus(e: KeyboardEvent) {
+      if (!isOpen || e.key !== 'Tab') return;
+
+      const focusableElements = menu?.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+
+      if (!focusableElements || focusableElements.length === 0) return;
+
+      const firstElement = focusableElements[0] as HTMLElement;
+      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+      if (e.shiftKey && document.activeElement === firstElement) {
+        e.preventDefault();
+        lastElement.focus();
+      } else if (!e.shiftKey && document.activeElement === lastElement) {
+        e.preventDefault();
+        firstElement.focus();
+      }
+    }
+
+    // ========================================
+    // SWIPE TO CLOSE (RTL: swipe right to close)
+    // ========================================
+
+    function handleTouchStart(e: TouchEvent) {
+      if (!isOpen) return;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }
+
+    function handleTouchEnd(e: TouchEvent) {
+      if (!isOpen) return;
+
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = Math.abs(touchEndY - touchStartY);
+
+      // RTL: Swipe right (positive deltaX) to close
+      // Require minimum 80px swipe with minimal vertical movement
+      if (deltaX > 80 && deltaY < 50) {
+        closeMenu();
+      }
+    }
+
+    // ========================================
+    // EVENT LISTENERS
+    // ========================================
+
+    // Listen for open/close events from Header
+    document.addEventListener('mobile-menu:open', openMenu);
+    document.addEventListener('mobile-menu:close', closeMenu);
+
+    // Close button
+    closeBtn?.addEventListener('click', closeMenu);
+
+    // Overlay click
+    overlay?.addEventListener('click', closeMenu);
+
+    // Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        closeMenu();
+      }
+    });
+
+    // Focus trap
+    menu?.addEventListener('keydown', trapFocus as EventListener);
+
+    // Pillar accordions
+    pillarTriggers.forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        const pillarId = trigger.getAttribute('data-pillar-trigger');
+        if (pillarId) {
+          togglePillar(pillarId);
+        }
+      });
+
+      // Keyboard support
+      trigger.addEventListener('keydown', (e: Event) => {
+        const keyEvent = e as KeyboardEvent;
+        if (keyEvent.key === 'Enter' || keyEvent.key === ' ') {
+          keyEvent.preventDefault();
+          const pillarId = trigger.getAttribute('data-pillar-trigger');
+          if (pillarId) {
+            togglePillar(pillarId);
+          }
+        }
+      });
+    });
+
+    // Close on link navigation
+    mobileLinks.forEach((link) => {
+      link.addEventListener('click', () => {
+        // Small delay to allow navigation to start
+        setTimeout(closeMenu, 150);
+      });
+    });
+
+    // Swipe gesture support
+    menu?.addEventListener('touchstart', handleTouchStart, { passive: true });
+    menu?.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+    // Cleanup on page navigation (for SPAs / View Transitions)
+    document.addEventListener('astro:before-preparation', closeMenu);
+    document.addEventListener('astro:before-swap', closeMenu);
+  });
+</script>

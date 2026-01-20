@@ -1,0 +1,448 @@
+---
+/**
+ * Button.astro
+ * Premium reusable button component for ITQQAN fintech platform
+ *
+ * Features:
+ * - Multiple variants: primary, secondary, gold, ghost, navy
+ * - Size options: sm, md, lg, xl
+ * - Loading state with spinner
+ * - Icon support (left/right positioning for RTL)
+ * - Full accessibility with WCAG 2.5.5 touch targets (48px minimum)
+ * - Optimized for users aged 40-70
+ */
+
+export interface Props {
+  /** Button variant determines color scheme */
+  variant?: 'primary' | 'secondary' | 'gold' | 'ghost' | 'navy';
+  /** Button size - all sizes maintain minimum touch targets */
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  /** Full width button */
+  fullWidth?: boolean;
+  /** Disabled state */
+  disabled?: boolean;
+  /** Loading state - shows spinner and disables interaction */
+  loading?: boolean;
+  /** Button type attribute */
+  type?: 'button' | 'submit' | 'reset';
+  /** Link href - renders as <a> instead of <button> */
+  href?: string;
+  /** Icon position relative to text (RTL aware) */
+  iconPosition?: 'start' | 'end';
+  /** Additional CSS classes */
+  class?: string;
+  /** Accessible label for icon-only buttons */
+  ariaLabel?: string;
+}
+
+const {
+  variant = 'primary',
+  size = 'md',
+  fullWidth = false,
+  disabled = false,
+  loading = false,
+  type = 'button',
+  href,
+  iconPosition = 'end',
+  class: className = '',
+  ariaLabel,
+  ...rest
+} = Astro.props;
+
+// Determine if we render as link or button
+const Tag = href ? 'a' : 'button';
+
+// Build class list
+const classes = [
+  'btn',
+  `btn--${variant}`,
+  `btn--${size}`,
+  fullWidth && 'btn--full-width',
+  loading && 'btn--loading',
+  disabled && 'btn--disabled',
+  className,
+].filter(Boolean).join(' ');
+
+// Attributes based on element type
+const attrs = href
+  ? { href: disabled ? undefined : href, role: disabled ? 'link' : undefined, 'aria-disabled': disabled }
+  : { type, disabled: disabled || loading };
+---
+
+<Tag
+  class={classes}
+  {...attrs}
+  aria-label={ariaLabel}
+  aria-busy={loading}
+  {...rest}
+>
+  {/* Loading Spinner */}
+  {loading && (
+    <span class="btn__spinner" aria-hidden="true">
+      <svg
+        class="btn__spinner-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          class="btn__spinner-track"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        />
+        <path
+          class="btn__spinner-head"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        />
+      </svg>
+    </span>
+  )}
+
+  {/* Start Icon Slot */}
+  {iconPosition === 'start' && (
+    <span class="btn__icon btn__icon--start">
+      <slot name="icon" />
+    </span>
+  )}
+
+  {/* Button Text */}
+  <span class="btn__text">
+    <slot />
+  </span>
+
+  {/* End Icon Slot */}
+  {iconPosition === 'end' && (
+    <span class="btn__icon btn__icon--end">
+      <slot name="icon" />
+    </span>
+  )}
+</Tag>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════════
+     BASE BUTTON STYLES
+     Optimized for accessibility (40-70 age group)
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .btn {
+    /* Layout */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+
+    /* Typography - Minimum 18px for readability */
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.5;
+    text-decoration: none;
+    white-space: nowrap;
+
+    /* Touch Target - WCAG 2.5.5 Level AAA (48px minimum) */
+    min-height: 48px;
+    padding: 0.75rem 1.5rem;
+
+    /* Visual */
+    border: 2px solid transparent;
+    border-radius: 0.625rem;
+    cursor: pointer;
+
+    /* Transitions */
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.15s ease;
+  }
+
+  .btn:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 3px #FFFFFF,
+      0 0 0 6px rgba(213, 160, 53, 0.6);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     VARIANT: PRIMARY (Brand Gold)
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .btn--primary {
+    background-color: #d5a035;
+    border-color: #d5a035;
+    color: #102941;
+    box-shadow: 0 4px 14px rgba(213, 160, 53, 0.2);
+  }
+
+  .btn--primary:hover:not(.btn--disabled):not(.btn--loading) {
+    background-color: #b8892a;
+    border-color: #b8892a;
+    box-shadow: 0 6px 20px rgba(213, 160, 53, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .btn--primary:active:not(.btn--disabled):not(.btn--loading) {
+    background-color: #a57820;
+    transform: translateY(0);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     VARIANT: SECONDARY (Outlined Navy)
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .btn--secondary {
+    background-color: #FFFFFF;
+    border-color: #243B53;
+    color: #243B53;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  }
+
+  .btn--secondary:hover:not(.btn--disabled):not(.btn--loading) {
+    background-color: #F0F4F8;
+    border-color: #102A43;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .btn--secondary:active:not(.btn--disabled):not(.btn--loading) {
+    background-color: #D9E2EC;
+    transform: translateY(0);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     VARIANT: GOLD (Premium CTA)
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .btn--gold {
+    background: linear-gradient(135deg, #F2C464 0%, #E5A836 100%);
+    border-color: #E5A836;
+    color: #102A43;
+    box-shadow: 0 4px 14px rgba(229, 168, 54, 0.25);
+  }
+
+  .btn--gold:hover:not(.btn--disabled):not(.btn--loading) {
+    background: linear-gradient(135deg, #E5A836 0%, #C48A1A 100%);
+    box-shadow: 0 6px 20px rgba(229, 168, 54, 0.35);
+    transform: translateY(-1px);
+  }
+
+  .btn--gold:active:not(.btn--disabled):not(.btn--loading) {
+    background: linear-gradient(135deg, #C48A1A 0%, #9E6B10 100%);
+    transform: translateY(0);
+  }
+
+  .btn--gold:focus-visible {
+    box-shadow:
+      0 0 0 3px #FFFFFF,
+      0 0 0 6px rgba(229, 168, 54, 0.6);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     VARIANT: GHOST (Minimal)
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .btn--ghost {
+    background-color: transparent;
+    border-color: transparent;
+    color: #334E68;
+  }
+
+  .btn--ghost:hover:not(.btn--disabled):not(.btn--loading) {
+    background-color: #F1F5F9;
+    color: #102A43;
+  }
+
+  .btn--ghost:active:not(.btn--disabled):not(.btn--loading) {
+    background-color: #E2E8F0;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     VARIANT: NAVY (Authority)
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .btn--navy {
+    background: linear-gradient(135deg, #243B53 0%, #102A43 100%);
+    border-color: #243B53;
+    color: #FFFFFF;
+    box-shadow: 0 4px 14px rgba(36, 59, 83, 0.2);
+  }
+
+  .btn--navy:hover:not(.btn--disabled):not(.btn--loading) {
+    background: linear-gradient(135deg, #1E3249 0%, #0A1929 100%);
+    box-shadow: 0 6px 20px rgba(36, 59, 83, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .btn--navy:active:not(.btn--disabled):not(.btn--loading) {
+    background: linear-gradient(135deg, #182A3E 0%, #081C2F 100%);
+    transform: translateY(0);
+  }
+
+  .btn--navy:focus-visible {
+    box-shadow:
+      0 0 0 3px #FFFFFF,
+      0 0 0 6px rgba(36, 59, 83, 0.6);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     SIZES
+     All sizes maintain minimum 48px touch target for accessibility
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .btn--sm {
+    font-size: 0.9375rem; /* 15px minimum for small text */
+    min-height: 48px; /* Still meets touch target */
+    padding: 0.625rem 1.25rem;
+  }
+
+  .btn--md {
+    font-size: 1.125rem; /* 18px */
+    min-height: 48px;
+    padding: 0.75rem 1.5rem;
+  }
+
+  .btn--lg {
+    font-size: 1.25rem; /* 20px */
+    min-height: 56px;
+    padding: 1rem 2rem;
+  }
+
+  .btn--xl {
+    font-size: 1.375rem; /* 22px */
+    min-height: 64px;
+    padding: 1.25rem 2.5rem;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     MODIFIERS
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .btn--full-width {
+    width: 100%;
+  }
+
+  .btn--disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .btn--loading {
+    cursor: wait;
+    pointer-events: none;
+  }
+
+  .btn--loading .btn__text {
+    opacity: 0.7;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     INTERNAL ELEMENTS
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .btn__text {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .btn__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .btn__icon :global(svg) {
+    width: 1.25em;
+    height: 1.25em;
+  }
+
+  /* RTL aware icon positioning */
+  .btn__icon--start {
+    order: 1;
+  }
+
+  .btn__icon--end {
+    order: 2;
+  }
+
+  .btn__text {
+    order: 1;
+  }
+
+  .btn__icon--start + .btn__text {
+    order: 2;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     LOADING SPINNER
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .btn__spinner {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn__spinner-icon {
+    width: 1.25em;
+    height: 1.25em;
+    animation: btn-spin 1s linear infinite;
+  }
+
+  .btn__spinner-track {
+    opacity: 0.25;
+  }
+
+  .btn__spinner-head {
+    opacity: 1;
+  }
+
+  @keyframes btn-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     TOUCH DEVICE OPTIMIZATIONS
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media (hover: none) and (pointer: coarse) {
+    .btn:hover {
+      transform: none;
+    }
+
+    .btn:active:not(.btn--disabled):not(.btn--loading) {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     REDUCED MOTION
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn {
+      transition: none;
+    }
+
+    .btn__spinner-icon {
+      animation: none;
+    }
+
+    .btn:hover,
+    .btn:active {
+      transform: none;
+    }
+  }
+</style>

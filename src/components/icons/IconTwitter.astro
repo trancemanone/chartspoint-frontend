@@ -1,0 +1,31 @@
+---
+/**
+ * IconTwitter - X/Twitter logo
+ * Represents Twitter/X social media
+ */
+interface Props {
+  class?: string;
+  size?: number;
+  strokeWidth?: number;
+}
+
+const { class: className = '', size = 24, strokeWidth = 1.75 } = Astro.props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={className}
+  width={size}
+  height={size}
+  aria-hidden="true"
+>
+  <path d="M4 4l11.733 16h4.267l-11.733-16z" />
+  <path d="M4 20l6.768-6.768" />
+  <path d="M20 4l-6.768 6.768" />
+</svg>

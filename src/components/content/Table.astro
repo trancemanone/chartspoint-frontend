@@ -1,0 +1,396 @@
+---
+/**
+ * Table.astro
+ * Institutional-grade table component for ITQQAN fintech platform
+ *
+ * Features:
+ * - Multiple variants: default, comparison, data, compact
+ * - Premium navy header with subtle gradient
+ * - Status badges and action buttons
+ * - Full RTL support for Arabic content
+ * - WCAG AAA accessibility compliance
+ * - Responsive with horizontal scroll on mobile
+ * - Optional sticky header
+ * - Print-optimized styles
+ *
+ * Usage:
+ * <Table
+ *   variant="comparison"
+ *   striped
+ *   sticky
+ *   caption="..."
+ *   headers={['Header 1', 'Header 2']}
+ *   data={[{ col1: 'value', col2: 'value' }]}
+ * />
+ */
+
+export interface TableHeader {
+  /** Header text */
+  label: string;
+  /** Column key for data mapping */
+  key: string;
+  /** Column alignment override */
+  align?: 'right' | 'left' | 'center';
+  /** Is this column sortable */
+  sortable?: boolean;
+  /** Initial sort direction */
+  sortDir?: 'asc' | 'desc';
+  /** Is this the recommended column (for comparison tables) */
+  recommended?: boolean;
+  /** Recommended badge text */
+  recommendedBadge?: string;
+  /** Cell type for automatic formatting */
+  cellType?: 'text' | 'number' | 'currency' | 'percentage' | 'status' | 'action';
+  /** Currency code for currency cells */
+  currency?: string;
+  /** Minimum column width */
+  minWidth?: string;
+  /** Screen reader only header */
+  srOnly?: boolean;
+}
+
+export interface TableRow {
+  /** Unique row identifier */
+  id?: string;
+  /** Row data keyed by column key */
+  [key: string]: any;
+  /** Row type for special styling */
+  _rowType?: 'default' | 'total' | 'subtotal' | 'highlight';
+}
+
+export interface Props {
+  /** Table variant */
+  variant?: 'default' | 'comparison' | 'data' | 'compact';
+  /** Show alternating row colors */
+  striped?: boolean;
+  /** Show cell borders */
+  bordered?: boolean;
+  /** Enable sticky header */
+  sticky?: boolean;
+  /** Offset sticky header for page navigation */
+  stickyOffset?: boolean;
+  /** Enable responsive stacking on mobile */
+  stackOnMobile?: boolean;
+  /** Table caption (appears at bottom) */
+  caption?: string;
+  /** Column headers configuration */
+  headers: TableHeader[];
+  /** Table data rows */
+  data: TableRow[];
+  /** Empty state message */
+  emptyMessage?: string;
+  /** Empty state title */
+  emptyTitle?: string;
+  /** Show loading skeleton */
+  loading?: boolean;
+  /** Number of skeleton rows to show */
+  loadingRows?: number;
+  /** Additional CSS classes */
+  class?: string;
+  /** Accessible label for the table */
+  ariaLabel?: string;
+  /** ID for the table (for aria-describedby) */
+  id?: string;
+}
+
+const {
+  variant = 'default',
+  striped = true,
+  bordered = false,
+  sticky = false,
+  stickyOffset = false,
+  stackOnMobile = false,
+  caption,
+  headers,
+  data,
+  emptyMessage = 'No data to display',
+  emptyTitle = 'No results found',
+  loading = false,
+  loadingRows = 5,
+  class: className = '',
+  ariaLabel,
+  id,
+} = Astro.props;
+
+// Build table classes
+const tableClasses = [
+  'fintech-table',
+  variant !== 'default' && `fintech-table--${variant}`,
+  striped && 'fintech-table--striped',
+  bordered && 'fintech-table--bordered',
+  sticky && 'fintech-table--sticky',
+  stickyOffset && 'fintech-table--sticky-offset',
+  className,
+].filter(Boolean).join(' ');
+
+// Build container classes
+const containerClasses = [
+  'fintech-table-container',
+  stackOnMobile && 'fintech-table-container--stack',
+].filter(Boolean).join(' ');
+
+// Helper to format cell content based on type
+function formatCell(value: any, header: TableHeader): string {
+  if (value === null || value === undefined) return '-';
+
+  switch (header.cellType) {
+    case 'currency':
+      const num = typeof value === 'number' ? value : parseFloat(value);
+      return isNaN(num) ? value : num.toLocaleString('ar-SA');
+    case 'percentage':
+      const pct = typeof value === 'number' ? value : parseFloat(value);
+      return isNaN(pct) ? value : `${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`;
+    case 'number':
+      const n = typeof value === 'number' ? value : parseFloat(value);
+      return isNaN(n) ? value : n.toLocaleString('ar-SA');
+    default:
+      return String(value);
+  }
+}
+
+// Helper to get cell classes
+function getCellClasses(header: TableHeader, value: any): string {
+  const classes: string[] = [];
+
+  if (header.cellType === 'number' || header.cellType === 'currency') {
+    classes.push('cell-number');
+  }
+
+  if (header.cellType === 'currency') {
+    classes.push('cell-currency');
+  }
+
+  if (header.cellType === 'percentage') {
+    classes.push('cell-percentage');
+    const num = typeof value === 'number' ? value : parseFloat(value);
+    if (!isNaN(num)) {
+      classes.push(num > 0 ? 'positive' : num < 0 ? 'negative' : 'neutral');
+    }
+  }
+
+  if (header.cellType === 'status') {
+    classes.push('cell-status');
+  }
+
+  if (header.cellType === 'action') {
+    classes.push('cell-action');
+  }
+
+  if (header.recommended) {
+    classes.push('col-recommended');
+  }
+
+  if (header.align === 'center') {
+    classes.push('text-center');
+  } else if (header.align === 'left') {
+    classes.push('text-left');
+  }
+
+  return classes.join(' ');
+}
+
+// Helper to get row classes
+function getRowClasses(row: TableRow): string {
+  const classes: string[] = [];
+
+  if (row._rowType === 'total') {
+    classes.push('row-total');
+  } else if (row._rowType === 'subtotal') {
+    classes.push('row-subtotal');
+  } else if (row._rowType === 'highlight') {
+    classes.push('row-highlight');
+  }
+
+  return classes.join(' ');
+}
+
+// Generate loading rows
+const skeletonRows = Array(loadingRows).fill(null);
+---
+
+<div class={containerClasses}>
+  <table
+    class={tableClasses}
+    aria-label={ariaLabel}
+    id={id}
+    role="table"
+  >
+    {/* Table Header */}
+    <thead role="rowgroup">
+      <tr role="row">
+        {headers.map((header) => (
+          <th
+            role="columnheader"
+            scope="col"
+            data-sortable={header.sortable ? 'true' : undefined}
+            data-sort={header.sortDir}
+            class:list={[
+              header.recommended && 'col-recommended',
+              header.srOnly && 'sr-only',
+            ]}
+            data-badge={header.recommended ? (header.recommendedBadge || 'Recommended') : undefined}
+            style={header.minWidth ? `min-width: ${header.minWidth}` : undefined}
+          >
+            {header.label}
+          </th>
+        ))}
+      </tr>
+    </thead>
+
+    {/* Table Body */}
+    <tbody role="rowgroup">
+      {loading ? (
+        /* Loading State */
+        skeletonRows.map((_, rowIndex) => (
+          <tr class="loading-row" role="row" aria-hidden="true">
+            {headers.map((_, colIndex) => (
+              <td role="cell">
+                <div class="skeleton-cell" style={`width: ${60 + Math.random() * 30}%`}></div>
+              </td>
+            ))}
+          </tr>
+        ))
+      ) : data.length === 0 ? (
+        /* Empty State */
+        <tr>
+          <td colspan={headers.length} class="empty-state">
+            <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+            </svg>
+            <p class="empty-state-title">{emptyTitle}</p>
+            <p class="empty-state-text">{emptyMessage}</p>
+          </td>
+        </tr>
+      ) : (
+        /* Data Rows */
+        data.map((row, rowIndex) => (
+          <tr
+            role="row"
+            class={getRowClasses(row)}
+            data-row-id={row.id}
+          >
+            {headers.map((header, colIndex) => (
+              <td
+                role="cell"
+                class={getCellClasses(header, row[header.key])}
+                data-label={stackOnMobile ? header.label : undefined}
+                data-currency={header.cellType === 'currency' ? (header.currency || 'SAR') : undefined}
+              >
+                {/* Status Badge Rendering */}
+                {header.cellType === 'status' && row[header.key] ? (
+                  <span class={`status-badge status-badge--${row[header.key].type || 'info'}`}>
+                    {row[header.key].label || row[header.key]}
+                  </span>
+                ) : header.cellType === 'action' ? (
+                  /* Action Buttons Slot */
+                  <slot name={`action-${rowIndex}`}>
+                    {row[header.key]}
+                  </slot>
+                ) : (
+                  /* Default Cell Rendering */
+                  <Fragment set:html={formatCell(row[header.key], header)} />
+                )}
+              </td>
+            ))}
+          </tr>
+        ))
+      )}
+    </tbody>
+
+    {/* Table Footer (if slot provided) */}
+    <slot name="footer" />
+
+    {/* Caption */}
+    {caption && (
+      <caption>{caption}</caption>
+    )}
+  </table>
+</div>
+
+<style>
+  /* Component-specific styles that complement global.css */
+
+  /* Ensure proper RTL in table container */
+  .fintech-table-container {
+    direction: rtl;
+  }
+
+  /* Empty state centering */
+  .empty-state {
+    direction: rtl;
+  }
+
+  /* Skeleton animation */
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  .skeleton-cell {
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  /* Row highlight animation */
+  .row-highlight {
+    animation: highlightRow 2s ease-out;
+  }
+
+  @keyframes highlightRow {
+    0% {
+      background-color: rgba(213, 160, 53, 0.15);
+    }
+    100% {
+      background-color: transparent;
+    }
+  }
+</style>
+
+<script>
+  // Optional: Add sortable functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const tables = document.querySelectorAll('.fintech-table');
+
+    tables.forEach((table) => {
+      const sortableHeaders = table.querySelectorAll('th[data-sortable]');
+
+      sortableHeaders.forEach((header) => {
+        header.addEventListener('click', () => {
+          const currentSort = header.getAttribute('data-sort');
+          const newSort = currentSort === 'asc' ? 'desc' : 'asc';
+
+          // Reset all headers
+          sortableHeaders.forEach((h) => h.removeAttribute('data-sort'));
+
+          // Set new sort direction
+          header.setAttribute('data-sort', newSort);
+
+          // Dispatch custom event for parent components to handle
+          const event = new CustomEvent('table-sort', {
+            detail: {
+              column: header.textContent?.trim(),
+              direction: newSort,
+            },
+            bubbles: true,
+          });
+          table.dispatchEvent(event);
+        });
+
+        // Keyboard support
+        header.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            (header as HTMLElement).click();
+          }
+        });
+
+        // Make sortable headers focusable
+        header.setAttribute('tabindex', '0');
+        header.setAttribute('role', 'button');
+      });
+    });
+  });
+</script>

@@ -1,0 +1,285 @@
+---
+/**
+ * Author Page - [slug].astro
+ *
+ * Dynamic author page that displays author information and their articles.
+ * URL structure: /author/{author-slug}
+ *
+ * Features:
+ * - Large author avatar
+ * - Author name and bio
+ * - Social links (if available)
+ * - Grid of articles by this author
+ * - Schema.org ProfilePage structured data
+ */
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Breadcrumbs from '@components/navigation/Breadcrumbs.astro';
+import ArticleCard from '@components/content/ArticleCard.astro';
+import {
+  getAllAuthors,
+  getAuthorBySlug,
+  transformAuthorPostToArticle,
+} from '@lib/wordpress';
+import type { Article } from '@lib/types';
+
+export async function getStaticPaths() {
+  const authors = await getAllAuthors();
+
+  return authors.map((author) => ({
+    params: { slug: author.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+
+// Fetch author data
+const author = await getAuthorBySlug(slug);
+
+// 404 if author not found
+if (!author) {
+  return Astro.redirect('/404');
+}
+
+// Transform posts to Article type for ArticleCard
+const articles: Article[] = author.posts.map((post) =>
+  transformAuthorPostToArticle(post, author)
+);
+
+// Breadcrumbs
+const breadcrumbs = [
+  { label: 'الرئيسية', href: '/' },
+  { label: 'الكتاب', href: '/author' },
+  { label: author.name, href: `/author/${author.slug}`, current: true },
+];
+
+// Page metadata
+const pageTitle = `${author.name} - كاتب في إتقان`;
+const pageDescription = author.description
+  ? author.description.substring(0, 160)
+  : `اقرأ جميع مقالات ${author.name} على منصة إتقان للتعليم المالي`;
+
+// Schema.org ProfilePage
+const authorSchema = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  mainEntity: {
+    '@type': 'Person',
+    name: author.name,
+    description: author.description,
+    image: author.avatar?.url,
+    url: `https://itqqan.com/author/${author.slug}`,
+    sameAs: author.url ? [author.url] : [],
+  },
+  breadcrumb: {
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbs.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.label,
+      item: item.current ? undefined : `https://itqqan.com${item.href}`,
+    })),
+  },
+});
+
+// Stats for display
+const articleCount = articles.length;
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  canonical={`https://itqqan.com/author/${author.slug}`}
+  ogImage={author.avatar?.url}
+  schema={authorSchema}
+>
+  <div class="author-page">
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden bg-gradient-to-b from-navy-50 via-slate-50 to-white py-16 lg:py-24">
+      <!-- Decorative Elements -->
+      <div class="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-brand-100/30 to-transparent rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+      <div class="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-tl from-navy-100/20 to-transparent rounded-full blur-2xl translate-x-1/4 translate-y-1/4"></div>
+
+      <div class="container mx-auto px-4 lg:px-8 relative">
+        <!-- Breadcrumbs -->
+        <Breadcrumbs items={breadcrumbs} />
+
+        <!-- Author Profile Card -->
+        <div class="mt-10 lg:mt-12 max-w-4xl">
+          <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
+            <!-- Avatar -->
+            <div class="flex-shrink-0">
+              <div class="relative">
+                {author.avatar?.url ? (
+                  <img
+                    src={author.avatar.url}
+                    alt={`صورة ${author.name}`}
+                    width="180"
+                    height="180"
+                    class="w-36 h-36 md:w-44 md:h-44 rounded-full object-cover border-4 border-white shadow-xl"
+                    loading="eager"
+                  />
+                ) : (
+                  <div class="w-36 h-36 md:w-44 md:h-44 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center border-4 border-white shadow-xl">
+                    <span class="text-5xl md:text-6xl font-bold text-white">
+                      {author.name.charAt(0)}
+                    </span>
+                  </div>
+                )}
+                <!-- Verified badge -->
+                <div class="absolute -bottom-2 -right-2 w-10 h-10 bg-brand-500 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
+                  <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Author Info -->
+            <div class="flex-1 text-center md:text-right">
+              <h1 class="text-display-md lg:text-display-lg font-heading font-extrabold text-navy-900 mb-4">
+                {author.name}
+              </h1>
+
+              {author.description && (
+                <p class="text-body-lg text-slate-600 leading-relaxed mb-6 max-w-2xl">
+                  {author.description}
+                </p>
+              )}
+
+              <!-- Stats -->
+              <div class="flex flex-wrap justify-center md:justify-start gap-6 mb-6">
+                <div class="text-center">
+                  <div class="text-2xl lg:text-3xl font-bold text-navy-900" style="direction: ltr;">
+                    {articleCount.toLocaleString('ar-SA')}
+                  </div>
+                  <div class="text-sm text-slate-500">مقال منشور</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-2xl lg:text-3xl font-bold text-brand-600">
+                    <svg class="w-8 h-8 inline-block" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                  <div class="text-sm text-slate-500">كاتب موثق</div>
+                </div>
+              </div>
+
+              <!-- Social Links -->
+              {author.url && (
+                <div class="flex flex-wrap justify-center md:justify-start gap-3">
+                  <a
+                    href={author.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-200 text-slate-700 hover:border-brand-500 hover:text-brand-600 transition-colors shadow-sm"
+                  >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                    </svg>
+                    <span>الموقع الشخصي</span>
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Articles Section -->
+    <section class="py-16 lg:py-20 bg-surface-page">
+      <div class="container mx-auto px-4 lg:px-8">
+        <!-- Section Header -->
+        <div class="flex items-center gap-4 mb-10">
+          <div class="w-1.5 h-12 rounded-full bg-brand-500"></div>
+          <div>
+            <h2 class="text-h2-mobile md:text-h2-desktop font-heading font-bold text-navy-900">
+              مقالات {author.name}
+            </h2>
+            <p class="text-slate-500 mt-1">
+              {articleCount > 0
+                ? `${articleCount.toLocaleString('ar-SA')} مقال في التعليم المالي`
+                : 'لا توجد مقالات منشورة حتى الآن'}
+            </p>
+          </div>
+        </div>
+
+        <!-- Articles Grid -->
+        {articles.length > 0 ? (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {articles.map((article) => (
+              <div class="author-article-card">
+                <ArticleCard article={article} showAuthor={false} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div class="content-box text-center py-16">
+            <svg class="w-20 h-20 text-slate-300 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <h3 class="text-xl font-heading font-bold text-navy-900 mb-2">
+              لا توجد مقالات بعد
+            </h3>
+            <p class="text-slate-500">
+              سيتم نشر مقالات هذا الكاتب قريبا
+            </p>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 lg:py-20 bg-white border-t border-slate-100">
+      <div class="container mx-auto px-4 lg:px-8">
+        <div class="cta-primary max-w-4xl mx-auto text-center">
+          <h2 class="cta-primary-title">
+            هل تريد قراءة المزيد؟
+          </h2>
+          <p class="cta-primary-text max-w-2xl mx-auto">
+            اكتشف المزيد من المقالات التعليمية في مجال الاستثمار والتمويل الشخصي
+          </p>
+          <div class="flex flex-wrap justify-center gap-4">
+            <a href="/learn" class="btn btn-lg bg-learn-500 hover:bg-learn-600 text-white">
+              قسم التعلم
+              <svg class="w-5 h-5 mr-2 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+            <a href="/accounts" class="btn btn-lg bg-brand-500 hover:bg-brand-600 text-white">
+              قسم الحسابات
+              <svg class="w-5 h-5 mr-2 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+            <a href="/trust" class="btn btn-lg bg-trust-500 hover:bg-trust-600 text-white">
+              قسم الثقة
+              <svg class="w-5 h-5 mr-2 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  /* Author card hover animation */
+  .author-article-card {
+    transition: transform 0.3s cubic-bezier(0.45, 0, 0.15, 1);
+  }
+
+  .author-article-card:hover {
+    transform: translateY(-4px);
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .author-page h1 {
+      font-size: 1.75rem;
+    }
+  }
+</style>

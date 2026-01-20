@@ -1,0 +1,30 @@
+---
+/**
+ * Disclaimer Page - إخلاء المسؤولية
+ *
+ * Fetches the "disclaimer" page content from WordPress CMS.
+ * WordPress Page ID: 324
+ */
+
+import StaticPageLayout from '@layouts/StaticPageLayout.astro';
+import { getPageBySlug } from '@lib/wordpress';
+
+// Fetch page content from WordPress
+const page = await getPageBySlug('disclaimer');
+
+// Handle page not found
+if (!page) {
+  return Astro.redirect('/404');
+}
+
+const title = page.title.rendered;
+const content = page.content.rendered;
+const description = 'إخلاء المسؤولية لموقع إتقان. المحتوى التعليمي المقدم لا يعتبر نصيحة مالية أو استثمارية.';
+---
+
+<StaticPageLayout
+  title={title}
+  content={content}
+  description={description}
+  lastModified={page.modified}
+/>

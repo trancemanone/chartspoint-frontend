@@ -1,0 +1,658 @@
+---
+/**
+ * ArticleCard.astro
+ * Premium article card component for ITQQAN fintech platform
+ *
+ * Features:
+ * - Featured image with 16:9 aspect ratio and hover zoom
+ * - Category badge with pillar color
+ * - Title with smooth hover color transition
+ * - Excerpt limited to 2 lines
+ * - Reading time and publication date
+ * - Author avatar (small, circular)
+ * - Subtle shadow that elevates on hover
+ * - Full RTL support and accessibility
+ * - Optimized for 40-70 age group readability
+ */
+
+import type { Article, PillarSlug } from '@lib/types';
+import { PILLAR_NAMES_AR } from '@lib/content-structure';
+
+export interface Props {
+  article: Article;
+  /** Show pillar badge */
+  showPillar?: boolean;
+  /** Show expertise level badge */
+  showExpertise?: boolean;
+  /** Show author info */
+  showAuthor?: boolean;
+  /** Card size variant */
+  size?: 'default' | 'compact' | 'large';
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  article,
+  showPillar = true,
+  showExpertise = true,
+  showAuthor = true,
+  size = 'default',
+  class: className = '',
+} = Astro.props;
+
+// Pillar color configurations
+const pillarColors: Record<PillarSlug, { bg: string; text: string; border: string }> = {
+  learn: {
+    bg: 'bg-learn-500',
+    text: 'text-learn-600',
+    border: 'border-learn-500',
+  },
+  accounts: {
+    bg: 'bg-brand-500',
+    text: 'text-brand-600',
+    border: 'border-brand-500',
+  },
+  trust: {
+    bg: 'bg-trust-500',
+    text: 'text-trust-600',
+    border: 'border-trust-500',
+  },
+};
+
+const colors = pillarColors[article.pillar];
+
+// Expertise level badges
+const expertiseBadges = {
+  beginner: { label: 'مبتدئ', class: 'expertise--beginner' },
+  intermediate: { label: 'متوسط', class: 'expertise--intermediate' },
+  advanced: { label: 'متقدم', class: 'expertise--advanced' },
+};
+
+const expertise = expertiseBadges[article.expertiseLevel];
+
+// Article URL construction
+const articleUrl = `/${article.pillar}/${article.cluster}/${article.slug}`;
+
+// Format date for display
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('ar-SA', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+};
+
+// Build class list
+const cardClasses = [
+  'article-card',
+  `article-card--${size}`,
+  className,
+].filter(Boolean).join(' ');
+---
+
+<article class={cardClasses} data-pillar={article.pillar}>
+  <a href={articleUrl} class="article-card__link" aria-labelledby={`title-${article.id}`}>
+
+    {/* Featured Image */}
+    <div class="article-card__image-wrapper">
+      {article.featuredImage ? (
+        <img
+          src={article.featuredImage.url}
+          alt={article.featuredImage.alt || article.title}
+          width={article.featuredImage.width || 400}
+          height={article.featuredImage.height || 225}
+          loading="lazy"
+          decoding="async"
+          class="article-card__image"
+        />
+      ) : (
+        <div class="article-card__image-placeholder" data-pillar={article.pillar}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="48"
+            height="48"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+        </div>
+      )}
+
+      {/* Badges overlay */}
+      <div class="article-card__badges">
+        {showPillar && (
+          <span class="article-card__badge article-card__badge--pillar" data-pillar={article.pillar}>
+            {PILLAR_NAMES_AR[article.pillar]}
+          </span>
+        )}
+        {showExpertise && (
+          <span class={`article-card__badge ${expertise.class}`}>
+            {expertise.label}
+          </span>
+        )}
+      </div>
+    </div>
+
+    {/* Content */}
+    <div class="article-card__content">
+      {/* Title */}
+      <h3 id={`title-${article.id}`} class="article-card__title">
+        {article.title}
+      </h3>
+
+      {/* Excerpt */}
+      <p class="article-card__excerpt">
+        {article.excerpt}
+      </p>
+
+      {/* Meta footer */}
+      <div class="article-card__meta">
+        {/* Author */}
+        {showAuthor && article.author && (
+          <div class="article-card__author">
+            <img
+              src={article.author.avatar}
+              alt={`صورة ${article.author.name}`}
+              width="32"
+              height="32"
+              loading="lazy"
+              class="article-card__author-avatar"
+            />
+            <span class="article-card__author-name">{article.author.name}</span>
+          </div>
+        )}
+
+        {/* Reading time and date */}
+        <div class="article-card__stats">
+          <span class="article-card__reading-time">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span>{article.readingTime} دقائق</span>
+          </span>
+
+          <span class="article-card__date">
+            <time datetime={article.publishDate}>
+              {formatDate(article.publishDate)}
+            </time>
+          </span>
+        </div>
+      </div>
+
+      {/* Read more indicator */}
+      <span class="article-card__cta" aria-hidden="true">
+        <span>اقرأ المقال</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </span>
+    </div>
+  </a>
+</article>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════════
+     BASE CARD STYLES
+     Premium fintech article card with sophisticated shadows
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .article-card {
+    --card-pillar-color: #d5a035;
+
+    position: relative;
+    background-color: #FFFFFF;
+    border-radius: 1rem;
+    overflow: hidden;
+
+    /* Premium shadow */
+    box-shadow:
+      0 2px 8px rgba(15, 23, 42, 0.04),
+      0 4px 16px rgba(15, 23, 42, 0.04);
+
+    /* Pillar accent border */
+    border-right: 4px solid var(--card-pillar-color);
+    border-top: 1px solid rgba(226, 232, 240, 0.6);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+    border-left: 1px solid rgba(226, 232, 240, 0.6);
+
+    /* Transitions */
+    transition:
+      box-shadow 0.3s cubic-bezier(0.45, 0, 0.15, 1),
+      transform 0.3s cubic-bezier(0.45, 0, 0.15, 1);
+  }
+
+  /* Pillar-specific colors */
+  .article-card[data-pillar="learn"] {
+    --card-pillar-color: #3B82F6;
+  }
+
+  .article-card[data-pillar="accounts"] {
+    --card-pillar-color: #d5a035;
+  }
+
+  .article-card[data-pillar="trust"] {
+    --card-pillar-color: #7C2D3C;
+  }
+
+  .article-card:hover {
+    box-shadow:
+      0 12px 32px rgba(15, 23, 42, 0.1),
+      0 24px 64px rgba(15, 23, 42, 0.06);
+    transform: translateY(-4px);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     CARD LINK (Full card clickable)
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .article-card__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .article-card__link:focus-visible {
+    outline: none;
+  }
+
+  .article-card:focus-within {
+    box-shadow:
+      0 12px 32px rgba(15, 23, 42, 0.1),
+      0 0 0 3px #FFFFFF,
+      0 0 0 6px var(--card-pillar-color);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     IMAGE SECTION
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .article-card__image-wrapper {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background-color: #F1F5F9;
+  }
+
+  .article-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s cubic-bezier(0.45, 0, 0.15, 1);
+  }
+
+  .article-card:hover .article-card__image {
+    transform: scale(1.05);
+  }
+
+  .article-card__image-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%);
+    color: #94A3B8;
+  }
+
+  .article-card__image-placeholder[data-pillar="learn"] {
+    background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+    color: #3B82F6;
+  }
+
+  .article-card__image-placeholder[data-pillar="accounts"] {
+    background: linear-gradient(135deg, #FDF8EC 0%, #FCEFC8 100%);
+    color: #d5a035;
+  }
+
+  .article-card__image-placeholder[data-pillar="trust"] {
+    background: linear-gradient(135deg, #FDF2F4 0%, #FCE4E8 100%);
+    color: #7C2D3C;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     BADGES
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .article-card__badges {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .article-card__badge {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .article-card__badge--pillar {
+    color: #FFFFFF;
+  }
+
+  .article-card__badge--pillar[data-pillar="learn"] {
+    background-color: rgba(59, 130, 246, 0.92);
+  }
+
+  .article-card__badge--pillar[data-pillar="accounts"] {
+    background-color: rgba(213, 160, 53, 0.92);
+  }
+
+  .article-card__badge--pillar[data-pillar="trust"] {
+    background-color: rgba(168, 85, 247, 0.92);
+  }
+
+  /* Expertise badges */
+  .expertise--beginner {
+    background-color: rgba(16, 185, 129, 0.9);
+    color: #FFFFFF;
+  }
+
+  .expertise--intermediate {
+    background-color: rgba(245, 158, 11, 0.9);
+    color: #FFFFFF;
+  }
+
+  .expertise--advanced {
+    background-color: rgba(239, 68, 68, 0.9);
+    color: #FFFFFF;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     CONTENT SECTION
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .article-card__content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 1.5rem;
+  }
+
+  /* Title */
+  .article-card__title {
+    margin: 0 0 0.75rem;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: #102A43;
+    transition: color 0.2s ease;
+
+    /* 2-line clamp */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  @media (min-width: 768px) {
+    .article-card__title {
+      font-size: 1.375rem;
+    }
+  }
+
+  .article-card:hover .article-card__title {
+    color: var(--card-pillar-color);
+  }
+
+  /* Excerpt */
+  .article-card__excerpt {
+    margin: 0 0 1rem;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: #475569;
+
+    /* 2-line clamp */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  @media (min-width: 768px) {
+    .article-card__excerpt {
+      font-size: 1.0625rem;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     META SECTION
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .article-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid #F1F5F9;
+  }
+
+  /* Author */
+  .article-card__author {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .article-card__author-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #FFFFFF;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.1);
+  }
+
+  .article-card__author-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #334155;
+  }
+
+  /* Stats */
+  .article-card__stats {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: #64748B;
+  }
+
+  .article-card__reading-time {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .article-card__reading-time svg {
+    color: #94A3B8;
+  }
+
+  .article-card__date {
+    display: none;
+  }
+
+  @media (min-width: 640px) {
+    .article-card__date {
+      display: block;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     CTA (Read More)
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .article-card__cta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--card-pillar-color);
+    transition: gap 0.2s ease;
+  }
+
+  .article-card__cta svg {
+    transition: transform 0.2s ease;
+    /* RTL flip */
+    transform: scaleX(-1);
+  }
+
+  .article-card:hover .article-card__cta {
+    gap: 0.75rem;
+  }
+
+  .article-card:hover .article-card__cta svg {
+    transform: scaleX(-1) translateX(-4px);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     SIZE VARIANTS
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  /* Compact */
+  .article-card--compact .article-card__content {
+    padding: 1rem;
+  }
+
+  .article-card--compact .article-card__title {
+    font-size: 1.0625rem;
+  }
+
+  .article-card--compact .article-card__excerpt {
+    font-size: 0.9375rem;
+    -webkit-line-clamp: 1;
+  }
+
+  .article-card--compact .article-card__cta {
+    display: none;
+  }
+
+  /* Large */
+  .article-card--large .article-card__content {
+    padding: 2rem;
+  }
+
+  .article-card--large .article-card__title {
+    font-size: 1.5rem;
+    -webkit-line-clamp: 3;
+  }
+
+  @media (min-width: 768px) {
+    .article-card--large .article-card__title {
+      font-size: 1.75rem;
+    }
+  }
+
+  .article-card--large .article-card__excerpt {
+    font-size: 1.125rem;
+    -webkit-line-clamp: 3;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     TOUCH DEVICE OPTIMIZATIONS
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media (hover: none) and (pointer: coarse) {
+    .article-card:hover {
+      transform: none;
+      box-shadow:
+        0 2px 8px rgba(15, 23, 42, 0.04),
+        0 4px 16px rgba(15, 23, 42, 0.04);
+    }
+
+    .article-card:hover .article-card__image {
+      transform: none;
+    }
+
+    .article-card:active {
+      transform: scale(0.99);
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     REDUCED MOTION
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .article-card,
+    .article-card__image,
+    .article-card__title,
+    .article-card__cta,
+    .article-card__cta svg {
+      transition: none;
+    }
+
+    .article-card:hover {
+      transform: none;
+    }
+
+    .article-card:hover .article-card__image {
+      transform: none;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     PRINT STYLES
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media print {
+    .article-card {
+      box-shadow: none;
+      border: 1px solid #CBD5E1;
+      break-inside: avoid;
+    }
+
+    .article-card__badges,
+    .article-card__cta {
+      display: none;
+    }
+  }
+</style>

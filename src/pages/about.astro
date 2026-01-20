@@ -1,0 +1,30 @@
+---
+/**
+ * About Page - من نحن
+ *
+ * Fetches the "about" page content from WordPress CMS.
+ * WordPress Page ID: 319
+ */
+
+import StaticPageLayout from '@layouts/StaticPageLayout.astro';
+import { getPageBySlug } from '@lib/wordpress';
+
+// Fetch page content from WordPress
+const page = await getPageBySlug('about');
+
+// Handle page not found
+if (!page) {
+  return Astro.redirect('/404');
+}
+
+const title = page.title.rendered;
+const content = page.content.rendered;
+const description = 'تعرف على إتقان - منصة التعليم المالي للمستثمر العربي. نقدم محتوى تعليمي موثوق لمساعدتك في رحلتك الاستثمارية.';
+---
+
+<StaticPageLayout
+  title={title}
+  content={content}
+  description={description}
+  lastModified={page.modified}
+/>

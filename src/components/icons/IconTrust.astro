@@ -1,0 +1,33 @@
+---
+/**
+ * IconTrust - Shield with checkmark
+ * Represents verification and trust (Trust pillar)
+ * Premium fintech icon with bold strokes
+ */
+interface Props {
+  class?: string;
+  size?: number;
+  strokeWidth?: number;
+}
+
+const { class: className = '', size = 24, strokeWidth = 1.75 } = Astro.props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={className}
+  width={size}
+  height={size}
+  aria-hidden="true"
+>
+  <!-- Shield shape - institutional protection symbol -->
+  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+  <!-- Checkmark inside - verified status -->
+  <path d="M9 12l2 2 4-4" />
+</svg>

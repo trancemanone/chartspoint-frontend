@@ -1,0 +1,607 @@
+---
+/**
+ * ArticleLayout.astro
+ *
+ * Sophisticated article layout for ITQQAN financial education content.
+ * Designed for optimal readability and trust-building.
+ *
+ * Features:
+ * - Breadcrumbs navigation
+ * - Sticky table of contents sidebar
+ * - Premium article typography
+ * - Author bio card with E-E-A-T signals
+ * - Trust badges for financial content
+ * - FAQ accordion section
+ * - Related articles grid
+ * - Mobile-optimized reading experience
+ */
+
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '@components/navigation/Breadcrumbs.astro';
+import TableOfContents from '@components/content/TableOfContents.astro';
+import FAQAccordion from '@components/content/FAQAccordion.astro';
+import AuthorBio from '@components/author/AuthorBio.astro';
+import RelatedArticles from '@components/content/RelatedArticles.astro';
+import type { Article, TOCItem } from '@lib/types';
+import { PILLAR_NAMES_AR, CLUSTER_NAMES_AR } from '@lib/content-structure';
+
+export interface Props {
+  article: Article;
+}
+
+const { article } = Astro.props;
+
+// Generate breadcrumbs
+const breadcrumbs = [
+  { label: 'الرئيسية', href: '/' },
+  { label: PILLAR_NAMES_AR[article.pillar], href: `/${article.pillar}` },
+  { label: CLUSTER_NAMES_AR[article.cluster] || article.cluster, href: `/${article.pillar}/${article.cluster}` },
+  { label: article.title, href: '#', current: true },
+];
+
+// Extract TOC from content - handles WordPress HTML with nested tags
+function extractTOC(content: string): TOCItem[] {
+  const toc: TOCItem[] = [];
+  // Match h2 and h3 tags, capturing the full inner content (may include nested tags)
+  const headingRegex = /<h([23])([^>]*)>([\s\S]*?)<\/h[23]>/gi;
+  let match;
+  let counter = 0;
+
+  while ((match = headingRegex.exec(content)) !== null) {
+    // Strip HTML tags to get plain text
+    const plainText = match[3].replace(/<[^>]*>/g, '').trim();
+    if (plainText) {
+      // Generate slug-based ID from Arabic text
+      const slug = `section-${counter}`;
+      toc.push({
+        id: slug,
+        text: plainText,
+        level: parseInt(match[1]) as 2 | 3,
+      });
+      counter++;
+    }
+  }
+
+  return toc;
+}
+
+// Process content to add IDs to headings for TOC linking
+function processContent(content: string): string {
+  let counter = 0;
+  return content.replace(/<h([23])([^>]*)>([\s\S]*?)<\/h[23]>/gi, (match, level, attrs, innerHtml) => {
+    const plainText = innerHtml.replace(/<[^>]*>/g, '').trim();
+    if (!plainText) return match; // Skip empty headings
+
+    const slug = `section-${counter}`;
+    counter++;
+
+    // Check if ID already exists in attrs
+    if (attrs.includes('id=')) {
+      return match; // Keep existing ID
+    }
+
+    return `<h${level}${attrs} id="${slug}">${innerHtml}</h${level}>`;
+  });
+}
+
+const tocItems = extractTOC(article.content);
+const processedContent = processContent(article.content);
+
+// Pillar color classes for visual hierarchy
+const pillarColors = {
+  learn: {
+    border: 'border-learn-500',
+    bg: 'bg-learn-50',
+    text: 'text-learn-600',
+    badge: 'badge-learn',
+  },
+  accounts: {
+    border: 'border-accounts-500',
+    bg: 'bg-accounts-50',
+    text: 'text-accounts-600',
+    badge: 'badge-accounts',
+  },
+  trust: {
+    border: 'border-trust-500',
+    bg: 'bg-trust-50',
+    text: 'text-trust-600',
+    badge: 'badge-trust',
+  },
+}[article.pillar];
+
+// Expertise level styling
+const expertiseLevels = {
+  beginner: { label: 'مبتدئ', class: 'bg-success-100 text-success-700' },
+  intermediate: { label: 'متوسط', class: 'bg-warning-100 text-warning-700' },
+  advanced: { label: 'متقدم', class: 'bg-error-100 text-error-700' },
+};
+
+const expertiseInfo = expertiseLevels[article.expertiseLevel] || expertiseLevels.beginner;
+
+// Format dates for Arabic locale
+const publishDate = new Date(article.publishDate).toLocaleDateString('ar-SA', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const modifiedDate = new Date(article.modifiedDate).toLocaleDateString('ar-SA', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+// Article schema for structured data
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": article.title,
+  "description": article.seo.description,
+  "image": article.featuredImage?.url,
+  "author": {
+    "@type": "Person",
+    "name": article.author.name,
+    "description": article.author.bio,
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "إتقان",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://itqqan.com/images/logo.svg"
+    }
+  },
+  "datePublished": article.publishDate,
+  "dateModified": article.modifiedDate,
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": article.seo.canonical,
+  },
+  "inLanguage": "ar",
+  "wordCount": article.wordCount,
+  "articleSection": PILLAR_NAMES_AR[article.pillar],
+});
+
+// FAQ Schema for SEO
+const faqSchema = article.faqs.length > 0 ? JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": article.faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer
+    }
+  }))
+}) : null;
+
+// Breadcrumb schema
+const breadcrumbSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": breadcrumbs.map((item, index) => ({
+    "@type": "ListItem",
+    "position": index + 1,
+    "name": item.label,
+    "item": item.current ? undefined : `https://itqqan.com${item.href}`
+  }))
+});
+---
+
+<BaseLayout
+  title={article.seo.title}
+  description={article.seo.description}
+  canonical={article.seo.canonical}
+  ogImage={article.seo.ogImage}
+  schema={articleSchema}
+  pillar={article.pillar}
+>
+  <article class="article-page" itemscope itemtype="https://schema.org/Article">
+    <!-- Breadcrumbs Section -->
+    <div class="bg-slate-50 border-b border-slate-200">
+      <div class="container mx-auto px-4 lg:px-8 py-4">
+        <Breadcrumbs items={breadcrumbs} />
+      </div>
+    </div>
+
+    <!-- Article Header -->
+    <header class="bg-white border-b border-slate-100">
+      <div class="container mx-auto px-4 lg:px-8 py-8 lg:py-12">
+        <div class="max-w-4xl">
+          <!-- Pillar Badge -->
+          <div class="mb-4">
+            <span class={`badge ${pillarColors.badge}`}>
+              {PILLAR_NAMES_AR[article.pillar]}
+            </span>
+          </div>
+
+          <!-- Article Title -->
+          <h1
+            class="text-h1-mobile md:text-h1-desktop font-heading font-extrabold text-navy-900 mb-6 text-balance"
+            itemprop="headline"
+          >
+            {article.title}
+          </h1>
+
+          <!-- Article Meta Info -->
+          <div class="flex flex-wrap items-center gap-4 lg:gap-6 text-slate-600 mb-8">
+            <!-- Reading Time -->
+            <span class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>{article.readingTime} دقائق للقراءة</span>
+            </span>
+
+            <!-- Word Count -->
+            <span class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>{article.wordCount.toLocaleString('ar-SA')} كلمة</span>
+            </span>
+
+            <!-- Expertise Level -->
+            <span class={`px-3 py-1 rounded-full text-sm font-medium ${expertiseInfo.class}`}>
+              {expertiseInfo.label}
+            </span>
+          </div>
+
+          <!-- Trust Badges for Financial Content -->
+          <div class="flex flex-wrap gap-3 mb-8">
+            <div class="trust-indicator">
+              <svg class="trust-indicator-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              <span class="trust-indicator-text">محتوى موثوق</span>
+            </div>
+            <div class="security-badge">
+              <svg class="security-badge-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+              </svg>
+              <span class="security-badge-text">مراجعة فريق إتقان</span>
+            </div>
+          </div>
+
+          <!-- Featured Image -->
+          {article.featuredImage && (
+            <figure class={`relative rounded-2xl overflow-hidden border-4 ${pillarColors.border} shadow-card-elevated`}>
+              <img
+                src={article.featuredImage.url}
+                alt={article.featuredImage.alt}
+                width={article.featuredImage.width}
+                height={article.featuredImage.height}
+                class="w-full h-auto object-cover"
+                loading="eager"
+                itemprop="image"
+              />
+            </figure>
+          )}
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area with Sidebar -->
+    <div class="bg-surface-page">
+      <div class="container mx-auto px-4 lg:px-8 py-12 lg:py-16">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-12">
+
+          <!-- Table of Contents Sidebar (Desktop) -->
+          <aside class="hidden lg:block lg:col-span-3">
+            <div class="sticky top-24">
+              <TableOfContents items={tocItems} pillar={article.pillar} />
+
+              <!-- EEAT Trust Block -->
+              <div class="content-box-highlight mt-8">
+                <h4 class="font-heading font-bold text-navy-800 mb-4 flex items-center gap-2">
+                  <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  كيف ننتج المحتوى
+                </h4>
+                <ul class="space-y-3 text-sm text-slate-600">
+                  <li class="flex items-start gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-brand-500 mt-2 flex-shrink-0"></span>
+                    <span>يكتبه خبراء ماليون معتمدون</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-brand-500 mt-2 flex-shrink-0"></span>
+                    <span>مراجعة دورية من فريق إتقان</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-brand-500 mt-2 flex-shrink-0"></span>
+                    <span>مصادر موثوقة ومحدثة</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-brand-500 mt-2 flex-shrink-0"></span>
+                    <span>تحديث مستمر للمعلومات</span>
+                  </li>
+                </ul>
+                <a
+                  href="/about/editorial"
+                  class="inline-flex items-center gap-1 mt-4 text-sm text-brand-600 hover:text-brand-700 font-medium"
+                >
+                  تواصل لاقتراح تحديث
+                  <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Article Content Column -->
+          <div class="lg:col-span-9">
+            <!-- Mobile TOC (handled by TableOfContents component's built-in mobile accordion) -->
+            {tocItems.length > 0 && (
+              <div class="lg:hidden">
+                <TableOfContents items={tocItems} pillar={article.pillar} />
+              </div>
+            )}
+
+            <!-- Main Article Content -->
+            <div class="content-box">
+              <!-- Publish/Update Dates -->
+              <div class="flex flex-wrap gap-4 text-sm text-slate-500 mb-8 pb-6 border-b border-slate-100">
+                <time datetime={article.publishDate} itemprop="datePublished">
+                  تاريخ النشر: {publishDate}
+                </time>
+                <time datetime={article.modifiedDate} itemprop="dateModified">
+                  آخر تحديث: {modifiedDate}
+                </time>
+              </div>
+
+              <!-- Article Body -->
+              <div
+                class="article-content"
+                data-pillar={article.pillar}
+                itemprop="articleBody"
+                set:html={processedContent}
+              />
+
+              <!-- Risk Disclaimer for Financial Content -->
+              <div class="notice-warning mt-12">
+                <h4 class="notice-warning-title">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  تنويه هام
+                </h4>
+                <p class="notice-warning-text">
+                  المعلومات الواردة في هذا المقال هي لأغراض تعليمية فقط ولا تشكل نصيحة استثمارية. يرجى استشارة مستشار مالي مرخص قبل اتخاذ أي قرارات استثمارية.
+                </p>
+              </div>
+            </div>
+
+            <!-- FAQ Section -->
+            {article.faqs.length > 0 && (
+              <section class="mt-12">
+                <div class="content-box">
+                  <h2 class="text-h2-mobile md:text-h2-desktop font-heading font-bold text-navy-900 mb-6 flex items-center gap-3">
+                    <svg class="w-8 h-8 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    الأسئلة الشائعة
+                  </h2>
+                  <FAQAccordion faqs={article.faqs} />
+                </div>
+              </section>
+            )}
+
+            <!-- Author Bio Section -->
+            <section class="mt-12">
+              <div class="card-elevated p-8">
+                <h2 class="text-xl font-heading font-bold text-navy-900 mb-6 flex items-center gap-3">
+                  <svg class="w-6 h-6 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  عن الكاتب
+                </h2>
+                <AuthorBio
+                  name={article.author.name}
+                  bio={article.author.bio}
+                  avatar={article.author.avatar}
+                  credentials={article.eeat?.credentials ? [article.eeat.credentials] : undefined}
+                  expertise={article.eeat?.authorExpertise ? [article.eeat.authorExpertise] : undefined}
+                  createdDate={article.publishDate}
+                  modifiedDate={article.modifiedDate}
+                />
+              </div>
+            </section>
+
+            <!-- Related Articles -->
+            {article.relatedArticles.length > 0 && (
+              <section class="mt-12">
+                <h2 class="text-h2-mobile md:text-h2-desktop font-heading font-bold text-navy-900 mb-8 flex items-center gap-3">
+                  <svg class="w-8 h-8 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                  مقالات ذات صلة
+                </h2>
+                <RelatedArticles articles={article.relatedArticles} />
+              </section>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- Additional Schema -->
+  <Fragment slot="schema">
+    <script type="application/ld+json" set:html={breadcrumbSchema} />
+    {faqSchema && <script type="application/ld+json" set:html={faqSchema} />}
+  </Fragment>
+</BaseLayout>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════════
+     ARTICLE LAYOUT - Component-Scoped Enhancements
+     Works in conjunction with global.css article-content styles
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  /* Article page specific adjustments */
+  .article-page {
+    --article-max-content-width: 65ch;
+  }
+
+  /* Mobile-specific article optimizations */
+  @media (max-width: 768px) {
+    .article-content :global(h2) {
+      margin-top: 2.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .article-content :global(h3) {
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .article-content :global(table) {
+      font-size: 0.9375rem;
+    }
+
+    .article-content :global(th),
+    .article-content :global(td) {
+      padding: 0.75rem;
+    }
+
+    /* Adjust bullet padding for mobile */
+    .article-content :global(ul > li) {
+      padding-right: 1.5rem;
+    }
+
+    .article-content :global(ol > li) {
+      padding-right: 2.25rem;
+    }
+  }
+
+  /* Print optimizations for article content */
+  @media print {
+    .article-content :global(h2)::after,
+    .article-content :global(h3)::before {
+      display: none;
+    }
+
+    .article-content :global(a) {
+      box-shadow: none;
+      text-decoration: underline;
+    }
+
+    .article-content :global(ul > li)::before,
+    .article-content :global(ol > li)::before {
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+  }
+</style>
+
+<script>
+  /**
+   * Article Typography Enhancement Script
+   *
+   * Provides progressive enhancement for:
+   * 1. H2 headings - First word underline effect
+   * 2. H3 headings - Scroll-triggered accent line animation
+   *
+   * Fully RTL compatible and accessible
+   */
+  document.addEventListener('DOMContentLoaded', () => {
+    const articleContent = document.querySelector('.article-content');
+    if (!articleContent) return;
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // H2 Enhancement: First Word Underline
+    // ─────────────────────────────────────────────────────────────────────────
+    const h2Elements = articleContent.querySelectorAll('h2');
+
+    h2Elements.forEach((h2) => {
+      const text = h2.textContent?.trim();
+      if (!text) return;
+
+      // Split by whitespace to get first word (works for Arabic)
+      const words = text.split(/\s+/);
+      if (words.length === 0) return;
+
+      const firstWord = words[0];
+      const restOfText = words.slice(1).join(' ');
+
+      // Preserve the ID if present
+      const id = h2.getAttribute('id');
+
+      // Create enhanced HTML structure
+      h2.classList.add('article-h2-enhanced');
+      h2.innerHTML = `<span class="h2-first-word">${firstWord}</span>${restOfText ? ' ' + restOfText : ''}`;
+
+      // Restore ID
+      if (id) h2.setAttribute('id', id);
+    });
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // H3 Enhancement: Scroll-Triggered Accent Animation
+    // ─────────────────────────────────────────────────────────────────────────
+    const h3Elements = articleContent.querySelectorAll('h3');
+
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!prefersReducedMotion && 'IntersectionObserver' in window) {
+      const h3Observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('h3-visible');
+              // Optional: unobserve after animation
+              h3Observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          root: null,
+          rootMargin: '-50px 0px -100px 0px',
+          threshold: 0.1,
+        }
+      );
+
+      h3Elements.forEach((h3) => {
+        h3Observer.observe(h3);
+      });
+    } else {
+      // Fallback: show all accent lines immediately
+      h3Elements.forEach((h3) => {
+        h3.classList.add('h3-visible');
+      });
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Smooth Scroll for TOC Links
+    // ─────────────────────────────────────────────────────────────────────────
+    const tocLinks = document.querySelectorAll('.toc-link');
+
+    tocLinks.forEach((link) => {
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        if (!href?.startsWith('#')) return;
+
+        const target = document.querySelector(href);
+        if (!target) return;
+
+        e.preventDefault();
+
+        // Smooth scroll with offset for sticky header
+        const headerOffset = 100;
+        const elementPosition = target.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        });
+
+        // Update URL without scrolling
+        history.pushState(null, '', href);
+      });
+    });
+  });
+</script>

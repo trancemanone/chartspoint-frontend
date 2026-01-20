@@ -1,0 +1,64 @@
+---
+/**
+ * Indicators Pillar Index Page
+ *
+ * Technical Tools pillar for ChartsPoint
+ * Clusters: momentum, trend, volatility, volume
+ * Color: Orange #F97316
+ */
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { PILLARS, CLUSTERS } from '@lib/types';
+
+const pillar = PILLARS.indicators;
+const clusters = CLUSTERS.filter(c => c.pillar === 'indicators');
+
+const pageTitle = pillar.nameAr;
+const pageDescription = pillar.description;
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  pillar="indicators"
+>
+  <section class="min-h-screen py-16 px-4">
+    <div class="container mx-auto max-w-6xl">
+      <!-- Pillar Header -->
+      <header class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-navy-900 mb-4">
+          {pillar.nameAr}
+        </h1>
+        <p class="text-xl text-slate-600 max-w-2xl mx-auto">
+          {pillar.description}
+        </p>
+        <div class="mt-4 w-24 h-1 mx-auto rounded-full" style={`background-color: ${pillar.color}`}></div>
+      </header>
+
+      <!-- Clusters Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {clusters.map(cluster => (
+          <a
+            href={`/indicators/${cluster.slug}/`}
+            class="block p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow border-r-4"
+            style={`border-color: ${pillar.color}`}
+          >
+            <h2 class="text-xl font-semibold text-navy-900 mb-2">
+              {cluster.nameAr}
+            </h2>
+            <p class="text-slate-600">
+              استكشف مقالات {cluster.nameAr}
+            </p>
+          </a>
+        ))}
+      </div>
+
+      <!-- Placeholder Notice -->
+      <div class="mt-12 p-6 bg-orange-50 rounded-xl text-center">
+        <p class="text-orange-800">
+          هذه صفحة مؤقتة. سيتم إضافة المحتوى قريباً.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

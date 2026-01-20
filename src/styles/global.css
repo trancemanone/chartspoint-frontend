@@ -53,29 +53,29 @@
   --color-navy-900: #102A43;
   --color-navy-950: #0A1929;
 
-  /* Gold Scale - Premium & Exclusivity (PRIMARY ACCENT) */
-  --color-gold-50: #FDF8ED;
-  --color-gold-100: #FAF0D8;
-  --color-gold-200: #F5E2B5;
-  --color-gold-300: #e8bc5a;
-  --color-gold-400: #deb049;
-  --color-gold-500: #d5a035;
-  --color-gold-600: #b8892a;
-  --color-gold-700: #9a7223;
-  --color-gold-800: #7c5c1c;
-  --color-gold-900: #5e4515;
+  /* Teal Scale - Premium & Trust (PRIMARY ACCENT) */
+  --color-teal-50: #ECFEFF;
+  --color-teal-100: #CFFAFE;
+  --color-teal-200: #A5F3FC;
+  --color-teal-300: #67E8F9;
+  --color-teal-400: #22D3EE;
+  --color-teal-500: #06B6D4;
+  --color-teal-600: #0891B2;
+  --color-teal-700: #0E7490;
+  --color-teal-800: #155E75;
+  --color-teal-900: #164E63;
 
-  /* Brand Gold - CHARTSPOINT Identity */
-  --color-brand-50: #FDF8ED;
-  --color-brand-100: #FAF0D8;
-  --color-brand-200: #F5E2B5;
-  --color-brand-300: #e8bc5a;
-  --color-brand-400: #deb049;
-  --color-brand-500: #d5a035;
-  --color-brand-600: #b8892a;
-  --color-brand-700: #9a7223;
-  --color-brand-800: #7c5c1c;
-  --color-brand-900: #5e4515;
+  /* Brand Teal - CHARTSPOINT Identity */
+  --color-brand-50: #ECFEFF;
+  --color-brand-100: #CFFAFE;
+  --color-brand-200: #A5F3FC;
+  --color-brand-300: #67E8F9;
+  --color-brand-400: #22D3EE;
+  --color-brand-500: #0891B2;
+  --color-brand-600: #0E7490;
+  --color-brand-700: #155E75;
+  --color-brand-800: #134E4A;
+  --color-brand-900: #164E63;
 
   /* ─────────────────────────────────────────────────────────────────────────
      Pillar Colors - CHARTSPOINT Content Categories
@@ -119,7 +119,7 @@
   /* Focus Ring - High Visibility for Older Users (Updated to gold) */
   --focus-ring-width: 3px;
   --focus-ring-offset: 3px;
-  --focus-ring-color: rgba(213, 160, 53, 0.6);
+  --focus-ring-color: rgba(8, 145, 178, 0.6);
   --focus-ring-color-error: rgba(220, 38, 38, 0.6);
 
   /* Minimum Font Sizes - Optimized for Older Readers */
@@ -231,8 +231,8 @@
   --shadow-dropdown: 0 10px 40px rgba(15, 23, 42, 0.12);
   --shadow-header: 0 1px 3px rgba(15, 23, 42, 0.04), 0 4px 24px rgba(15, 23, 42, 0.04);
 
-  --shadow-brand: 0 4px 14px rgba(213, 160, 53, 0.2);
-  --shadow-gold: 0 4px 14px rgba(213, 160, 53, 0.2);
+  --shadow-brand: 0 4px 14px rgba(8, 145, 178, 0.2);
+  --shadow-gold: 0 4px 14px rgba(8, 145, 178, 0.2);
 
   /* ─────────────────────────────────────────────────────────────────────────
      Transition Tokens
@@ -539,7 +539,7 @@
   .prose a:not(.toc-link):not(.breadcrumb-link):not(.btn) {
     color: var(--color-text-primary, #0F172A);
     text-decoration: underline;
-    text-decoration-color: #d5a035;
+    text-decoration-color: #0891B2;
     text-underline-offset: 10px; /* Large offset to clear Arabic descenders completely */
     text-decoration-thickness: 2px;
     text-decoration-skip-ink: auto;
@@ -548,13 +548,13 @@
   }
 
   .prose a:not(.toc-link):not(.breadcrumb-link):not(.btn):hover {
-    color: #d5a035;
+    color: #0891B2;
     text-decoration-color: var(--color-primary, #081C2F);
     text-underline-offset: 12px; /* Subtle lift on hover for interactive feedback */
   }
 
   .prose a:not(.toc-link):not(.breadcrumb-link):not(.btn):focus {
-    outline: 2px solid #d5a035;
+    outline: 2px solid #0891B2;
     outline-offset: 4px; /* Increased for better visibility */
     border-radius: 2px;
   }
@@ -638,7 +638,7 @@
     right: 0;
     width: clamp(80px, 20%, 140px);
     height: 4px;
-    background-color: #d5a035;
+    background-color: #0891B2;
     border-radius: 2px;
     z-index: 1;
     pointer-events: none;
@@ -675,7 +675,7 @@
     top: 0.15em;
     width: 4px;
     height: 1.2em;
-    background-color: #d5a035;
+    background-color: #0891B2;
     border-radius: 2px;
     pointer-events: none;
   }
@@ -833,7 +833,7 @@
 
   .btn-primary:hover:not(:disabled) {
     @apply bg-brand-600 border-brand-600;
-    box-shadow: 0 6px 20px rgba(213, 160, 53, 0.3);
+    box-shadow: 0 6px 20px rgba(8, 145, 178, 0.3);
     transform: translateY(-1px);
   }
 
@@ -874,15 +874,15 @@
 
   /* Gold Button - Premium CTA */
   .btn-gold {
-    @apply btn text-navy-900;
-    background: linear-gradient(135deg, #e8bc5a 0%, #d5a035 100%);
-    border-color: #d5a035;
+    @apply btn text-white;
+    background: linear-gradient(135deg, #14B8A6 0%, #0891B2 100%);
+    border-color: #0891B2;
     box-shadow: var(--shadow-gold);
   }
 
   .btn-gold:hover:not(:disabled) {
-    background: linear-gradient(135deg, #d5a035 0%, #b8892a 100%);
-    box-shadow: 0 6px 20px rgba(213, 160, 53, 0.35);
+    background: linear-gradient(135deg, #0891B2 0%, #0E7490 100%);
+    box-shadow: 0 6px 20px rgba(8, 145, 178, 0.35);
     transform: translateY(-1px);
   }
 
@@ -1001,7 +1001,7 @@
   }
 
   .pillar-card-learn {
-    border-right-color: #d5a035;
+    border-right-color: #0891B2;
   }
 
   .pillar-card-learn:hover {
@@ -1009,15 +1009,15 @@
   }
 
   .pillar-card-accounts {
-    border-right-color: #d5a035;
+    border-right-color: #0891B2;
   }
 
   .pillar-card-accounts:hover {
-    box-shadow: var(--shadow-card-hover), 0 0 0 1px rgba(213, 160, 53, 0.15);
+    box-shadow: var(--shadow-card-hover), 0 0 0 1px rgba(8, 145, 178, 0.15);
   }
 
   .pillar-card-trust {
-    border-right-color: #d5a035;
+    border-right-color: #0891B2;
   }
 
   .pillar-card-trust:hover {
@@ -1033,13 +1033,13 @@
   .card-featured::before {
     content: '';
     @apply absolute top-0 right-0 w-24 h-24;
-    background: linear-gradient(135deg, rgba(213, 160, 53, 0.15) 0%, transparent 100%);
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.15) 0%, transparent 100%);
   }
 
   .card-featured::after {
     content: '';
     @apply absolute top-0 right-0 w-1 h-full;
-    background: linear-gradient(180deg, #e8bc5a 0%, #d5a035 100%);
+    background: linear-gradient(180deg, #22D3EE 0%, #0891B2 100%);
   }
 
   /* Glass Card */
@@ -1298,7 +1298,7 @@
     @apply content-box;
     border-right-width: 4px;
     border-right-color: var(--color-brand-500);
-    background: linear-gradient(90deg, rgba(213, 160, 53, 0.04) 0%, transparent 100%);
+    background: linear-gradient(90deg, rgba(8, 145, 178, 0.04) 0%, transparent 100%);
   }
 
   /* Info Box */
@@ -1319,13 +1319,13 @@
   /* Quote Box */
   .content-box-quote {
     @apply content-box relative pr-8;
-    border-right: 4px solid var(--color-gold-400);
+    border-right: 4px solid var(--color-teal-400);
     background: linear-gradient(90deg, rgba(242, 196, 100, 0.05) 0%, transparent 100%);
   }
 
   .content-box-quote::before {
     content: '\201D';
-    @apply absolute top-4 right-4 text-6xl text-gold-300 font-serif leading-none;
+    @apply absolute top-4 right-4 text-6xl text-teal-300 font-serif leading-none;
   }
 
   /* Stats Box */
@@ -1351,7 +1351,7 @@
   }
 
   .badge-gold {
-    @apply bg-gold-100 text-gold-700;
+    @apply bg-teal-100 text-teal-700;
   }
 
   .badge-learn {
@@ -1400,7 +1400,7 @@
   .trust-badge {
     @apply inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full;
     background: linear-gradient(135deg, #FDF2F4 0%, #FCE4E8 100%);
-    color: #d5a035;
+    color: #0891B2;
     border: 1px solid rgba(124, 45, 60, 0.2);
   }
 
@@ -1414,25 +1414,25 @@
     @apply prose prose-lg max-w-none;
     --tw-prose-body: #334155;
     --tw-prose-headings: #102A43;
-    --tw-prose-links: #d5a035;
+    --tw-prose-links: #0891B2;
     --tw-prose-bold: #1E293B;
     --tw-prose-quotes: #475569;
     --tw-prose-quote-borders: #E5A836;
 
     /* Pillar color variables - can be overridden per pillar */
-    --article-pillar-color: #d5a035;           /* Default: Emerald */
+    --article-pillar-color: #0891B2;           /* Default: Emerald */
     --article-pillar-color-rgb: 30, 158, 111;
     --article-accent-line: #E5E7EB;
   }
 
   /* Pillar-specific color schemes */
   .article-content[data-pillar="learn"] {
-    --article-pillar-color: #d5a035;
+    --article-pillar-color: #0891B2;
     --article-pillar-color-rgb: 59, 130, 246;
   }
 
   .article-content[data-pillar="accounts"] {
-    --article-pillar-color: #d5a035;
+    --article-pillar-color: #0891B2;
     --article-pillar-color-rgb: 213, 160, 53;
   }
 
@@ -1495,11 +1495,11 @@
 
   /* Pillar-specific accent colors for H2 thick underline */
   .article-content[data-pillar="learn"] h2::before {
-    background-color: #d5a035;
+    background-color: #0891B2;
   }
 
   .article-content[data-pillar="accounts"] h2::before {
-    background-color: #d5a035;
+    background-color: #0891B2;
   }
 
   .article-content[data-pillar="trust"] h2::before {
@@ -1537,11 +1537,11 @@
 
   /* Pillar-specific accent colors for H3 vertical line */
   .article-content[data-pillar="learn"] h3::before {
-    background-color: #d5a035;
+    background-color: #0891B2;
   }
 
   .article-content[data-pillar="accounts"] h3::before {
-    background-color: #d5a035;
+    background-color: #0891B2;
   }
 
   .article-content[data-pillar="trust"] h3::before {
@@ -1753,20 +1753,20 @@
 
   .article-content a {
     @apply text-brand-600 font-medium no-underline;
-    box-shadow: inset 0 -2px 0 rgba(213, 160, 53, 0.25);
+    box-shadow: inset 0 -2px 0 rgba(8, 145, 178, 0.25);
     transition: box-shadow var(--transition-base), color var(--transition-base);
   }
 
   .article-content a:hover {
     @apply text-brand-700;
-    box-shadow: inset 0 -24px 0 rgba(213, 160, 53, 0.12);
+    box-shadow: inset 0 -24px 0 rgba(8, 145, 178, 0.12);
   }
 
   .article-content a:focus-visible {
     @apply outline-none;
     box-shadow:
-      0 0 0 3px rgba(213, 160, 53, 0.35),
-      inset 0 -2px 0 rgba(213, 160, 53, 0.25);
+      0 0 0 3px rgba(8, 145, 178, 0.35),
+      inset 0 -2px 0 rgba(8, 145, 178, 0.25);
   }
 
   .article-content strong {
@@ -2263,8 +2263,8 @@
 
   /* Row focus for keyboard navigation */
   .fintech-table tbody tr:focus-within {
-    background-color: rgba(213, 160, 53, 0.06);
-    box-shadow: inset 4px 0 0 0 #d5a035;
+    background-color: rgba(8, 145, 178, 0.06);
+    box-shadow: inset 4px 0 0 0 #0891B2;
   }
 
   /* ─────────────────────────────────────────────────────────────────────────
@@ -2466,14 +2466,14 @@
   }
 
   .table-action-btn--primary {
-    background: linear-gradient(135deg, #e8bc5a 0%, #d5a035 100%);
-    color: #102941;
-    box-shadow: 0 2px 6px rgba(213, 160, 53, 0.25);
+    background: linear-gradient(135deg, #14B8A6 0%, #0891B2 100%);
+    color: #FFFFFF;
+    box-shadow: 0 2px 6px rgba(8, 145, 178, 0.25);
   }
 
   .table-action-btn--primary:hover {
-    background: linear-gradient(135deg, #d5a035 0%, #b8892a 100%);
-    box-shadow: 0 4px 12px rgba(213, 160, 53, 0.35);
+    background: linear-gradient(135deg, #0891B2 0%, #0E7490 100%);
+    box-shadow: 0 4px 12px rgba(8, 145, 178, 0.35);
     transform: translateY(-1px);
   }
 
@@ -2517,7 +2517,7 @@
      ───────────────────────────────────────────────────────────────────────── */
 
   .fintech-table .cell-highlight {
-    background: linear-gradient(135deg, rgba(213, 160, 53, 0.06) 0%, rgba(213, 160, 53, 0.02) 100%);
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.06) 0%, rgba(8, 145, 178, 0.02) 100%);
     position: relative;
   }
 
@@ -2528,7 +2528,7 @@
     right: 0;
     bottom: 0;
     width: 3px;
-    background: linear-gradient(180deg, #d5a035 0%, #b8892a 100%);
+    background: linear-gradient(180deg, #0891B2 0%, #0E7490 100%);
   }
 
   .fintech-table .cell-muted {
@@ -2554,13 +2554,13 @@
     position: relative;
     background: linear-gradient(
       180deg,
-      rgba(213, 160, 53, 0.08) 0%,
-      rgba(213, 160, 53, 0.03) 100%
+      rgba(8, 145, 178, 0.08) 0%,
+      rgba(8, 145, 178, 0.03) 100%
     );
   }
 
   .fintech-table--comparison thead .col-recommended {
-    background: linear-gradient(135deg, #d5a035 0%, #b8892a 100%);
+    background: linear-gradient(135deg, #0891B2 0%, #0E7490 100%);
   }
 
   .fintech-table--comparison thead .col-recommended::before {
@@ -2581,12 +2581,12 @@
   }
 
   .fintech-table--comparison tbody .col-recommended {
-    border-right: 2px solid rgba(213, 160, 53, 0.15);
-    border-left: 2px solid rgba(213, 160, 53, 0.15);
+    border-right: 2px solid rgba(8, 145, 178, 0.15);
+    border-left: 2px solid rgba(8, 145, 178, 0.15);
   }
 
   .fintech-table--comparison tbody tr:last-child .col-recommended {
-    border-bottom: 2px solid rgba(213, 160, 53, 0.15);
+    border-bottom: 2px solid rgba(8, 145, 178, 0.15);
     border-radius: 0 0 8px 8px;
   }
 
@@ -2897,13 +2897,13 @@
   .fintech-table th:focus,
   .fintech-table td:focus {
     outline: none;
-    box-shadow: inset 0 0 0 3px rgba(213, 160, 53, 0.5);
+    box-shadow: inset 0 0 0 3px rgba(8, 145, 178, 0.5);
   }
 
   .fintech-table a:focus-visible,
   .fintech-table button:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px #FFFFFF, 0 0 0 6px #d5a035;
+    box-shadow: 0 0 0 3px #FFFFFF, 0 0 0 6px #0891B2;
   }
 
   /* Ensure sufficient contrast for all text */
@@ -3057,7 +3057,7 @@
   }
 
   .divider-gold {
-    @apply border-t border-gold-200 my-8;
+    @apply border-t border-teal-200 my-8;
   }
 
   /* Decorative divider with pale gray fading effect */
@@ -3146,7 +3146,7 @@
 
   .hero-gradient-mesh {
     background:
-      radial-gradient(at 0% 0%, rgba(213, 160, 53, 0.08) 0px, transparent 50%),
+      radial-gradient(at 0% 0%, rgba(8, 145, 178, 0.08) 0px, transparent 50%),
       radial-gradient(at 100% 0%, rgba(229, 168, 54, 0.06) 0px, transparent 50%),
       radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.06) 0px, transparent 50%),
       radial-gradient(at 0% 100%, rgba(168, 85, 247, 0.06) 0px, transparent 50%),
@@ -3350,11 +3350,11 @@
 
    Color Modifiers:
    - .icon--navy           Primary navy #1B365D
-   - .icon--emerald        Brand gold #d5a035
-   - .icon--gold           Luxury gold #d5a035
-   - .icon--brand          Brand gold #d5a035
+   - .icon--emerald        Brand gold #0891B2
+   - .icon--gold           Luxury gold #0891B2
+   - .icon--brand          Brand gold #0891B2
    - .icon--learn          Learn pillar blue #3B82F6
-   - .icon--accounts       Accounts pillar gold #d5a035
+   - .icon--accounts       Accounts pillar gold #0891B2
    - .icon--trust          Trust pillar burgundy #7C2D3C
    - .icon--white          White for dark backgrounds
    - .icon--muted          Muted slate for secondary
@@ -3452,30 +3452,30 @@
 
   /* Emerald Accent - Trust & Growth */
   .icon--emerald {
-    color: #d5a035;
+    color: #0891B2;
   }
 
   /* Luxury Gold - Premium & Exclusivity */
   .icon--gold {
-    color: #d5a035;
+    color: #0891B2;
   }
 
   /* Brand Green - ITQQAN Identity */
   .icon--brand {
-    color: #d5a035;
+    color: #0891B2;
   }
 
   /* Pillar Colors */
   .icon--learn {
-    color: #d5a035;
+    color: #0891B2;
   }
 
   .icon--accounts {
-    color: #d5a035;
+    color: #0891B2;
   }
 
   .icon--trust {
-    color: #d5a035;
+    color: #0891B2;
   }
 
   /* Utility Colors */
@@ -3637,57 +3637,57 @@
   }
 
   .icon-container--emerald {
-    background: linear-gradient(135deg, rgba(213, 160, 53, 0.12) 0%, rgba(213, 160, 53, 0.06) 100%);
-    border-color: rgba(213, 160, 53, 0.2);
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.12) 0%, rgba(8, 145, 178, 0.06) 100%);
+    border-color: rgba(8, 145, 178, 0.2);
   }
 
   .icon-container--emerald .icon {
-    color: #d5a035;
+    color: #0891B2;
   }
 
   .icon-container--gold {
-    background: linear-gradient(135deg, rgba(213, 160, 53, 0.12) 0%, rgba(213, 160, 53, 0.06) 100%);
-    border-color: rgba(213, 160, 53, 0.2);
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.12) 0%, rgba(8, 145, 178, 0.06) 100%);
+    border-color: rgba(8, 145, 178, 0.2);
   }
 
   .icon-container--gold .icon {
-    color: #d5a035;
+    color: #0891B2;
   }
 
   .icon-container--brand {
-    background: linear-gradient(135deg, rgba(213, 160, 53, 0.12) 0%, rgba(213, 160, 53, 0.06) 100%);
-    border-color: rgba(213, 160, 53, 0.2);
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.12) 0%, rgba(8, 145, 178, 0.06) 100%);
+    border-color: rgba(8, 145, 178, 0.2);
   }
 
   .icon-container--brand .icon {
-    color: #d5a035;
+    color: #0891B2;
   }
 
   .icon-container--learn {
-    background: linear-gradient(135deg, rgba(213, 160, 53, 0.12) 0%, rgba(213, 160, 53, 0.06) 100%);
-    border-color: rgba(213, 160, 53, 0.2);
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.12) 0%, rgba(8, 145, 178, 0.06) 100%);
+    border-color: rgba(8, 145, 178, 0.2);
   }
 
   .icon-container--learn .icon {
-    color: #d5a035;
+    color: #0891B2;
   }
 
   .icon-container--accounts {
-    background: linear-gradient(135deg, rgba(213, 160, 53, 0.12) 0%, rgba(213, 160, 53, 0.06) 100%);
-    border-color: rgba(213, 160, 53, 0.2);
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.12) 0%, rgba(8, 145, 178, 0.06) 100%);
+    border-color: rgba(8, 145, 178, 0.2);
   }
 
   .icon-container--accounts .icon {
-    color: #d5a035;
+    color: #0891B2;
   }
 
   .icon-container--trust {
-    background: linear-gradient(135deg, rgba(213, 160, 53, 0.12) 0%, rgba(213, 160, 53, 0.06) 100%);
-    border-color: rgba(213, 160, 53, 0.2);
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.12) 0%, rgba(8, 145, 178, 0.06) 100%);
+    border-color: rgba(8, 145, 178, 0.2);
   }
 
   .icon-container--trust .icon {
-    color: #d5a035;
+    color: #0891B2;
   }
 
   /* Solid Container Variants */
@@ -3702,9 +3702,9 @@
   }
 
   .icon-container--solid-emerald {
-    background: linear-gradient(135deg, #d5a035 0%, #b8892a 100%);
+    background: linear-gradient(135deg, #0891B2 0%, #0E7490 100%);
     border: none;
-    box-shadow: 0 4px 12px rgba(213, 160, 53, 0.25);
+    box-shadow: 0 4px 12px rgba(8, 145, 178, 0.25);
   }
 
   .icon-container--solid-emerald .icon {
@@ -3712,9 +3712,9 @@
   }
 
   .icon-container--solid-gold {
-    background: linear-gradient(135deg, #d5a035 0%, #b8892a 100%);
+    background: linear-gradient(135deg, #0891B2 0%, #0E7490 100%);
     border: none;
-    box-shadow: 0 4px 12px rgba(213, 160, 53, 0.25);
+    box-shadow: 0 4px 12px rgba(8, 145, 178, 0.25);
   }
 
   .icon-container--solid-gold .icon {
@@ -3722,9 +3722,9 @@
   }
 
   .icon-container--solid-brand {
-    background: linear-gradient(135deg, #d5a035 0%, #b8892a 100%);
+    background: linear-gradient(135deg, #0891B2 0%, #0E7490 100%);
     border: none;
-    box-shadow: 0 4px 12px rgba(213, 160, 53, 0.25);
+    box-shadow: 0 4px 12px rgba(8, 145, 178, 0.25);
   }
 
   .icon-container--solid-brand .icon {
@@ -3764,37 +3764,37 @@
     transform: scale(1.05);
   }
 
-  /* Feature Icon Color Variants - Gold #d5a035 for light backgrounds (WCAG AA compliant) */
+  /* Feature Icon Color Variants - Gold #0891B2 for light backgrounds (WCAG AA compliant) */
   .feature-icon--target {
-    --feature-bg-start: rgba(213, 160, 53, 0.12);
-    --feature-bg-end: rgba(213, 160, 53, 0.06);
-    --feature-border: rgba(213, 160, 53, 0.25);
-    --feature-color: #d5a035;
-    --feature-shadow: rgba(213, 160, 53, 0.2);
+    --feature-bg-start: rgba(8, 145, 178, 0.12);
+    --feature-bg-end: rgba(8, 145, 178, 0.06);
+    --feature-border: rgba(8, 145, 178, 0.25);
+    --feature-color: #0891B2;
+    --feature-shadow: rgba(8, 145, 178, 0.2);
   }
 
   .feature-icon--verified {
-    --feature-bg-start: rgba(213, 160, 53, 0.12);
-    --feature-bg-end: rgba(213, 160, 53, 0.06);
-    --feature-border: rgba(213, 160, 53, 0.25);
-    --feature-color: #d5a035;
-    --feature-shadow: rgba(213, 160, 53, 0.2);
+    --feature-bg-start: rgba(8, 145, 178, 0.12);
+    --feature-bg-end: rgba(8, 145, 178, 0.06);
+    --feature-border: rgba(8, 145, 178, 0.25);
+    --feature-color: #0891B2;
+    --feature-shadow: rgba(8, 145, 178, 0.2);
   }
 
   .feature-icon--security {
-    --feature-bg-start: rgba(213, 160, 53, 0.12);
-    --feature-bg-end: rgba(213, 160, 53, 0.06);
-    --feature-border: rgba(213, 160, 53, 0.25);
-    --feature-color: #d5a035;
-    --feature-shadow: rgba(213, 160, 53, 0.2);
+    --feature-bg-start: rgba(8, 145, 178, 0.12);
+    --feature-bg-end: rgba(8, 145, 178, 0.06);
+    --feature-border: rgba(8, 145, 178, 0.25);
+    --feature-color: #0891B2;
+    --feature-shadow: rgba(8, 145, 178, 0.2);
   }
 
   .feature-icon--mobile {
-    --feature-bg-start: rgba(213, 160, 53, 0.12);
-    --feature-bg-end: rgba(213, 160, 53, 0.06);
-    --feature-border: rgba(213, 160, 53, 0.25);
-    --feature-color: #d5a035;
-    --feature-shadow: rgba(213, 160, 53, 0.2);
+    --feature-bg-start: rgba(8, 145, 178, 0.12);
+    --feature-bg-end: rgba(8, 145, 178, 0.06);
+    --feature-border: rgba(8, 145, 178, 0.25);
+    --feature-color: #0891B2;
+    --feature-shadow: rgba(8, 145, 178, 0.2);
   }
 
   /* ─────────────────────────────────────────────────────────────────────────
@@ -3823,32 +3823,32 @@
 
   /* Learn Pillar - Gold icon for WCAG AA on light backgrounds */
   .pillar-icon--learn {
-    background: linear-gradient(135deg, rgba(213, 160, 53, 0.12) 0%, rgba(213, 160, 53, 0.06) 100%);
-    border: 1px solid rgba(213, 160, 53, 0.25);
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.12) 0%, rgba(8, 145, 178, 0.06) 100%);
+    border: 1px solid rgba(8, 145, 178, 0.25);
   }
 
   .pillar-icon--learn .icon {
-    color: #d5a035;
+    color: #0891B2;
   }
 
   /* Accounts Pillar - Gold icon for WCAG AA on light backgrounds */
   .pillar-icon--accounts {
-    background: linear-gradient(135deg, rgba(213, 160, 53, 0.12) 0%, rgba(213, 160, 53, 0.06) 100%);
-    border: 1px solid rgba(213, 160, 53, 0.25);
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.12) 0%, rgba(8, 145, 178, 0.06) 100%);
+    border: 1px solid rgba(8, 145, 178, 0.25);
   }
 
   .pillar-icon--accounts .icon {
-    color: #d5a035;
+    color: #0891B2;
   }
 
   /* Trust Pillar - Gold icon for WCAG AA on light backgrounds */
   .pillar-icon--trust {
-    background: linear-gradient(135deg, rgba(213, 160, 53, 0.12) 0%, rgba(213, 160, 53, 0.06) 100%);
-    border: 1px solid rgba(213, 160, 53, 0.25);
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.12) 0%, rgba(8, 145, 178, 0.06) 100%);
+    border: 1px solid rgba(8, 145, 178, 0.25);
   }
 
   .pillar-icon--trust .icon {
-    color: #d5a035;
+    color: #0891B2;
   }
 
   /* ─────────────────────────────────────────────────────────────────────────
@@ -3862,14 +3862,14 @@
     width: 64px;
     height: 64px;
     border-radius: 16px;
-    background: linear-gradient(135deg, rgba(213, 160, 53, 0.15) 0%, rgba(213, 160, 53, 0.08) 100%);
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.15) 0%, rgba(8, 145, 178, 0.08) 100%);
     opacity: 0.8;
   }
 
   .article-placeholder-icon .icon {
     width: 32px;
     height: 32px;
-    color: #d5a035;
+    color: #0891B2;
     stroke-width: 1.5;
   }
 
@@ -4065,13 +4065,13 @@
   .trust-indicator {
     @apply inline-flex items-center gap-3 px-5 py-3 rounded-xl;
     background: linear-gradient(135deg, #FDF8EE 0%, #FCEFD4 100%);
-    border: 1px solid rgba(213, 160, 53, 0.2);
+    border: 1px solid rgba(8, 145, 178, 0.2);
     font-size: var(--font-size-min-body);
   }
 
   .trust-indicator-icon {
     @apply w-6 h-6 flex-shrink-0;
-    color: #d5a035;
+    color: #0891B2;
   }
 
   .trust-indicator-text {
@@ -4140,7 +4140,7 @@
   .notice-important::before {
     content: '!';
     @apply absolute top-4 right-4 w-8 h-8 flex items-center justify-center;
-    @apply bg-gold-500 text-white font-bold rounded-full;
+    @apply bg-teal-500 text-white font-bold rounded-full;
     font-size: 1.25rem;
   }
 
@@ -4203,7 +4203,7 @@
    */
   .cta-primary {
     @apply relative p-8 rounded-2xl overflow-hidden;
-    background: linear-gradient(135deg, #d5a035 0%, #b8892a 100%);
+    background: linear-gradient(135deg, #0891B2 0%, #0E7490 100%);
   }
 
   .cta-primary::before {
@@ -4265,7 +4265,7 @@
   }
 
   .stat-item-highlighted .stat-number {
-    @apply text-gold-600;
+    @apply text-teal-600;
   }
 
   /*
@@ -4587,7 +4587,7 @@
 
   .mobile-bottom-nav-item:hover,
   .mobile-bottom-nav-item:active {
-    background: rgba(213, 160, 53, 0.08);
+    background: rgba(8, 145, 178, 0.08);
     color: var(--color-brand-600);
   }
 
@@ -4618,16 +4618,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #d5a035 0%, #b8892a 100%);
+    background: linear-gradient(135deg, #0891B2 0%, #0E7490 100%);
     color: white;
-    box-shadow: 0 8px 24px rgba(213, 160, 53, 0.3);
+    box-shadow: 0 8px 24px rgba(8, 145, 178, 0.3);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
   .fab-mobile:hover,
   .fab-mobile:active {
     transform: scale(1.05);
-    box-shadow: 0 12px 32px rgba(213, 160, 53, 0.4);
+    box-shadow: 0 12px 32px rgba(8, 145, 178, 0.4);
   }
 
   /* Cards should be full-width on mobile */

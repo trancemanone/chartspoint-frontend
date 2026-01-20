@@ -25,50 +25,64 @@ export interface Props {
 
 const { currentPillar } = Astro.props;
 
-// Get clusters for each pillar from the types definition
-const learnClusters = CLUSTERS.filter(c => c.pillar === 'learn');
-const accountsClusters = CLUSTERS.filter(c => c.pillar === 'accounts');
-const trustClusters = CLUSTERS.filter(c => c.pillar === 'trust');
+// Get clusters for each pillar from the types definition (ChartsPoint pillars)
+const basicsClusters = CLUSTERS.filter(c => c.pillar === 'basics');
+const indicatorsClusters = CLUSTERS.filter(c => c.pillar === 'indicators');
+const toolsClusters = CLUSTERS.filter(c => c.pillar === 'tools');
+const tacticsClusters = CLUSTERS.filter(c => c.pillar === 'tactics');
 
-// Navigation structure with pillar colors and dynamic clusters
+// Navigation structure with pillar colors and dynamic clusters - ChartsPoint 4 Pillars
 const navigation = [
   {
-    id: 'learn' as PillarSlug,
-    label: 'تعلم',
-    href: '/learn',
-    description: 'أساسيات الاستثمار والتعليم المالي',
+    id: 'basics' as PillarSlug,
+    label: 'الأساسيات',
+    href: '/basics',
+    description: 'مقدمة شاملة للتحليل الفني',
     colorHex: '#3B82F6',
     colorRgb: '59, 130, 246',
     icon: 'book',
-    clusters: learnClusters.map(cluster => ({
+    clusters: basicsClusters.map(cluster => ({
       label: cluster.nameAr,
-      href: `/learn/${cluster.slug}`,
+      href: `/basics/${cluster.slug}`,
     })),
   },
   {
-    id: 'accounts' as PillarSlug,
-    label: 'حسابات',
-    href: '/accounts',
-    description: 'افتح حسابك واختر المنصة المناسبة',
-    colorHex: '#d5a035',
-    colorRgb: '213, 160, 53',
-    icon: 'wallet',
-    clusters: accountsClusters.map(cluster => ({
+    id: 'indicators' as PillarSlug,
+    label: 'المؤشرات',
+    href: '/indicators',
+    description: 'المؤشرات الفنية وتحليلها',
+    colorHex: '#F97316',
+    colorRgb: '249, 115, 22',
+    icon: 'chart',
+    clusters: indicatorsClusters.map(cluster => ({
       label: cluster.nameAr,
-      href: `/accounts/${cluster.slug}`,
+      href: `/indicators/${cluster.slug}`,
     })),
   },
   {
-    id: 'trust' as PillarSlug,
-    label: 'ثقة',
-    href: '/trust',
-    description: 'تأكد من سلامة استثماراتك',
-    colorHex: '#7C2D3C',
-    colorRgb: '124, 45, 60',
-    icon: 'shield',
-    clusters: trustClusters.map(cluster => ({
+    id: 'tools' as PillarSlug,
+    label: 'الأدوات',
+    href: '/tools',
+    description: 'أدوات الرسم البياني والحاسبات',
+    colorHex: '#10B981',
+    colorRgb: '16, 185, 129',
+    icon: 'calculator',
+    clusters: toolsClusters.map(cluster => ({
       label: cluster.nameAr,
-      href: `/trust/${cluster.slug}`,
+      href: `/tools/${cluster.slug}`,
+    })),
+  },
+  {
+    id: 'tactics' as PillarSlug,
+    label: 'الاستراتيجيات',
+    href: '/tactics',
+    description: 'استراتيجيات التداول وإدارة المخاطر',
+    colorHex: '#8B5CF6',
+    colorRgb: '139, 92, 246',
+    icon: 'target',
+    clusters: tacticsClusters.map(cluster => ({
+      label: cluster.nameAr,
+      href: `/tactics/${cluster.slug}`,
     })),
   },
 ];
@@ -83,8 +97,9 @@ const quickLinks = [
 // Icon paths
 const iconPaths: Record<string, string> = {
   book: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253',
-  wallet: 'M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3',
-  shield: 'M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z',
+  chart: 'M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605',
+  calculator: 'M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zm0 2.25h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V18zm2.504-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zm0 2.25h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V18zm2.498-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zM8.25 6h7.5v2.25h-7.5V6zM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 002.25 2.25h10.5a2.25 2.25 0 002.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0012 2.25z',
+  target: 'M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z',
   info: 'M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z',
   phone: 'M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z',
   help: 'M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z',
@@ -114,20 +129,21 @@ const iconPaths: Record<string, string> = {
     <a
       href="/"
       class="mobile-menu__logo"
-      aria-label="إتقان - الصفحة الرئيسية"
+      aria-label="ChartsPoint - الصفحة الرئيسية"
       data-mobile-link
     >
       <div class="mobile-menu__logo-mark">
-        <img
-          src="https://cms.itqqan.com/wp-content/uploads/2026/01/600_x_600_logo_itqqan.png"
-          alt=""
-          class="w-9 h-9 rounded-lg object-contain"
-          width="36"
-          height="36"
-          loading="lazy"
-        />
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-navy-900 to-navy-800 flex items-center justify-center border border-navy-700/50">
+          <svg class="w-6 h-6 text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 3v18h18" />
+            <path d="M7 16l4-8 4 4 5-9" />
+          </svg>
+        </div>
       </div>
-      <span class="mobile-menu__logo-text">إتقان</span>
+      <div class="mobile-menu__logo-text-group">
+        <span class="mobile-menu__logo-text">ChartsPoint</span>
+        <span class="mobile-menu__logo-subtext">تشارتس بوينت</span>
+      </div>
     </a>
 
     <button
@@ -269,11 +285,11 @@ const iconPaths: Record<string, string> = {
   <!-- Footer with CTA -->
   <footer class="mobile-menu__footer">
     <a
-      href="/accounts/open/steps"
+      href="/basics"
       class="mobile-menu__cta"
       data-mobile-link
     >
-      <span>افتح حسابك الاستثماري</span>
+      <span>ابدأ من الأساسيات</span>
       <svg
         class="w-5 h-5"
         fill="none"
@@ -286,7 +302,7 @@ const iconPaths: Record<string, string> = {
       </svg>
     </a>
     <p class="mobile-menu__footer-text">
-      ابدأ رحلتك الاستثمارية اليوم مع إتقان
+      ابدأ رحلتك في التحليل الفني مع تشارتس بوينت
     </p>
   </footer>
 </aside>
@@ -408,7 +424,7 @@ const iconPaths: Record<string, string> = {
 
   .mobile-menu__logo:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(213, 160, 53, 0.35);
+    box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.35);
   }
 
   .mobile-menu__logo-mark {
@@ -419,11 +435,26 @@ const iconPaths: Record<string, string> = {
     flex-shrink: 0;
   }
 
+  .mobile-menu__logo-text-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
   .mobile-menu__logo-text {
-    font-family: 'Noto Kufi Arabic', sans-serif;
-    font-size: 1.25rem;
+    font-family: var(--font-heading, 'Noto Kufi Arabic', sans-serif);
+    font-size: 1.125rem;
     font-weight: 700;
     color: var(--color-navy);
+    line-height: 1.2;
+  }
+
+  .mobile-menu__logo-subtext {
+    font-family: var(--font-body, 'Tajawal', sans-serif);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #0891B2;
+    line-height: 1;
   }
 
   .mobile-menu__close {
@@ -447,7 +478,7 @@ const iconPaths: Record<string, string> = {
 
   .mobile-menu__close:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(213, 160, 53, 0.35);
+    box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.35);
   }
 
   .mobile-menu__close:active {
@@ -515,7 +546,7 @@ const iconPaths: Record<string, string> = {
 
   .mobile-pillar__trigger:focus-visible {
     outline: none;
-    box-shadow: inset 0 0 0 3px rgba(213, 160, 53, 0.35);
+    box-shadow: inset 0 0 0 3px rgba(8, 145, 178, 0.35);
     border-radius: 1rem;
   }
 
@@ -530,15 +561,15 @@ const iconPaths: Record<string, string> = {
     width: 44px;
     height: 44px;
     border-radius: 0.75rem;
-    background: rgba(213, 160, 53, 0.12);
-    color: #d5a035;
+    background: rgba(8, 145, 178, 0.12);
+    color: #0891B2;
     flex-shrink: 0;
     transition: all 0.2s ease;
   }
 
   .mobile-pillar__trigger:hover .mobile-pillar__icon,
   .mobile-pillar__trigger[aria-expanded="true"] .mobile-pillar__icon {
-    background: rgba(213, 160, 53, 0.18);
+    background: rgba(8, 145, 178, 0.18);
     transform: scale(1.02);
   }
 
@@ -659,7 +690,7 @@ const iconPaths: Record<string, string> = {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #d5a035;
+    background: #0891B2;
     opacity: 0.6;
     flex-shrink: 0;
     transition: all 0.2s ease;
@@ -677,17 +708,17 @@ const iconPaths: Record<string, string> = {
   /* "View All" link styling */
   .mobile-cluster--all {
     justify-content: space-between;
-    color: #d5a035;
+    color: #0891B2;
     font-weight: 600;
     margin-bottom: 0.25rem;
-    border-right: 3px solid #d5a035;
+    border-right: 3px solid #0891B2;
     padding-right: calc(1rem - 3px);
     opacity: 1;
     animation: none;
   }
 
   .mobile-cluster--all:hover {
-    background: rgba(213, 160, 53, 0.08);
+    background: rgba(8, 145, 178, 0.08);
   }
 
   .mobile-cluster__arrow {
@@ -753,19 +784,19 @@ const iconPaths: Record<string, string> = {
 
   .mobile-quick-link:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(213, 160, 53, 0.35);
+    box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.35);
   }
 
   .mobile-quick-link__icon {
     width: 1.25rem;
     height: 1.25rem;
-    color: #d5a035;
+    color: #0891B2;
     flex-shrink: 0;
     transition: color 0.2s ease;
   }
 
   .mobile-quick-link:hover .mobile-quick-link__icon {
-    color: #b8892a;
+    color: #0E7490;
   }
 
   /* ==========================================================================
@@ -793,17 +824,17 @@ const iconPaths: Record<string, string> = {
     font-size: 1.0625rem;
     font-weight: 700;
     text-decoration: none;
-    color: var(--color-navy);
-    background: linear-gradient(135deg, var(--color-gold-light) 0%, var(--color-gold) 100%);
+    color: #FFFFFF;
+    background: linear-gradient(135deg, #14B8A6 0%, #0891B2 100%);
     box-shadow:
-      0 4px 14px rgba(213, 160, 53, 0.35),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      0 4px 14px rgba(8, 145, 178, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
     transition: all 0.2s ease;
   }
 
   .mobile-menu__cta:hover {
-    background: linear-gradient(135deg, var(--color-gold) 0%, #b8892a 100%);
-    box-shadow: 0 6px 20px rgba(213, 160, 53, 0.45);
+    background: linear-gradient(135deg, #0D9488 0%, #0E7490 100%);
+    box-shadow: 0 6px 20px rgba(8, 145, 178, 0.45);
     transform: translateY(-1px);
   }
 
@@ -811,13 +842,13 @@ const iconPaths: Record<string, string> = {
     outline: none;
     box-shadow:
       0 0 0 3px #FFFFFF,
-      0 0 0 6px var(--color-gold),
-      0 4px 14px rgba(213, 160, 53, 0.35);
+      0 0 0 6px #0891B2,
+      0 4px 14px rgba(8, 145, 178, 0.35);
   }
 
   .mobile-menu__cta:active {
     transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(213, 160, 53, 0.35);
+    box-shadow: 0 2px 8px rgba(8, 145, 178, 0.35);
   }
 
   .mobile-menu__footer-text {

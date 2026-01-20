@@ -171,10 +171,10 @@ const articleSchema = JSON.stringify({
   },
   "publisher": {
     "@type": "Organization",
-    "name": "إتقان",
+    "name": "تشارتس بوينت",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://itqqan.com/images/logo.svg"
+      "url": "https://chartspoint.com/images/logo.svg"
     }
   },
   "datePublished": article.publishDate,
@@ -187,6 +187,9 @@ const articleSchema = JSON.stringify({
   "wordCount": article.wordCount,
   "articleSection": PILLAR_NAMES_AR[article.pillar],
 });
+
+// Generate author URL for linking
+const authorUrl = article.author.slug ? `/author/${article.author.slug}` : null;
 
 // FAQ Schema for SEO
 const faqSchema = article.faqs.length > 0 ? JSON.stringify({
@@ -210,7 +213,7 @@ const breadcrumbSchema = JSON.stringify({
     "@type": "ListItem",
     "position": index + 1,
     "name": item.label,
-    "item": item.current ? undefined : `https://itqqan.com${item.href}`
+    "item": item.current ? undefined : `https://chartspoint.com${item.href}`
   }))
 });
 ---
@@ -235,6 +238,23 @@ const breadcrumbSchema = JSON.stringify({
     <header class="bg-white border-b border-slate-100">
       <div class="container mx-auto px-4 lg:px-8 py-8 lg:py-12">
         <div class="max-w-4xl">
+          <!-- How We Produce Content - Above H1 -->
+          <div class="content-production-banner mb-6 p-4 rounded-xl bg-gradient-to-l from-teal-50 to-slate-50 border border-teal-100">
+            <div class="flex items-start gap-3">
+              <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-teal-100 flex items-center justify-center">
+                <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <h4 class="font-heading font-bold text-navy-800 text-sm mb-1">كيف ننتج المحتوى</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                  يكتبه خبراء في التحليل الفني ويراجعه فريق تشارتس بوينت من مصادر موثوقة ومحدثة
+                </p>
+              </div>
+            </div>
+          </div>
+
           <!-- Pillar Badge -->
           <div class="mb-4">
             <span class={`badge ${pillarColors.badge}`}>
@@ -252,20 +272,47 @@ const breadcrumbSchema = JSON.stringify({
 
           <!-- Article Meta Info -->
           <div class="flex flex-wrap items-center gap-4 lg:gap-6 text-slate-600 mb-6">
-            <!-- Author -->
+            <!-- Author with Link -->
             <div class="flex items-center gap-3">
               {article.author.avatar && (
-                <img
-                  src={article.author.avatar}
-                  alt={article.author.name}
-                  class="w-10 h-10 rounded-full object-cover border-2 border-slate-200"
-                />
+                authorUrl ? (
+                  <a href={authorUrl} class="block rounded-full hover:ring-2 hover:ring-teal-300 transition-all">
+                    <img
+                      src={article.author.avatar}
+                      alt={article.author.name}
+                      class="w-10 h-10 rounded-full object-cover border-2 border-slate-200"
+                    />
+                  </a>
+                ) : (
+                  <img
+                    src={article.author.avatar}
+                    alt={article.author.name}
+                    class="w-10 h-10 rounded-full object-cover border-2 border-slate-200"
+                  />
+                )
               )}
               <div class="flex flex-col">
-                <span class="font-medium text-navy-800">{article.author.name}</span>
+                {authorUrl ? (
+                  <a href={authorUrl} class="font-medium text-navy-800 hover:text-teal-600 transition-colors underline decoration-dotted underline-offset-2">
+                    {article.author.name}
+                  </a>
+                ) : (
+                  <span class="font-medium text-navy-800">{article.author.name}</span>
+                )}
                 <span class="text-sm text-slate-500">{publishDate}</span>
               </div>
             </div>
+
+            <!-- Divider -->
+            <span class="hidden sm:block w-px h-8 bg-slate-200"></span>
+
+            <!-- Modified Date -->
+            <span class="flex items-center gap-2 text-sm">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span>تحديث: {modifiedDate}</span>
+            </span>
 
             <!-- Divider -->
             <span class="hidden sm:block w-px h-8 bg-slate-200"></span>
@@ -282,22 +329,6 @@ const breadcrumbSchema = JSON.stringify({
             <span class={`px-3 py-1 rounded-full text-sm font-medium ${expertiseInfo.class}`}>
               {expertiseInfo.label}
             </span>
-          </div>
-
-          <!-- Trust Badges for Financial Content -->
-          <div class="flex flex-wrap gap-3 mb-8">
-            <div class="trust-indicator">
-              <svg class="trust-indicator-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
-              <span class="trust-indicator-text">محتوى موثوق</span>
-            </div>
-            <div class="security-badge">
-              <svg class="security-badge-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-              </svg>
-              <span class="security-badge-text">مراجعة فريق إتقان</span>
-            </div>
           </div>
 
           <!-- Featured Image -->
@@ -328,37 +359,22 @@ const breadcrumbSchema = JSON.stringify({
             <div class="sticky top-24">
               <TableOfContents items={tocItems} pillar={article.pillar} />
 
-              <!-- EEAT Trust Block -->
+              <!-- Contact for Update -->
               <div class="content-box-highlight mt-8">
-                <h4 class="font-heading font-bold text-navy-800 mb-4 flex items-center gap-2">
-                  <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <h4 class="font-heading font-bold text-navy-800 mb-3 flex items-center gap-2">
+                  <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                   </svg>
-                  كيف ننتج المحتوى
+                  ساعدنا في تحسين المحتوى
                 </h4>
-                <ul class="space-y-3 text-sm text-slate-600">
-                  <li class="flex items-start gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-brand-500 mt-2 flex-shrink-0"></span>
-                    <span>يكتبه خبراء ماليون معتمدون</span>
-                  </li>
-                  <li class="flex items-start gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-brand-500 mt-2 flex-shrink-0"></span>
-                    <span>مراجعة دورية من فريق إتقان</span>
-                  </li>
-                  <li class="flex items-start gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-brand-500 mt-2 flex-shrink-0"></span>
-                    <span>مصادر موثوقة ومحدثة</span>
-                  </li>
-                  <li class="flex items-start gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-brand-500 mt-2 flex-shrink-0"></span>
-                    <span>تحديث مستمر للمعلومات</span>
-                  </li>
-                </ul>
+                <p class="text-sm text-slate-600 mb-4">
+                  لديك اقتراح أو تصحيح؟ نرحب بمشاركتك لتحسين جودة المحتوى.
+                </p>
                 <a
-                  href="/about/editorial"
-                  class="inline-flex items-center gap-1 mt-4 text-sm text-brand-600 hover:text-brand-700 font-medium"
+                  href="/contact"
+                  class="inline-flex items-center gap-1 text-sm text-teal-600 hover:text-teal-700 font-medium"
                 >
-                  تواصل لاقتراح تحديث
+                  تواصل معنا
                   <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                   </svg>
@@ -378,15 +394,9 @@ const breadcrumbSchema = JSON.stringify({
 
             <!-- Main Article Content -->
             <div class="content-box">
-              <!-- Publish/Update Dates -->
-              <div class="flex flex-wrap gap-4 text-sm text-slate-500 mb-8 pb-6 border-b border-slate-100">
-                <time datetime={article.publishDate} itemprop="datePublished">
-                  تاريخ النشر: {publishDate}
-                </time>
-                <time datetime={article.modifiedDate} itemprop="dateModified">
-                  آخر تحديث: {modifiedDate}
-                </time>
-              </div>
+              <!-- Hidden dates for Schema.org -->
+              <meta itemprop="datePublished" content={article.publishDate} />
+              <meta itemprop="dateModified" content={article.modifiedDate} />
 
               <!-- Article Body -->
               <div
@@ -396,18 +406,6 @@ const breadcrumbSchema = JSON.stringify({
                 set:html={processedContent}
               />
 
-              <!-- Risk Disclaimer for Financial Content -->
-              <div class="notice-warning mt-12">
-                <h4 class="notice-warning-title">
-                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-                  تنويه هام
-                </h4>
-                <p class="notice-warning-text">
-                  المعلومات الواردة في هذا المقال هي لأغراض تعليمية فقط ولا تشكل نصيحة استثمارية. يرجى استشارة مستشار مالي مرخص قبل اتخاذ أي قرارات استثمارية.
-                </p>
-              </div>
             </div>
 
             <!-- FAQ Section -->

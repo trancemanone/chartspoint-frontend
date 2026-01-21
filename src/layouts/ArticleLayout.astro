@@ -23,13 +23,17 @@ import FAQAccordion from '@components/content/FAQAccordion.astro';
 import AuthorBio from '@components/author/AuthorBio.astro';
 import RelatedArticles from '@components/content/RelatedArticles.astro';
 import CandlestickShowcase from '@components/charts/CandlestickShowcase.astro';
+import CandlestickAnatomy from '@components/charts/CandlestickAnatomy.astro';
+import PatternContext from '@components/charts/PatternContext.astro';
+import TradingChecklist from '@components/charts/TradingChecklist.astro';
+import PatternComparison from '@components/charts/PatternComparison.astro';
 import type { Article, TOCItem } from '@lib/types';
 import { PILLAR_NAMES_AR, CLUSTER_NAMES_AR } from '@lib/content-structure';
 import { ARABIC_PATTERN_NAMES, type PatternType } from '@components/charts/index';
 import { generateInlineCandlestickHtml } from '@lib/candlestick-inline-html';
 
 // Special article slugs that need custom visual components
-const CANDLESTICK_ARTICLE_SLUG = 'japanese-candlestick-patterns';
+const CANDLESTICK_ARTICLE_SLUG = 'candles';
 
 // Flag to enable inline pattern injection for candlestick article
 const ENABLE_INLINE_PATTERNS = true;
@@ -48,6 +52,30 @@ const breadcrumbs = [
   { label: article.title, href: '#', current: true },
 ];
 
+// Decode HTML entities (&#8211; -> en-dash, etc.)
+function decodeHtmlEntities(text: string): string {
+  return text
+    .replace(/&#8211;/g, '\u2013')  // en-dash
+    .replace(/&#8212;/g, '\u2014')  // em-dash
+    .replace(/&#8217;/g, '\u2019')  // right single quote
+    .replace(/&#8216;/g, '\u2018')  // left single quote
+    .replace(/&#8220;/g, '\u201C')  // left double quote
+    .replace(/&#8221;/g, '\u201D')  // right double quote
+    .replace(/&#8230;/g, '\u2026')  // ellipsis
+    .replace(/&ndash;/g, '\u2013')
+    .replace(/&mdash;/g, '\u2014')
+    .replace(/&rsquo;/g, '\u2019')
+    .replace(/&lsquo;/g, '\u2018')
+    .replace(/&ldquo;/g, '\u201C')
+    .replace(/&rdquo;/g, '\u201D')
+    .replace(/&hellip;/g, '\u2026')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(parseInt(code, 10)));
+}
+
 // Extract TOC from content - handles WordPress HTML with nested tags
 function extractTOC(content: string): TOCItem[] {
   const toc: TOCItem[] = [];
@@ -57,8 +85,8 @@ function extractTOC(content: string): TOCItem[] {
   let counter = 0;
 
   while ((match = headingRegex.exec(content)) !== null) {
-    // Strip HTML tags to get plain text
-    const plainText = match[3].replace(/<[^>]*>/g, '').trim();
+    // Strip HTML tags to get plain text and decode HTML entities
+    const plainText = decodeHtmlEntities(match[3].replace(/<[^>]*>/g, '').trim());
     if (plainText) {
       // Generate slug-based ID from Arabic text
       const slug = `section-${counter}`;
@@ -282,119 +310,214 @@ const breadcrumbSchema = JSON.stringify({
       </div>
     </div>
 
-    <!-- Article Header -->
-    <header class="bg-white border-b border-slate-100">
-      <div class="container mx-auto px-4 lg:px-8 py-8 lg:py-12">
-        <div class="max-w-4xl">
-          <!-- How We Produce Content - Above H1 -->
-          <div class="content-production-banner mb-6 p-4 rounded-xl bg-gradient-to-l from-teal-50 to-slate-50 border border-teal-100">
-            <div class="flex items-start gap-3">
-              <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-teal-100 flex items-center justify-center">
-                <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    <!-- Premium Article Hero Section -->
+    <header class="article-hero relative overflow-hidden">
+      <!-- Background Layers -->
+      <div class="article-hero__bg absolute inset-0">
+        <!-- Primary Gradient -->
+        <div class="absolute inset-0 bg-gradient-to-bl from-navy-900 via-navy-800 to-navy-950"></div>
+
+        <!-- Geometric Grid Pattern -->
+        <div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+        <!-- Pillar-Colored Accent Glow -->
+        <div class={`article-hero__glow absolute -top-32 -left-32 w-96 h-96 rounded-full blur-3xl opacity-20 ${
+          article.pillar === 'basics' ? 'bg-blue-500' :
+          article.pillar === 'indicators' ? 'bg-orange-500' :
+          article.pillar === 'tools' ? 'bg-green-500' :
+          article.pillar === 'tactics' ? 'bg-purple-500' : 'bg-teal-500'
+        }`}></div>
+
+        <!-- Secondary Glow -->
+        <div class="absolute bottom-0 right-0 w-80 h-80 rounded-full blur-3xl opacity-10 bg-gold-500"></div>
+
+        <!-- Diagonal Lines Decoration -->
+        <div class="absolute inset-0 overflow-hidden">
+          <div class="absolute -top-4 -right-4 w-64 h-64 opacity-[0.02]">
+            <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <line x1="0" y1="0" x2="200" y2="200" stroke="white" stroke-width="1"/>
+              <line x1="40" y1="0" x2="200" y2="160" stroke="white" stroke-width="1"/>
+              <line x1="80" y1="0" x2="200" y2="120" stroke="white" stroke-width="1"/>
+              <line x1="120" y1="0" x2="200" y2="80" stroke="white" stroke-width="1"/>
+              <line x1="160" y1="0" x2="200" y2="40" stroke="white" stroke-width="1"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Bottom Edge Gradient -->
+        <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-navy-950/80 to-transparent"></div>
+      </div>
+
+      <!-- Hero Content -->
+      <div class="relative z-10 container mx-auto px-4 lg:px-8 pt-8 pb-12 lg:pt-12 lg:pb-16">
+        <div class="max-w-5xl">
+
+          <!-- Top Bar: Trust Badge + Pillar -->
+          <div class="flex flex-wrap items-center gap-3 mb-6">
+            <!-- Content Production Trust Badge -->
+            <div class="article-hero__trust-badge inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
+              <div class="w-5 h-5 rounded-full bg-teal-500/20 flex items-center justify-center">
+                <svg class="w-3 h-3 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <div class="flex-1 min-w-0">
-                <h4 class="font-heading font-bold text-navy-800 text-sm mb-1">كيف ننتج المحتوى</h4>
-                <p class="text-xs text-slate-600 leading-relaxed">
-                  يكتبه خبراء في التحليل الفني ويراجعه فريق تشارتس بوينت من مصادر موثوقة ومحدثة
-                </p>
-              </div>
+              <span class="text-xs font-medium text-white/70">محتوى موثوق من خبراء</span>
             </div>
-          </div>
 
-          <!-- Pillar Badge -->
-          <div class="mb-4">
-            <span class={`badge ${pillarColors.badge}`}>
-              {PILLAR_NAMES_AR[article.pillar]}
-            </span>
+            <!-- Pillar Badge -->
+            <div class={`article-hero__pillar-badge inline-flex items-center gap-2 px-3 py-1.5 rounded-full border backdrop-blur-sm ${
+              article.pillar === 'basics' ? 'bg-blue-500/20 border-blue-400/30 text-blue-300' :
+              article.pillar === 'indicators' ? 'bg-orange-500/20 border-orange-400/30 text-orange-300' :
+              article.pillar === 'tools' ? 'bg-green-500/20 border-green-400/30 text-green-300' :
+              article.pillar === 'tactics' ? 'bg-purple-500/20 border-purple-400/30 text-purple-300' :
+              'bg-teal-500/20 border-teal-400/30 text-teal-300'
+            }`}>
+              <span class={`w-2 h-2 rounded-full ${
+                article.pillar === 'basics' ? 'bg-blue-400' :
+                article.pillar === 'indicators' ? 'bg-orange-400' :
+                article.pillar === 'tools' ? 'bg-green-400' :
+                article.pillar === 'tactics' ? 'bg-purple-400' : 'bg-teal-400'
+              }`}></span>
+              <span class="text-xs font-bold">{PILLAR_NAMES_AR[article.pillar]}</span>
+            </div>
+
+            <!-- Expertise Level Badge -->
+            <div class={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold backdrop-blur-sm ${
+              article.expertiseLevel === 'beginner' ? 'bg-emerald-500/20 border border-emerald-400/30 text-emerald-300' :
+              article.expertiseLevel === 'intermediate' ? 'bg-amber-500/20 border border-amber-400/30 text-amber-300' :
+              'bg-rose-500/20 border border-rose-400/30 text-rose-300'
+            }`}>
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z"/>
+                {article.expertiseLevel === 'beginner' && <circle cx="10" cy="10" r="3"/>}
+                {article.expertiseLevel === 'intermediate' && <><circle cx="7" cy="10" r="2"/><circle cx="13" cy="10" r="2"/></>}
+                {article.expertiseLevel === 'advanced' && <><circle cx="6" cy="10" r="1.5"/><circle cx="10" cy="10" r="1.5"/><circle cx="14" cy="10" r="1.5"/></>}
+              </svg>
+              {expertiseInfo.label}
+            </div>
           </div>
 
           <!-- Article Title -->
           <h1
-            class="text-h1-mobile md:text-h1-desktop font-heading font-extrabold text-navy-900 mb-6 text-balance"
+            class="article-hero__title text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading font-extrabold text-white mb-6 leading-tight text-balance"
             itemprop="headline"
           >
             {article.title}
           </h1>
 
-          <!-- Article Meta Info -->
-          <div class="flex flex-wrap items-center gap-4 lg:gap-6 text-slate-600 mb-6">
-            <!-- Author with Link -->
-            <div class="flex items-center gap-3">
+          <!-- Meta Bar: Author + Stats -->
+          <div class="article-hero__meta flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mb-8">
+
+            <!-- Author Card -->
+            <div class="article-hero__author flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
               {article.author.avatar && (
                 authorUrl ? (
-                  <a href={authorUrl} class="block rounded-full hover:ring-2 hover:ring-teal-300 transition-all">
+                  <a href={authorUrl} class="block rounded-full ring-2 ring-gold-500/50 hover:ring-gold-500 transition-all">
                     <img
                       src={article.author.avatar}
                       alt={article.author.name}
-                      class="w-10 h-10 rounded-full object-cover border-2 border-slate-200"
+                      class="w-12 h-12 rounded-full object-cover"
                     />
                   </a>
                 ) : (
-                  <img
-                    src={article.author.avatar}
-                    alt={article.author.name}
-                    class="w-10 h-10 rounded-full object-cover border-2 border-slate-200"
-                  />
+                  <div class="ring-2 ring-gold-500/50 rounded-full">
+                    <img
+                      src={article.author.avatar}
+                      alt={article.author.name}
+                      class="w-12 h-12 rounded-full object-cover"
+                    />
+                  </div>
                 )
               )}
               <div class="flex flex-col">
                 {authorUrl ? (
-                  <a href={authorUrl} class="font-medium text-navy-800 hover:text-teal-600 transition-colors underline decoration-dotted underline-offset-2">
+                  <a href={authorUrl} class="font-heading font-bold text-white hover:text-gold-400 transition-colors">
                     {article.author.name}
                   </a>
                 ) : (
-                  <span class="font-medium text-navy-800">{article.author.name}</span>
+                  <span class="font-heading font-bold text-white">{article.author.name}</span>
                 )}
-                <span class="text-sm text-slate-500">{publishDate}</span>
+                <span class="text-sm text-white/60">خبير التحليل الفني</span>
               </div>
             </div>
 
-            <!-- Divider -->
-            <span class="hidden sm:block w-px h-8 bg-slate-200"></span>
+            <!-- Stats Row -->
+            <div class="flex flex-wrap items-center gap-4 text-white/70 text-sm">
+              <!-- Publish Date -->
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span>{publishDate}</span>
+              </div>
 
-            <!-- Modified Date -->
-            <span class="flex items-center gap-2 text-sm">
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              <span>تحديث: {modifiedDate}</span>
-            </span>
+              <!-- Separator -->
+              <span class="hidden sm:block w-1 h-1 rounded-full bg-white/30"></span>
 
-            <!-- Divider -->
-            <span class="hidden sm:block w-px h-8 bg-slate-200"></span>
+              <!-- Modified Date -->
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span>تحديث: {modifiedDate}</span>
+              </div>
 
-            <!-- Reading Time -->
-            <span class="flex items-center gap-2">
-              <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>{article.readingTime} دقائق للقراءة</span>
-            </span>
+              <!-- Separator -->
+              <span class="hidden sm:block w-1 h-1 rounded-full bg-white/30"></span>
 
-            <!-- Expertise Level -->
-            <span class={`px-3 py-1 rounded-full text-sm font-medium ${expertiseInfo.class}`}>
-              {expertiseInfo.label}
-            </span>
+              <!-- Reading Time -->
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{article.readingTime} دقائق</span>
+              </div>
+            </div>
           </div>
 
-          <!-- Featured Image -->
+          <!-- Featured Image with Premium Frame -->
           {article.featuredImage && (
-            <figure class={`relative rounded-2xl overflow-hidden border-4 ${pillarColors.border} shadow-card-elevated`}>
-              <img
-                src={article.featuredImage.url}
-                alt={article.featuredImage.alt}
-                width={article.featuredImage.width}
-                height={article.featuredImage.height}
-                class="w-full h-auto object-cover"
-                loading="eager"
-                itemprop="image"
-              />
+            <figure class="article-hero__image relative">
+              <!-- Glow Behind Image -->
+              <div class={`absolute -inset-2 rounded-2xl blur-xl opacity-30 ${
+                article.pillar === 'basics' ? 'bg-blue-500' :
+                article.pillar === 'indicators' ? 'bg-orange-500' :
+                article.pillar === 'tools' ? 'bg-green-500' :
+                article.pillar === 'tactics' ? 'bg-purple-500' : 'bg-teal-500'
+              }`}></div>
+
+              <!-- Image Container -->
+              <div class="relative rounded-xl overflow-hidden border border-white/10 shadow-2xl">
+                <!-- Top Accent Bar -->
+                <div class={`absolute top-0 left-0 right-0 h-1 ${
+                  article.pillar === 'basics' ? 'bg-gradient-to-l from-blue-400 via-blue-500 to-blue-600' :
+                  article.pillar === 'indicators' ? 'bg-gradient-to-l from-orange-400 via-orange-500 to-orange-600' :
+                  article.pillar === 'tools' ? 'bg-gradient-to-l from-green-400 via-green-500 to-green-600' :
+                  article.pillar === 'tactics' ? 'bg-gradient-to-l from-purple-400 via-purple-500 to-purple-600' :
+                  'bg-gradient-to-l from-teal-400 via-teal-500 to-teal-600'
+                }`}></div>
+
+                <img
+                  src={article.featuredImage.url}
+                  alt={article.featuredImage.alt}
+                  width={article.featuredImage.width}
+                  height={article.featuredImage.height}
+                  class="w-full h-auto object-cover"
+                  loading="eager"
+                  itemprop="image"
+                />
+
+                <!-- Bottom Gradient Overlay -->
+                <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-navy-950/60 to-transparent pointer-events-none"></div>
+              </div>
             </figure>
           )}
+
         </div>
       </div>
+
+      <!-- Bottom Gold Accent Line -->
+      <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-l from-transparent via-gold-500/50 to-transparent"></div>
     </header>
 
     <!-- Main Content Area with Sidebar -->
@@ -403,36 +526,14 @@ const breadcrumbSchema = JSON.stringify({
         <div class="lg:grid lg:grid-cols-12 lg:gap-12">
 
           <!-- Table of Contents Sidebar (Desktop) -->
-          <aside class="hidden lg:block lg:col-span-3">
+          <aside class="hidden lg:block lg:col-span-4">
             <div class="sticky top-24">
               <TableOfContents items={tocItems} pillar={article.pillar} />
-
-              <!-- Contact for Update -->
-              <div class="content-box-highlight mt-8">
-                <h4 class="font-heading font-bold text-navy-800 mb-3 flex items-center gap-2">
-                  <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                  </svg>
-                  ساعدنا في تحسين المحتوى
-                </h4>
-                <p class="text-sm text-slate-600 mb-4">
-                  لديك اقتراح أو تصحيح؟ نرحب بمشاركتك لتحسين جودة المحتوى.
-                </p>
-                <a
-                  href="/contact"
-                  class="inline-flex items-center gap-1 text-sm text-teal-600 hover:text-teal-700 font-medium"
-                >
-                  تواصل معنا
-                  <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                  </svg>
-                </a>
-              </div>
             </div>
           </aside>
 
           <!-- Article Content Column -->
-          <div class="lg:col-span-9">
+          <div class="lg:col-span-8">
             <!-- Mobile TOC (handled by TableOfContents component's built-in mobile accordion) -->
             {tocItems.length > 0 && (
               <div class="lg:hidden">
@@ -456,9 +557,142 @@ const breadcrumbSchema = JSON.stringify({
 
             </div>
 
-            <!-- Candlestick Patterns Visual Showcase (for specific article) -->
-            <!-- NOTE: Disabled when inline patterns are enabled - patterns now embedded in text -->
-            {article.slug === CANDLESTICK_ARTICLE_SLUG && !ENABLE_INLINE_PATTERNS && (
+            <!-- Candlestick Visual Components (for candlestick patterns article) -->
+            {article.slug === CANDLESTICK_ARTICLE_SLUG && (
+              <section class="mt-12 space-y-12">
+                <!-- Section Title -->
+                <div class="text-center mb-8">
+                  <h2 class="text-h2-mobile md:text-h2-desktop font-heading font-bold text-navy-900 mb-4">
+                    أدوات تعليمية تفاعلية
+                  </h2>
+                  <p class="text-slate-600 max-w-2xl mx-auto">
+                    استخدم هذه الأدوات البصرية لفهم أفضل لنماذج الشموع اليابانية
+                  </p>
+                </div>
+
+                <!-- 1. Candlestick Anatomy -->
+                <div class="content-box-visual">
+                  <h3 class="font-heading font-bold text-lg text-navy-800 mb-4 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600 text-sm font-bold">1</span>
+                    تشريح الشمعة اليابانية
+                  </h3>
+                  <CandlestickAnatomy animated={true} size="lg" variant="dual" />
+                </div>
+
+                <!-- 2. Pattern Context -->
+                <div class="content-box-visual">
+                  <h3 class="font-heading font-bold text-lg text-navy-800 mb-4 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600 text-sm font-bold">2</span>
+                    أهمية السياق في تفسير النماذج
+                  </h3>
+                  <PatternContext
+                    pattern="المطرقة"
+                    uptrendSignal="neutral"
+                    downtrendSignal="reversal"
+                    animated={true}
+                  />
+                </div>
+
+                <!-- 3. Pattern Comparisons -->
+                <div class="content-box-visual">
+                  <h3 class="font-heading font-bold text-lg text-navy-800 mb-4 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600 text-sm font-bold">3</span>
+                    مقارنة النماذج المتضادة
+                  </h3>
+                  <div class="space-y-8">
+                    <!-- Hammer vs Hanging Man -->
+                    <PatternComparison
+                      patternType="hammer"
+                      bullishName="المطرقة"
+                      bearishName="الرجل المشنوق"
+                      bullishNameEn="Hammer"
+                      bearishNameEn="Hanging Man"
+                      animated={true}
+                    />
+
+                    <!-- Morning Star vs Evening Star -->
+                    <PatternComparison
+                      patternType="star"
+                      bullishName="نجمة الصباح"
+                      bearishName="نجمة المساء"
+                      bullishNameEn="Morning Star"
+                      bearishNameEn="Evening Star"
+                      title="مقارنة نماذج النجوم"
+                      differences={[
+                        { aspect: 'الاتجاه السابق', bullish: 'هابط', bearish: 'صاعد' },
+                        { aspect: 'الإشارة', bullish: 'انعكاس صعودي قوي', bearish: 'انعكاس هبوطي قوي' },
+                        { aspect: 'عدد الشموع', bullish: '3 شموع', bearish: '3 شموع' },
+                        { aspect: 'الشمعة الوسطى', bullish: 'فجوة للأسفل', bearish: 'فجوة للأعلى' }
+                      ]}
+                      animated={true}
+                    />
+
+                    <!-- Engulfing Patterns -->
+                    <PatternComparison
+                      patternType="engulfing"
+                      bullishName="الابتلاع الصعودي"
+                      bearishName="الابتلاع الهبوطي"
+                      bullishNameEn="Bullish Engulfing"
+                      bearishNameEn="Bearish Engulfing"
+                      title="نمط الابتلاع – تحول في السيطرة"
+                      differences={[
+                        { aspect: 'الاتجاه السابق', bullish: 'هابط', bearish: 'صاعد' },
+                        { aspect: 'الإشارة', bullish: 'انعكاس صعودي قوي', bearish: 'انعكاس هبوطي قوي' },
+                        { aspect: 'حجم الشمعة الثانية', bullish: 'تبتلع الأولى بالكامل', bearish: 'تبتلع الأولى بالكامل' },
+                        { aspect: 'دلالة النمط', bullish: 'المشترون سيطروا', bearish: 'البائعون سيطروا' }
+                      ]}
+                      animated={true}
+                    />
+
+                    <!-- Harami Patterns -->
+                    <PatternComparison
+                      patternType="harami"
+                      bullishName="الهارامي الصعودي"
+                      bearishName="الهارامي الهبوطي"
+                      bullishNameEn="Bullish Harami"
+                      bearishNameEn="Bearish Harami"
+                      title="نمط الهارامي – الحمل بتغيير محتمل"
+                      differences={[
+                        { aspect: 'الاتجاه السابق', bullish: 'هابط', bearish: 'صاعد' },
+                        { aspect: 'الإشارة', bullish: 'انعكاس صعودي محتمل', bearish: 'انعكاس هبوطي محتمل' },
+                        { aspect: 'الشمعة الثانية', bullish: 'صغيرة داخل الأولى', bearish: 'صغيرة داخل الأولى' },
+                        { aspect: 'القوة', bullish: 'إشارة ضعيفة - تحتاج تأكيد', bearish: 'إشارة ضعيفة - تحتاج تأكيد' }
+                      ]}
+                      animated={true}
+                    />
+
+                    <!-- Piercing Line vs Dark Cloud Cover -->
+                    <PatternComparison
+                      patternType="piercing"
+                      bullishName="الخط الثاقب"
+                      bearishName="الغطاء السحابي"
+                      bullishNameEn="Piercing Line"
+                      bearishNameEn="Dark Cloud Cover"
+                      title="نمط الخط الثاقب والغطاء السحابي"
+                      differences={[
+                        { aspect: 'الاتجاه السابق', bullish: 'هابط', bearish: 'صاعد' },
+                        { aspect: 'الإشارة', bullish: 'انعكاس صعودي', bearish: 'انعكاس هبوطي' },
+                        { aspect: 'الشرط الرئيسي', bullish: 'إغلاق فوق 50% من الأولى', bearish: 'إغلاق تحت 50% من الأولى' },
+                        { aspect: 'فتح الشمعة الثانية', bullish: 'فجوة للأسفل', bearish: 'فجوة للأعلى' }
+                      ]}
+                      animated={true}
+                    />
+                  </div>
+                </div>
+
+                <!-- 4. Trading Checklist -->
+                <div class="content-box-visual">
+                  <h3 class="font-heading font-bold text-lg text-navy-800 mb-4 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600 text-sm font-bold">4</span>
+                    قائمة التحقق قبل التداول
+                  </h3>
+                  <TradingChecklist interactive={true} animated={true} />
+                </div>
+              </section>
+            )}
+
+            <!-- Candlestick Patterns Visual Showcase (legacy - disabled) -->
+            {article.slug === CANDLESTICK_ARTICLE_SLUG && !ENABLE_INLINE_PATTERNS && false && (
               <section class="mt-12 -mx-4 sm:-mx-6 lg:-mx-8">
                 <CandlestickShowcase />
               </section>
@@ -491,6 +725,28 @@ const breadcrumbSchema = JSON.stringify({
                 <RelatedArticles articles={article.relatedArticles} />
               </section>
             )}
+
+            <!-- Contact for Update -->
+            <section class="mt-12 p-6 bg-slate-50 rounded-xl border border-slate-200">
+              <h4 class="font-heading font-bold text-navy-800 mb-3 flex items-center gap-2">
+                <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                </svg>
+                ساعدنا في تحسين المحتوى
+              </h4>
+              <p class="text-sm text-slate-600 mb-4">
+                لديك اقتراح أو تصحيح؟ نرحب بمشاركتك لتحسين جودة المحتوى.
+              </p>
+              <a
+                href="/contact"
+                class="inline-flex items-center gap-1 text-sm text-teal-600 hover:text-teal-700 font-medium"
+              >
+                تواصل معنا
+                <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            </section>
           </div>
         </div>
       </div>
@@ -506,6 +762,145 @@ const breadcrumbSchema = JSON.stringify({
 
 <style>
   /* ═══════════════════════════════════════════════════════════════════════════
+     PREMIUM ARTICLE HERO SECTION
+     Sophisticated fintech-grade hero with depth and visual hierarchy
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .article-hero {
+    background: linear-gradient(to bottom left, #102941, #0d2035, #0a1628);
+    min-height: auto;
+  }
+
+  /* Animated glow effect */
+  .article-hero__glow {
+    animation: heroGlowPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes heroGlowPulse {
+    0% {
+      opacity: 0.15;
+      transform: translate(0, 0) scale(1);
+    }
+    100% {
+      opacity: 0.25;
+      transform: translate(10px, 10px) scale(1.1);
+    }
+  }
+
+  /* Trust and pillar badges */
+  .article-hero__trust-badge,
+  .article-hero__pillar-badge {
+    transition: all 0.2s ease;
+  }
+
+  .article-hero__trust-badge:hover,
+  .article-hero__pillar-badge:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  /* Title with subtle text shadow for depth */
+  .article-hero__title {
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+    letter-spacing: -0.01em;
+  }
+
+  /* Author card hover effect */
+  .article-hero__author {
+    transition: all 0.3s ease;
+  }
+
+  .article-hero__author:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+  }
+
+  /* Featured image hover effect */
+  .article-hero__image {
+    transition: transform 0.4s ease;
+  }
+
+  .article-hero__image:hover {
+    transform: translateY(-4px);
+  }
+
+  .article-hero__image img {
+    transition: transform 0.6s ease;
+  }
+
+  .article-hero__image:hover img {
+    transform: scale(1.02);
+  }
+
+  /* Mobile optimizations */
+  @media (max-width: 640px) {
+    .article-hero {
+      padding-bottom: 0;
+    }
+
+    .article-hero__title {
+      font-size: 1.5rem;
+      line-height: 1.3;
+    }
+
+    .article-hero__author {
+      width: 100%;
+    }
+
+    .article-hero__glow {
+      animation: none;
+      opacity: 0.15;
+    }
+  }
+
+  @media (min-width: 641px) and (max-width: 1023px) {
+    .article-hero__title {
+      font-size: 2rem;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .article-hero__glow {
+      animation: none;
+    }
+
+    .article-hero__trust-badge,
+    .article-hero__pillar-badge,
+    .article-hero__author,
+    .article-hero__image,
+    .article-hero__image img {
+      transition: none;
+    }
+  }
+
+  /* Print: simplify hero */
+  @media print {
+    .article-hero {
+      background: white !important;
+      color: black !important;
+    }
+
+    .article-hero__bg,
+    .article-hero__glow {
+      display: none;
+    }
+
+    .article-hero__title {
+      color: #102941 !important;
+      text-shadow: none;
+    }
+
+    .article-hero__trust-badge,
+    .article-hero__pillar-badge {
+      background: #f1f5f9 !important;
+      border-color: #e2e8f0 !important;
+      color: #334155 !important;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
      ARTICLE LAYOUT - Component-Scoped Enhancements
      Works in conjunction with global.css article-content styles
      ═══════════════════════════════════════════════════════════════════════════ */
@@ -513,6 +908,21 @@ const breadcrumbSchema = JSON.stringify({
   /* Article page specific adjustments */
   .article-page {
     --article-max-content-width: 65ch;
+  }
+
+  /* Visual component box styling */
+  .content-box-visual {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  @media (min-width: 768px) {
+    .content-box-visual {
+      padding: 2rem;
+    }
   }
 
   /* Mobile-specific article optimizations */
@@ -566,94 +976,245 @@ const breadcrumbSchema = JSON.stringify({
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     INLINE CANDLESTICK PATTERN STYLES
-     Compact visualizations that embed within article text
+     CANDLESTICK PATTERN CARD STYLES
+     Large, premium pattern cards that flow within article text
+     Institutional fintech design (Bloomberg/TradingView inspired)
      ═══════════════════════════════════════════════════════════════════════════ */
 
-  /* Wrapper for proper float clearing */
+  /* Wrapper - centers the card in text flow */
   .article-content :global(.candlestick-inline-wrapper) {
-    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0;
     clear: both;
   }
 
-  /* Main inline component */
-  .article-content :global(.candlestick-inline) {
-    /* Float left in RTL context (appears on right side) */
-    float: left;
-    margin: 0 0 20px 20px;
-
-    /* Compact dimensions */
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-
-    /* Premium dark container */
-    padding: 12px;
-    background: linear-gradient(135deg, #102941 0%, #0A1628 100%);
-    border: 1px solid var(--inline-border-color, rgba(20, 184, 166, 0.3));
-    border-radius: 12px;
-
-    /* Subtle shadow and depth */
-    box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  /* Main card container */
+  .article-content :global(.cp-pattern-card) {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    background: linear-gradient(to bottom, #102941 0%, #0A1628 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
 
     /* Animation */
     opacity: 0;
-    transform: translateY(8px);
-    animation: inlineFadeIn 0.5s ease-out forwards;
+    transform: translateY(16px);
+    animation: cpCardFadeIn 0.6s ease-out forwards;
     animation-play-state: paused;
-
-    /* Isolation for proper stacking */
-    isolation: isolate;
-    position: relative;
-    z-index: 1;
   }
 
   /* Size variants */
-  .article-content :global(.candlestick-inline--single) {
-    min-width: 84px;
+  .article-content :global(.cp-pattern-card--single) {
+    max-width: 280px;
   }
 
-  .article-content :global(.candlestick-inline--double) {
-    min-width: 124px;
+  .article-content :global(.cp-pattern-card--double) {
+    max-width: 340px;
   }
 
-  .article-content :global(.candlestick-inline--triple) {
-    min-width: 164px;
+  .article-content :global(.cp-pattern-card--triple) {
+    max-width: 400px;
   }
 
-  /* SVG wrapper */
-  .article-content :global(.candlestick-inline__svg-wrapper) {
+  /* Hover state */
+  .article-content :global(.cp-pattern-card:hover) {
+    border-color: rgba(213, 160, 53, 0.4);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(213, 160, 53, 0.2);
+    transform: translateY(-2px);
+  }
+
+  /* In-view animation trigger */
+  .article-content :global(.cp-pattern-card.in-view) {
+    animation-play-state: running;
+  }
+
+  /* Chart area */
+  .article-content :global(.cp-card__chart) {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 60px;
+    overflow: hidden;
   }
 
-  .article-content :global(.candlestick-inline__svg) {
-    display: block;
+  /* Grid background */
+  .article-content :global(.cp-card__grid) {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
   }
 
-  /* Pattern name label */
-  .article-content :global(.candlestick-inline__label) {
-    font-family: 'Noto Kufi Arabic', system-ui, sans-serif;
-    font-size: 0.6875rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
-    text-align: center;
-    white-space: nowrap;
-    padding-top: 4px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  /* Radial glow */
+  .article-content :global(.cp-card__glow) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    filter: blur(40px);
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+  }
+
+  .article-content :global(.cp-pattern-card:hover .cp-card__glow) {
+    opacity: 0.6;
+  }
+
+  /* SVG candlestick */
+  .article-content :global(.cp-card__svg) {
+    position: relative;
+    z-index: 1;
     width: 100%;
+    height: 100%;
+    max-width: 200px;
+    padding: 16px;
   }
 
-  /* Fade-in animation */
-  @keyframes inlineFadeIn {
+  .article-content :global(.cp-pattern-card--triple .cp-card__svg) {
+    max-width: 280px;
+  }
+
+  /* Content area */
+  .article-content :global(.cp-card__content) {
+    position: relative;
+    padding: 1rem 1.25rem 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  /* Header row */
+  .article-content :global(.cp-card__header) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Signal badge */
+  .article-content :global(.cp-card__badge) {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.375rem 0.75rem;
+    font-family: 'Noto Kufi Arabic', system-ui, sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 9999px;
+    border: 1px solid;
+  }
+
+  .article-content :global(.cp-badge--bullish) {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10B981;
+    border-color: rgba(16, 185, 129, 0.3);
+  }
+
+  .article-content :global(.cp-badge--bearish) {
+    background: rgba(239, 68, 68, 0.2);
+    color: #EF4444;
+    border-color: rgba(239, 68, 68, 0.3);
+  }
+
+  .article-content :global(.cp-badge--neutral) {
+    background: rgba(148, 163, 184, 0.2);
+    color: #94A3B8;
+    border-color: rgba(148, 163, 184, 0.3);
+  }
+
+  /* Reliability meter */
+  .article-content :global(.cp-card__reliability) {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .article-content :global(.cp-meter-dot) {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+  }
+
+  .article-content :global(.cp-meter--bullish) {
+    background: #10B981;
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.5);
+  }
+
+  .article-content :global(.cp-meter--bearish) {
+    background: #EF4444;
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+  }
+
+  .article-content :global(.cp-meter--neutral) {
+    background: #94A3B8;
+    box-shadow: 0 0 6px rgba(148, 163, 184, 0.4);
+  }
+
+  .article-content :global(.cp-meter--empty) {
+    background: #334155;
+  }
+
+  /* Pattern names */
+  .article-content :global(.cp-card__names) {
+    margin-bottom: 0.5rem;
+  }
+
+  .article-content :global(.cp-card__title-ar) {
+    margin: 0 0 0.125rem;
+    font-family: 'Noto Kufi Arabic', system-ui, sans-serif;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    line-height: 1.3;
+  }
+
+  .article-content :global(.cp-card__title-en) {
+    display: block;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.6875rem;
+    color: #64748B;
+    letter-spacing: 0.025em;
+  }
+
+  /* Description */
+  .article-content :global(.cp-card__description) {
+    margin: 0;
+    font-family: 'Tajawal', system-ui, sans-serif;
+    font-size: 0.875rem;
+    color: #94A3B8;
+    line-height: 1.6;
+  }
+
+  /* Gold accent bar */
+  .article-content :global(.cp-card__accent) {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #d5a035, transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .article-content :global(.cp-pattern-card:hover .cp-card__accent) {
+    opacity: 1;
+  }
+
+  /* Animation keyframes */
+  @keyframes cpCardFadeIn {
     from {
       opacity: 0;
-      transform: translateY(8px);
+      transform: translateY(16px);
     }
     to {
       opacity: 1;
@@ -661,42 +1222,54 @@ const breadcrumbSchema = JSON.stringify({
     }
   }
 
-  /* Play animation when in view */
-  .article-content :global(.candlestick-inline.in-view) {
-    animation-play-state: running;
-  }
-
-  /* Hover enhancement */
-  .article-content :global(.candlestick-inline:hover) {
-    border-color: rgba(20, 184, 166, 0.6);
-    box-shadow:
-      0 6px 20px rgba(0, 0, 0, 0.35),
-      0 0 24px rgba(20, 184, 166, 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  }
-
-  /* Mobile: center inline patterns instead of float */
+  /* Mobile responsiveness - full width on small screens */
   @media (max-width: 640px) {
-    .article-content :global(.candlestick-inline) {
-      float: none;
-      margin: 20px auto;
-      display: flex;
+    .article-content :global(.candlestick-inline-wrapper) {
+      margin: 1.5rem 0;
+    }
+
+    .article-content :global(.cp-pattern-card),
+    .article-content :global(.cp-pattern-card--single),
+    .article-content :global(.cp-pattern-card--double),
+    .article-content :global(.cp-pattern-card--triple) {
+      max-width: 100%;
+    }
+
+    .article-content :global(.cp-card__chart) {
+      height: 140px !important;
+    }
+
+    .article-content :global(.cp-card__content) {
+      padding: 0.875rem 1rem 1rem;
+    }
+
+    .article-content :global(.cp-card__title-ar) {
+      font-size: 1rem;
+    }
+
+    .article-content :global(.cp-card__description) {
+      font-size: 0.8125rem;
     }
   }
 
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
-    .article-content :global(.candlestick-inline) {
+    .article-content :global(.cp-pattern-card) {
       animation: none;
       opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .article-content :global(.cp-pattern-card:hover) {
       transform: none;
     }
   }
 
-  /* Print: hide inline patterns */
+  /* Print: hide pattern cards */
   @media print {
-    .article-content :global(.candlestick-inline),
-    .article-content :global(.candlestick-inline-wrapper) {
+    .article-content :global(.candlestick-inline-wrapper),
+    .article-content :global(.cp-pattern-card) {
       display: none;
     }
   }
@@ -810,9 +1383,9 @@ const breadcrumbSchema = JSON.stringify({
     });
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Inline Candlestick Patterns: Scroll-Triggered Animation
+    // Candlestick Pattern Cards: Scroll-Triggered Animation
     // ─────────────────────────────────────────────────────────────────────────
-    const inlinePatterns = articleContent.querySelectorAll('.candlestick-inline');
+    const inlinePatterns = articleContent.querySelectorAll('.cp-pattern-card');
 
     if (inlinePatterns.length > 0) {
       if (!prefersReducedMotion && 'IntersectionObserver' in window) {

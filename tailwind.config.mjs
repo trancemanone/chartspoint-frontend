@@ -220,16 +220,16 @@ export default {
           900: '#1E3A8A',
         },
         accounts: {
-          50:  '#FDF8ED',
-          100: '#FAF0D8',
-          200: '#F5E2B5',
-          300: '#e8bc5a',
-          400: '#deb049',
-          500: '#d5a035',   // Maps to brand gold
-          600: '#b8892a',
-          700: '#9a7223',
-          800: '#7c5c1c',
-          900: '#5e4515',
+          50:  '#ECFEFF',
+          100: '#CFFAFE',
+          200: '#A5F3FC',
+          300: '#67E8F9',
+          400: '#22D3EE',
+          500: '#0891B2',   // Maps to brand teal
+          600: '#0E7490',
+          700: '#155E75',
+          800: '#134E4A',
+          900: '#164E63',
         },
         trust: {
           50:  '#F5F3FF',
@@ -298,30 +298,30 @@ export default {
           900: '#0C1A29',
         },
         accent: {
-          DEFAULT: '#d5a035',
-          50: '#FDF8ED',
-          100: '#FAF0D8',
-          200: '#F5E2B5',
-          300: '#e8bc5a',
-          400: '#deb049',
-          500: '#d5a035',
-          600: '#b8892a',
-          700: '#9a7223',
-          800: '#7c5c1c',
-          900: '#5e4515',
+          DEFAULT: '#0891B2',
+          50: '#ECFEFF',
+          100: '#CFFAFE',
+          200: '#A5F3FC',
+          300: '#67E8F9',
+          400: '#22D3EE',
+          500: '#0891B2',
+          600: '#0E7490',
+          700: '#155E75',
+          800: '#134E4A',
+          900: '#164E63',
         },
         luxury: {
-          DEFAULT: '#d5a035',
-          50: '#FDF8ED',
-          100: '#FAF0D8',
-          200: '#F5E2B5',
-          300: '#e8bc5a',
-          400: '#deb049',
-          500: '#d5a035',
-          600: '#b8892a',
-          700: '#9a7223',
-          800: '#7c5c1c',
-          900: '#5e4515',
+          DEFAULT: '#0891B2',
+          50: '#ECFEFF',
+          100: '#CFFAFE',
+          200: '#A5F3FC',
+          300: '#67E8F9',
+          400: '#22D3EE',
+          500: '#0891B2',
+          600: '#0E7490',
+          700: '#155E75',
+          800: '#134E4A',
+          900: '#164E63',
         },
         neutral: {
           50: '#F8FAFC',
@@ -348,6 +348,50 @@ export default {
           200: '#E2E8F0',      // Default - dividers, borders
           300: '#CBD5E1',      // Medium - stronger dividers
         },
+
+        // ═══════════════════════════════════════════════════════════════
+        // INK: Deep Near-Black Base (Premium Dark Mode)
+        // Ultra-deep foundation colors for institutional-grade dark sections
+        // ═══════════════════════════════════════════════════════════════
+        ink: {
+          950: '#030712',      // Deepest near-black
+          900: '#0C1222',      // Deep navy-black
+          850: '#0F172A',      // Rich deep slate
+        },
+
+        // ═══════════════════════════════════════════════════════════════
+        // SAND: Warm Off-White Text (Premium Dark Mode Typography)
+        // Softer than pure white for reduced eye strain on dark backgrounds
+        // ═══════════════════════════════════════════════════════════════
+        sand: {
+          50:  '#FAFAF9',      // Primary text on dark
+          100: '#F5F5F4',      // Secondary text on dark
+          200: '#E7E5E4',      // Tertiary text on dark
+          400: '#A8A29E',      // Muted text on dark
+          500: '#78716C',      // Placeholder/disabled on dark
+        },
+
+        // ═══════════════════════════════════════════════════════════════
+        // PILLAR MUTED: Dark Mode Background Tints
+        // Subtle pillar-tinted backgrounds for dark mode cards
+        // ═══════════════════════════════════════════════════════════════
+        'pillar-muted': {
+          basics: '#1E3A5F',
+          indicators: '#4A2810',
+          tools: '#0D3D2E',
+          tactics: '#2E1F5C',
+        },
+
+        // ═══════════════════════════════════════════════════════════════
+        // PILLAR GLOW: Ambient Glow Colors
+        // Semi-transparent pillar colors for glow effects
+        // ═══════════════════════════════════════════════════════════════
+        'pillar-glow': {
+          basics: 'rgba(59, 130, 246, 0.15)',
+          indicators: 'rgba(249, 115, 22, 0.12)',
+          tools: 'rgba(16, 185, 129, 0.12)',
+          tactics: 'rgba(139, 92, 246, 0.12)',
+        },
       },
 
       /**
@@ -367,12 +411,13 @@ export default {
       },
 
       /**
-       * FONT SIZE SCALE
+       * FONT SIZE SCALE - Arabic Fintech Accessibility Standards
        *
-       * Optimized for Arabic readability:
-       * - Larger base sizes for comfortable reading
-       * - Generous line heights for Arabic script
-       * - Responsive scaling for all devices
+       * Google-compliant typography for Arabic readers (ages 40-70):
+       * - Body: 18px minimum, line-height 1.75
+       * - Captions: 14px absolute floor
+       * - Mobile: never below 17px body text
+       * - Contrast: 4.5:1 minimum
        */
       fontSize: {
         // Display sizes - Hero sections, major headlines
@@ -380,45 +425,48 @@ export default {
         'display-xl': ['3.75rem', { lineHeight: '1.15', letterSpacing: '-0.02em', fontWeight: '800' }],
         'display-lg': ['3rem', { lineHeight: '1.2', letterSpacing: '-0.01em', fontWeight: '700' }],
 
-        // Heading sizes
-        'h1': ['2.5rem', { lineHeight: '1.2', fontWeight: '800' }],
-        'h2': ['2rem', { lineHeight: '1.25', fontWeight: '700' }],
-        'h3': ['1.5rem', { lineHeight: '1.35', fontWeight: '600' }],
-        'h4': ['1.25rem', { lineHeight: '1.4', fontWeight: '600' }],
-        'h5': ['1.125rem', { lineHeight: '1.45', fontWeight: '600' }],
-        'h6': ['1rem', { lineHeight: '1.5', fontWeight: '600' }],
+        // Heading sizes - Arabic Fintech Scale
+        'h1': ['2.5rem', { lineHeight: '1.3', fontWeight: '700' }],      // 40px desktop
+        'h2': ['1.75rem', { lineHeight: '1.4', fontWeight: '600' }],     // 28px - main scannability anchor
+        'h3': ['1.375rem', { lineHeight: '1.5', fontWeight: '600' }],    // 22px - sub-sections
+        'h4': ['1.125rem', { lineHeight: '1.6', fontWeight: '600' }],    // 18px - same as body, weight differs
+        'h5': ['1rem', { lineHeight: '1.6', fontWeight: '600' }],        // 16px
+        'h6': ['0.875rem', { lineHeight: '1.6', fontWeight: '600' }],    // 14px - caption level
 
-        // Body sizes - Optimized for Arabic (larger for readability)
-        'body-xl': ['1.375rem', { lineHeight: '1.75' }],
-        'body-lg': ['1.25rem', { lineHeight: '1.7' }],
-        'body': ['1.125rem', { lineHeight: '1.7' }],
-        'body-sm': ['1rem', { lineHeight: '1.65' }],
-        'body-xs': ['0.875rem', { lineHeight: '1.6' }],
+        // Body sizes - Arabic optimized (18px is the money zone)
+        'body-xl': ['1.25rem', { lineHeight: '1.75' }],                  // 20px
+        'body-lg': ['1.125rem', { lineHeight: '1.75' }],                 // 18px - PRIMARY BODY
+        'body': ['1.125rem', { lineHeight: '1.75' }],                    // 18px - default body
+        'body-sm': ['1rem', { lineHeight: '1.7' }],                      // 16px - secondary body (use sparingly)
+        'body-xs': ['0.875rem', { lineHeight: '1.6' }],                  // 14px - captions ONLY
 
-        // Caption and meta
-        'caption': ['0.8125rem', { lineHeight: '1.5' }],
+        // Caption and meta - 14px is the absolute floor
+        'caption': ['0.875rem', { lineHeight: '1.6' }],                  // 14px - dates, source, risk notes
         'overline': ['0.75rem', { lineHeight: '1.5', letterSpacing: '0.1em', fontWeight: '600' }],
 
-        // Legacy responsive sizes
-        'body-mobile': ['1.125rem', { lineHeight: '1.7' }],
-        'body-desktop': ['1.25rem', { lineHeight: '1.7' }],
-        'h1-mobile': ['2.5rem', { lineHeight: '1.15', fontWeight: '800' }],
-        'h1-desktop': ['3.5rem', { lineHeight: '1.1', fontWeight: '800' }],
-        'h2-mobile': ['1.875rem', { lineHeight: '1.25', fontWeight: '700' }],
-        'h2-desktop': ['2.5rem', { lineHeight: '1.2', fontWeight: '700' }],
-        'h3-mobile': ['1.5rem', { lineHeight: '1.35', fontWeight: '600' }],
-        'h3-desktop': ['1.75rem', { lineHeight: '1.3', fontWeight: '600' }],
+        // Responsive heading sizes (mobile-first)
+        'h1-mobile': ['2rem', { lineHeight: '1.3', fontWeight: '700' }],       // 32px mobile
+        'h1-desktop': ['2.5rem', { lineHeight: '1.3', fontWeight: '700' }],    // 40px desktop
+        'h2-mobile': ['1.5rem', { lineHeight: '1.4', fontWeight: '600' }],     // 24px mobile
+        'h2-desktop': ['1.75rem', { lineHeight: '1.4', fontWeight: '600' }],   // 28px desktop
+        'h3-mobile': ['1.25rem', { lineHeight: '1.5', fontWeight: '600' }],    // 20px mobile
+        'h3-desktop': ['1.375rem', { lineHeight: '1.5', fontWeight: '600' }],  // 22px desktop
       },
 
       /**
-       * LINE HEIGHT
-       * Extended scale for Arabic typography
+       * LINE HEIGHT - Arabic Fintech Standards
+       * Never below 1.6 for Arabic text
        */
       lineHeight: {
-        'arabic': '1.7',
-        'arabic-tight': '1.5',
-        'arabic-relaxed': '1.85',
-        'arabic-loose': '2',
+        'arabic': '1.75',           // Primary body
+        'arabic-tight': '1.6',      // Minimum for Arabic (H4, captions)
+        'arabic-relaxed': '1.8',    // Mobile body
+        'arabic-loose': '2',        // Extra breathing room
+        'heading-1': '1.3',         // H1
+        'heading-2': '1.4',         // H2
+        'heading-3': '1.5',         // H3
+        'body': '1.75',             // Primary body text
+        'body-sm': '1.7',           // Secondary body
       },
 
       /**
@@ -786,14 +834,18 @@ export default {
           'box-shadow': '0 0 0 3px #FFFFFF, 0 0 0 6px rgba(220, 38, 38, 0.6)',
         },
 
-        // Minimum readable font sizes
+        // Minimum readable font sizes - Arabic Fintech Standards
         '.text-readable': {
-          'font-size': '1.125rem',   // 18px minimum
+          'font-size': '1.125rem',   // 18px - Arabic fintech sweet spot
+          'line-height': '1.75',     // Primary body line height
+        },
+        '.text-readable-sm': {
+          'font-size': '1rem',       // 16px - secondary body (use sparingly)
           'line-height': '1.7',
         },
-        '.text-readable-lg': {
-          'font-size': '1.25rem',    // 20px
-          'line-height': '1.8',
+        '.text-caption': {
+          'font-size': '0.875rem',   // 14px - absolute floor
+          'line-height': '1.6',
         },
       });
 

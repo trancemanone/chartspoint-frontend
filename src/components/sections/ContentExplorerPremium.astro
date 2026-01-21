@@ -1,0 +1,1072 @@
+---
+/**
+ * ContentExplorerPremium Component
+ * Ultra-sophisticated استكشف المحتوى (Explore Content) Section
+ *
+ * An institutional-grade content exploration interface featuring:
+ * - Interactive pillar tab navigation with animated slider
+ * - Knowledge constellation SVG visualization
+ * - Connection lines with dash animation
+ * - Pulse animation on central pillar node
+ * - Cluster detail cards with pillar accent bars
+ * - Glassmorphism stats panel
+ * - WCAG AAA accessibility for ages 40-70
+ *
+ * Design Philosophy: Bloomberg Terminal meets Apple meets Premium Fintech
+ */
+
+import { PILLARS, CLUSTERS, type PillarSlug } from '../../lib/types';
+
+// Organize clusters by pillar
+const pillarData = (Object.keys(PILLARS) as PillarSlug[]).map((slug) => {
+  const pillar = PILLARS[slug];
+  const clusters = CLUSTERS.filter((c) => c.pillar === slug);
+  return {
+    ...pillar,
+    clusters,
+    articleCount: clusters.length * 8, // Approximate articles per cluster
+  };
+});
+
+// Pillar color configurations
+const pillarColorConfig: Record<string, { primary: string; muted: string; glow: string; light: string }> = {
+  basics: {
+    primary: '#3B82F6',
+    muted: '#1E3A5F',
+    glow: 'rgba(59, 130, 246, 0.2)',
+    light: '#DBEAFE',
+  },
+  indicators: {
+    primary: '#F97316',
+    muted: '#4A2810',
+    glow: 'rgba(249, 115, 22, 0.2)',
+    light: '#FFEDD5',
+  },
+  tools: {
+    primary: '#10B981',
+    muted: '#0D3D2E',
+    glow: 'rgba(16, 185, 129, 0.2)',
+    light: '#D1FAE5',
+  },
+  tactics: {
+    primary: '#8B5CF6',
+    muted: '#2E1F5C',
+    glow: 'rgba(139, 92, 246, 0.2)',
+    light: '#EDE9FE',
+  },
+};
+---
+
+<section
+  id="content-explorer"
+  class="explorer-section relative py-20 lg:py-28 overflow-hidden"
+  aria-labelledby="explorer-heading"
+>
+  <!-- Ambient Background -->
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="ambient-gradient"></div>
+    <div class="grid-pattern"></div>
+  </div>
+
+  <div class="container mx-auto px-4 lg:px-6 relative z-10">
+    <!-- Section Header -->
+    <header class="section-header text-center mb-12 lg:mb-16">
+      <p class="section-overline">KNOWLEDGE HUB</p>
+      <h2 id="explorer-heading" class="section-title">
+        <span class="title-word">استكشف</span>
+        <span class="title-rest">المحتوى</span>
+      </h2>
+      <div class="title-underline"></div>
+      <p class="section-subtitle">
+        محتوى تعليمي منظم حسب الموضوع والمستوى
+      </p>
+    </header>
+
+    <!-- Pillar Tabs Navigation -->
+    <div class="pillar-tabs-wrapper">
+      <nav class="pillar-tabs" role="tablist" aria-label="اختيار القسم">
+        {pillarData.map((pillar, index) => (
+          <button
+            class={`pillar-tab ${index === 0 ? 'active' : ''}`}
+            role="tab"
+            id={`tab-${pillar.slug}`}
+            aria-selected={index === 0 ? 'true' : 'false'}
+            aria-controls={`panel-${pillar.slug}`}
+            data-pillar={pillar.slug}
+            style={`--pillar-color: ${pillarColorConfig[pillar.slug].primary};`}
+          >
+            <span class="tab-indicator"></span>
+            <span class="tab-label">{pillar.nameAr}</span>
+          </button>
+        ))}
+        <div class="tab-slider" aria-hidden="true"></div>
+      </nav>
+    </div>
+
+    <!-- Tab Panels Container -->
+    <div class="tab-panels">
+      {pillarData.map((pillar, pillarIndex) => {
+        const colors = pillarColorConfig[pillar.slug];
+        return (
+          <div
+            class={`tab-panel ${pillarIndex === 0 ? 'active' : ''}`}
+            role="tabpanel"
+            id={`panel-${pillar.slug}`}
+            aria-labelledby={`tab-${pillar.slug}`}
+            data-pillar={pillar.slug}
+            style={`--pillar-primary: ${colors.primary}; --pillar-glow: ${colors.glow}; --pillar-light: ${colors.light};`}
+          >
+            <div class="panel-layout">
+              <!-- Constellation Visualization -->
+              <div class="constellation-container">
+                <svg
+                  class="constellation-svg"
+                  viewBox="0 0 400 300"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <!-- Grid Background Pattern -->
+                  <defs>
+                    <pattern id={`grid-${pillar.slug}`} width="40" height="40" patternUnits="userSpaceOnUse">
+                      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.1"/>
+                    </pattern>
+                    <radialGradient id={`glow-${pillar.slug}`} cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stop-color={colors.primary} stop-opacity="0.3"/>
+                      <stop offset="100%" stop-color={colors.primary} stop-opacity="0"/>
+                    </radialGradient>
+                  </defs>
+
+                  <!-- Background Grid -->
+                  <rect width="400" height="300" fill={`url(#grid-${pillar.slug})`} class="text-slate-300"/>
+
+                  <!-- Connection Lines -->
+                  {pillar.clusters.map((cluster, i) => {
+                    const angle = (i / pillar.clusters.length) * Math.PI * 2 - Math.PI / 2;
+                    const radius = 100;
+                    const endX = 200 + Math.cos(angle) * radius;
+                    const endY = 150 + Math.sin(angle) * radius;
+                    return (
+                      <line
+                        class="connection-line"
+                        x1="200"
+                        y1="150"
+                        x2={endX}
+                        y2={endY}
+                        stroke={colors.primary}
+                        stroke-width="1.5"
+                        stroke-dasharray="6 4"
+                        opacity="0.4"
+                        style={`--animation-delay: ${i * 100}ms;`}
+                      />
+                    );
+                  })}
+
+                  <!-- Central Glow -->
+                  <circle cx="200" cy="150" r="60" fill={`url(#glow-${pillar.slug})`} class="central-glow"/>
+
+                  <!-- Cluster Nodes -->
+                  {pillar.clusters.map((cluster, i) => {
+                    const angle = (i / pillar.clusters.length) * Math.PI * 2 - Math.PI / 2;
+                    const radius = 100;
+                    const cx = 200 + Math.cos(angle) * radius;
+                    const cy = 150 + Math.sin(angle) * radius;
+                    return (
+                      <g class="cluster-node" style={`--animation-delay: ${i * 80}ms;`}>
+                        <circle
+                          cx={cx}
+                          cy={cy}
+                          r="18"
+                          fill={colors.light}
+                          stroke={colors.primary}
+                          stroke-width="2"
+                          class="node-circle"
+                        />
+                        <text
+                          x={cx}
+                          y={cy + 4}
+                          text-anchor="middle"
+                          font-size="10"
+                          font-weight="600"
+                          fill={colors.primary}
+                          class="node-number"
+                        >
+                          {i + 1}
+                        </text>
+                      </g>
+                    );
+                  })}
+
+                  <!-- Central Node (Pillar) -->
+                  <g class="central-node">
+                    <circle
+                      cx="200"
+                      cy="150"
+                      r="35"
+                      fill={colors.primary}
+                      class="central-circle"
+                    />
+                    <circle
+                      cx="200"
+                      cy="150"
+                      r="35"
+                      fill="none"
+                      stroke={colors.primary}
+                      stroke-width="2"
+                      opacity="0.5"
+                      class="pulse-ring"
+                    />
+
+                    <!-- Pillar Icon -->
+                    {pillar.slug === 'basics' && (
+                      <g transform="translate(185, 135)">
+                        <path d="M15 4v4M15 20v4M4 15h4M20 15h4M7 7l2.5 2.5M17 17l2.5 2.5M7 23l2.5-2.5M17 7l2.5 2.5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                      </g>
+                    )}
+                    {pillar.slug === 'indicators' && (
+                      <g transform="translate(185, 135)">
+                        <path d="M3 20h4l3-12 4 16 3-8h3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                      </g>
+                    )}
+                    {pillar.slug === 'tools' && (
+                      <g transform="translate(185, 135)">
+                        <rect x="4" y="4" width="22" height="22" rx="2" stroke="white" stroke-width="2" fill="none"/>
+                        <path d="M8 12h8M8 16h5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                      </g>
+                    )}
+                    {pillar.slug === 'tactics' && (
+                      <g transform="translate(185, 135)">
+                        <path d="M15 3l9 5v8c0 6-4 9-9 11-5-2-9-5-9-11V6l9-3z" stroke="white" stroke-width="2" stroke-linejoin="round" fill="none"/>
+                        <path d="M10 15l3 3 5-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </g>
+                    )}
+                  </g>
+                </svg>
+
+                <!-- HTML Labels for Arabic (avoid SVG text rendering issues) -->
+                <div class="constellation-labels">
+                  {pillar.clusters.map((cluster, i) => {
+                    const angle = (i / pillar.clusters.length) * Math.PI * 2 - Math.PI / 2;
+                    const labelRadius = 140;
+                    const left = 50 + (Math.cos(angle) * labelRadius / 400) * 100;
+                    const top = 50 + (Math.sin(angle) * labelRadius / 300) * 100;
+                    return (
+                      <span
+                        class="cluster-label"
+                        style={`left: ${left}%; top: ${top}%; --pillar-color: ${colors.primary};`}
+                        data-cluster={cluster.slug}
+                      >
+                        {cluster.nameAr}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <!-- Cluster Cards Grid -->
+              <div class="clusters-grid">
+                {pillar.clusters.map((cluster, index) => (
+                  <a
+                    href={`/${pillar.slug}/${cluster.slug}/`}
+                    class="cluster-card group"
+                    style={`--animation-delay: ${index * 60}ms;`}
+                  >
+                    <!-- Accent Bar -->
+                    <div class="cluster-accent" style={`background: ${colors.primary};`}></div>
+
+                    <!-- Content -->
+                    <div class="cluster-content">
+                      <!-- Number Badge -->
+                      <span class="cluster-number" style={`color: ${colors.primary}; background: ${colors.light};`}>
+                        {index + 1}
+                      </span>
+
+                      <!-- Title -->
+                      <h4 class="cluster-title">{cluster.nameAr}</h4>
+
+                      <!-- Arrow -->
+                      <svg class="cluster-arrow" viewBox="0 0 20 20" fill="currentColor" style={`color: ${colors.primary};`}>
+                        <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd"/>
+                      </svg>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <!-- Stats Panel -->
+            <div class="stats-panel">
+              <div class="stat-item">
+                <span class="stat-value" style={`color: ${colors.primary};`}>{pillar.clusters.length}</span>
+                <span class="stat-label">مجموعة تخصصية</span>
+              </div>
+              <div class="stat-divider"></div>
+              <div class="stat-item">
+                <span class="stat-value" style={`color: ${colors.primary};`}>{pillar.articleCount}+</span>
+                <span class="stat-label">مقال تعليمي</span>
+              </div>
+              <div class="stat-divider"></div>
+              <a
+                href={`/${pillar.slug}/`}
+                class="explore-pillar-link"
+                style={`--link-color: ${colors.primary}; --link-bg: ${colors.light};`}
+              >
+                <span>استكشف {pillar.nameAr}</span>
+                <svg class="link-arrow" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     CSS CUSTOM PROPERTIES (Design Tokens)
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .explorer-section {
+    /* Base Colors */
+    --ink-950: #030712;
+    --ink-900: #0C1222;
+    --slate-50: #F8FAFC;
+    --slate-100: #F1F5F9;
+    --slate-200: #E2E8F0;
+    --slate-300: #CBD5E1;
+    --slate-400: #94A3B8;
+    --slate-500: #64748B;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --slate-800: #1E293B;
+    --slate-900: #0F172A;
+
+    /* Text */
+    --sand-50: #FAFAF9;
+    --sand-100: #F5F5F4;
+    --sand-400: #A8A29E;
+    --sand-500: #78716C;
+
+    /* Accent */
+    --teal-500: #0891B2;
+    --teal-400: #22D3EE;
+
+    /* Spacing */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+
+    /* Radius */
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --radius-xl: 12px;
+    --radius-2xl: 16px;
+
+    /* Motion */
+    --duration-fast: 150ms;
+    --duration-normal: 220ms;
+    --duration-slow: 350ms;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+    /* Background */
+    background: var(--slate-50);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     AMBIENT BACKGROUND
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .ambient-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .ambient-gradient {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(8, 145, 178, 0.05) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(139, 92, 246, 0.04) 0%, transparent 40%);
+  }
+
+  .grid-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.5;
+    background-image: radial-gradient(circle at 1px 1px, var(--slate-200) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     SECTION HEADER
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .section-header {
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .section-overline {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--teal-500);
+    margin-bottom: var(--space-4);
+  }
+
+  .section-title {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--slate-900);
+    margin-bottom: var(--space-2);
+  }
+
+  .title-word {
+    position: relative;
+    display: inline;
+  }
+
+  .title-word::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    right: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--teal-500);
+    border-radius: 2px;
+  }
+
+  .title-rest {
+    margin-right: var(--space-2);
+  }
+
+  .title-underline {
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(to left, transparent, var(--teal-500), transparent);
+    margin: var(--space-5) auto;
+    opacity: 0.3;
+  }
+
+  .section-subtitle {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.75;
+    color: var(--slate-600);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     PILLAR TABS
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .pillar-tabs-wrapper {
+    max-width: 800px;
+    margin: 0 auto var(--space-8);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .pillar-tabs-wrapper::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pillar-tabs {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-2);
+    position: relative;
+    background: white;
+    padding: var(--space-2);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    border: 1px solid var(--slate-200);
+    min-width: max-content;
+  }
+
+  .pillar-tab {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-5);
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--slate-600);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-out);
+    white-space: nowrap;
+  }
+
+  .pillar-tab:hover {
+    color: var(--slate-900);
+    background: var(--slate-100);
+  }
+
+  .pillar-tab.active {
+    color: var(--pillar-color);
+    background: var(--slate-50);
+  }
+
+  .pillar-tab:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--teal-500);
+  }
+
+  .tab-indicator {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0;
+    transition: all var(--duration-normal) var(--ease-out);
+  }
+
+  .pillar-tab.active .tab-indicator {
+    opacity: 1;
+    width: 6px;
+    height: 6px;
+  }
+
+  .tab-label {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Tab Slider (animated background) */
+  .tab-slider {
+    position: absolute;
+    bottom: var(--space-2);
+    right: var(--space-2);
+    height: calc(100% - var(--space-4));
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+    transition: all var(--duration-normal) var(--ease-out);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     TAB PANELS
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .tab-panels {
+    position: relative;
+    min-height: 500px;
+  }
+
+  .tab-panel {
+    display: none;
+    opacity: 0;
+    animation: panel-fade-in 0.3s var(--ease-out) forwards;
+  }
+
+  .tab-panel.active {
+    display: block;
+    opacity: 1;
+  }
+
+  @keyframes panel-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .panel-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+    margin-bottom: var(--space-6);
+  }
+
+  @media (min-width: 1024px) {
+    .panel-layout {
+      grid-template-columns: 400px 1fr;
+      gap: var(--space-8);
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     CONSTELLATION VISUALIZATION
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .constellation-container {
+    position: relative;
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    .constellation-container {
+      display: block;
+    }
+  }
+
+  .constellation-svg {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+  }
+
+  /* Connection Lines Animation */
+  .connection-line {
+    stroke-dashoffset: 0;
+    animation: dash-flow 2s linear infinite;
+    animation-delay: var(--animation-delay);
+  }
+
+  @keyframes dash-flow {
+    from {
+      stroke-dashoffset: 20;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  /* Central Glow */
+  .central-glow {
+    animation: glow-pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% { opacity: 0.8; transform-origin: center; }
+    50% { opacity: 1; }
+  }
+
+  /* Cluster Nodes */
+  .cluster-node {
+    animation: node-fade-in 0.4s var(--ease-out) forwards;
+    animation-delay: var(--animation-delay);
+    opacity: 0;
+  }
+
+  @keyframes node-fade-in {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .node-circle {
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .cluster-node:hover .node-circle {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 8px var(--pillar-glow));
+  }
+
+  /* Central Node Pulse */
+  .central-node {
+    animation: central-float 4s ease-in-out infinite;
+  }
+
+  @keyframes central-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  .pulse-ring {
+    animation: pulse-expand 2s ease-out infinite;
+    transform-origin: center;
+  }
+
+  @keyframes pulse-expand {
+    0% {
+      r: 35;
+      opacity: 0.5;
+    }
+    100% {
+      r: 50;
+      opacity: 0;
+    }
+  }
+
+  /* Constellation Labels */
+  .constellation-labels {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .cluster-label {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--slate-700);
+    white-space: nowrap;
+    padding: 2px 6px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.1);
+    pointer-events: auto;
+    cursor: default;
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .cluster-label:hover {
+    color: var(--pillar-color);
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     CLUSTERS GRID
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .clusters-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  @media (min-width: 640px) {
+    .clusters-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .cluster-card {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--slate-200);
+    overflow: hidden;
+    text-decoration: none;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    transition: all var(--duration-normal) var(--ease-out);
+    animation: card-slide-in 0.4s var(--ease-out) forwards;
+    animation-delay: var(--animation-delay);
+    opacity: 0;
+  }
+
+  @keyframes card-slide-in {
+    from {
+      opacity: 0;
+      transform: translateX(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .cluster-card:hover {
+    border-color: var(--pillar-primary);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    transform: translateX(-4px);
+  }
+
+  .cluster-card:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--teal-500);
+  }
+
+  /* Accent Bar */
+  .cluster-accent {
+    width: 4px;
+    flex-shrink: 0;
+    transition: width var(--duration-fast) var(--ease-out);
+  }
+
+  .cluster-card:hover .cluster-accent {
+    width: 6px;
+  }
+
+  .cluster-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+  }
+
+  .cluster-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-md);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .cluster-title {
+    flex: 1;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--slate-800);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .cluster-card:hover .cluster-title {
+    color: var(--pillar-primary);
+  }
+
+  .cluster-arrow {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    opacity: 0;
+    transform: translateX(8px);
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .cluster-card:hover .cluster-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     STATS PANEL
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .stats-panel {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-6);
+    padding: var(--space-5) var(--space-6);
+    background: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--slate-200);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .stat-value {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .stat-label {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.75rem;
+    color: var(--slate-500);
+    margin-top: 2px;
+  }
+
+  .stat-divider {
+    width: 1px;
+    height: 32px;
+    background: var(--slate-200);
+  }
+
+  .explore-pillar-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-5);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--link-color);
+    text-decoration: none;
+    background: var(--link-bg);
+    border-radius: var(--radius-lg);
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .explore-pillar-link:hover {
+    gap: var(--space-3);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+  }
+
+  .explore-pillar-link:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--teal-500);
+  }
+
+  .link-arrow {
+    width: 16px;
+    height: 16px;
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+
+  .explore-pillar-link:hover .link-arrow {
+    transform: translateX(-4px);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     RESPONSIVE ADJUSTMENTS
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  @media (max-width: 639px) {
+    .pillar-tab {
+      padding: var(--space-2) var(--space-4);
+      font-size: 0.8125rem;
+    }
+
+    .stats-panel {
+      gap: var(--space-4);
+      padding: var(--space-4);
+    }
+
+    .stat-divider {
+      display: none;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     REDUCED MOTION
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .tab-panel,
+    .cluster-card,
+    .cluster-node,
+    .central-node,
+    .pulse-ring,
+    .connection-line,
+    .central-glow,
+    .cluster-accent,
+    .cluster-arrow,
+    .link-arrow,
+    .cluster-label {
+      animation: none;
+      transition: none;
+    }
+
+    .tab-panel.active,
+    .cluster-card {
+      opacity: 1;
+    }
+  }
+</style>
+
+<script>
+  // Tab switching functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const tabs = document.querySelectorAll('.pillar-tab');
+    const panels = document.querySelectorAll('.tab-panel');
+    const slider = document.querySelector('.tab-slider') as HTMLElement;
+
+    if (!tabs.length || !panels.length) return;
+
+    function updateSlider(activeTab: Element) {
+      if (!slider) return;
+      const tabRect = activeTab.getBoundingClientRect();
+      const containerRect = activeTab.closest('.pillar-tabs')?.getBoundingClientRect();
+
+      if (containerRect) {
+        slider.style.width = `${tabRect.width}px`;
+        slider.style.transform = `translateX(${containerRect.right - tabRect.right - 8}px)`;
+      }
+    }
+
+    function switchTab(targetPillar: string) {
+      // Update tabs
+      tabs.forEach((tab) => {
+        const isActive = tab.getAttribute('data-pillar') === targetPillar;
+        tab.classList.toggle('active', isActive);
+        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+
+        if (isActive) {
+          updateSlider(tab);
+        }
+      });
+
+      // Update panels
+      panels.forEach((panel) => {
+        const isActive = panel.getAttribute('data-pillar') === targetPillar;
+        panel.classList.toggle('active', isActive);
+      });
+    }
+
+    // Initialize slider position
+    const activeTab = document.querySelector('.pillar-tab.active');
+    if (activeTab) {
+      updateSlider(activeTab);
+    }
+
+    // Tab click handlers
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const pillar = tab.getAttribute('data-pillar');
+        if (pillar) {
+          switchTab(pillar);
+        }
+      });
+    });
+
+    // Keyboard navigation
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('keydown', (e: KeyboardEvent) => {
+        let newIndex = index;
+
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          e.preventDefault();
+
+          // RTL: ArrowRight goes to previous, ArrowLeft goes to next
+          if (e.key === 'ArrowRight') {
+            newIndex = index > 0 ? index - 1 : tabs.length - 1;
+          } else {
+            newIndex = index < tabs.length - 1 ? index + 1 : 0;
+          }
+
+          const newTab = tabs[newIndex] as HTMLElement;
+          const pillar = newTab.getAttribute('data-pillar');
+
+          if (pillar) {
+            switchTab(pillar);
+            newTab.focus();
+          }
+        }
+      });
+    });
+
+    // Resize handler for slider
+    window.addEventListener('resize', () => {
+      const currentActiveTab = document.querySelector('.pillar-tab.active');
+      if (currentActiveTab) {
+        updateSlider(currentActiveTab);
+      }
+    });
+  });
+</script>

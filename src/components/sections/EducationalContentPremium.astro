@@ -1,0 +1,851 @@
+---
+/**
+ * EducationalContentPremium Component
+ * Ultra-sophisticated المحتوى التعليمي (Educational Content) Section
+ *
+ * An institutional-grade educational hub design featuring:
+ * - Multi-layer ambient background effects
+ * - Premium pillar cards with depth and sophistication
+ * - Geometric mesh patterns
+ * - Pillar-specific glow effects
+ * - Progressive reveal animations
+ * - WCAG AAA accessibility for ages 40-70
+ *
+ * Design Philosophy: Bloomberg Terminal meets Apple meets Premium Fintech
+ *
+ * Four Pillars:
+ * 1. Basics (أساسيات التحليل الفني) - Blue #3B82F6
+ * 2. Indicators (المؤشرات الفنية) - Orange #F97316
+ * 3. Tools (الأدوات والحاسبات) - Green #10B981
+ * 4. Tactics (الاستراتيجيات وإدارة المخاطر) - Purple #8B5CF6
+ */
+
+import { PILLARS, CLUSTERS } from '../../lib/types';
+
+// Enhanced pillar definitions with premium content
+const pillars = [
+  {
+    ...PILLARS.basics,
+    href: '/basics/',
+    subtitle: 'أسس قوية للتداول الناجح',
+    topics: ['الشموع اليابانية', 'مستويات الدعم والمقاومة', 'أنماط الرسم البياني'],
+    lessonCount: 24,
+    level: 'مبتدئ',
+    ctaLabel: 'ابدأ الآن',
+  },
+  {
+    ...PILLARS.indicators,
+    href: '/indicators/',
+    subtitle: 'فهم أعمق لإشارات السوق',
+    topics: ['مؤشرات الزخم (RSI, Stochastic)', 'مؤشرات الاتجاه (MACD, MA)', 'نطاقات بولينجر'],
+    lessonCount: 32,
+    level: 'متوسط',
+    ctaLabel: 'افهم المؤشرات',
+  },
+  {
+    ...PILLARS.tools,
+    href: '/tools/',
+    subtitle: 'أدوات عملية للمتداول',
+    topics: ['حاسبة حجم المركز', 'حاسبة نسبة المخاطرة', 'أدوات التحليل الفني'],
+    lessonCount: 18,
+    level: 'جميع المستويات',
+    ctaLabel: 'استكشف الأدوات',
+  },
+  {
+    ...PILLARS.tactics,
+    href: '/tactics/',
+    subtitle: 'استراتيجيات متقدمة',
+    topics: ['إدارة المخاطر', 'استراتيجيات الاتجاه', 'التداول اللحظي'],
+    lessonCount: 28,
+    level: 'متقدم',
+    ctaLabel: 'تعلّم الاستراتيجيات',
+  },
+];
+
+// Pillar color configurations
+interface PillarColorConfig {
+  primary: string;
+  muted: string;
+  glow: string;
+  gradient: string;
+  border: string;
+  iconBg: string;
+}
+
+const pillarColorConfig: Record<string, PillarColorConfig> = {
+  basics: {
+    primary: '#3B82F6',
+    muted: '#1E3A5F',
+    glow: 'rgba(59, 130, 246, 0.15)',
+    gradient: 'linear-gradient(135deg, #1E3A5F 0%, transparent 100%)',
+    border: 'rgba(59, 130, 246, 0.3)',
+    iconBg: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.05) 100%)',
+  },
+  indicators: {
+    primary: '#F97316',
+    muted: '#4A2810',
+    glow: 'rgba(249, 115, 22, 0.12)',
+    gradient: 'linear-gradient(135deg, #4A2810 0%, transparent 100%)',
+    border: 'rgba(249, 115, 22, 0.3)',
+    iconBg: 'linear-gradient(135deg, rgba(249, 115, 22, 0.2) 0%, rgba(249, 115, 22, 0.05) 100%)',
+  },
+  tools: {
+    primary: '#10B981',
+    muted: '#0D3D2E',
+    glow: 'rgba(16, 185, 129, 0.12)',
+    gradient: 'linear-gradient(135deg, #0D3D2E 0%, transparent 100%)',
+    border: 'rgba(16, 185, 129, 0.3)',
+    iconBg: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.05) 100%)',
+  },
+  tactics: {
+    primary: '#8B5CF6',
+    muted: '#2E1F5C',
+    glow: 'rgba(139, 92, 246, 0.12)',
+    gradient: 'linear-gradient(135deg, #2E1F5C 0%, transparent 100%)',
+    border: 'rgba(139, 92, 246, 0.3)',
+    iconBg: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0.05) 100%)',
+  },
+};
+---
+
+<section
+  id="educational-content"
+  class="educational-section relative py-20 lg:py-28 overflow-hidden"
+  aria-labelledby="educational-heading"
+>
+  <!-- Ambient Background Layer -->
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="ambient-gradient"></div>
+    <div class="ambient-noise"></div>
+  </div>
+
+  <div class="container mx-auto px-4 lg:px-6 relative z-10">
+    <!-- Premium Section Header -->
+    <header class="section-header text-center mb-16 lg:mb-20">
+      <p class="section-overline">CHARTSPOINT ACADEMY</p>
+      <h2 id="educational-heading" class="section-title">
+        <span class="title-word">المحتوى</span>
+        <span class="title-rest">التعليمي</span>
+      </h2>
+      <div class="title-underline"></div>
+      <p class="section-subtitle">
+        ابدأ رحلتك في التحليل الفني من الصفر حتى الاحتراف
+      </p>
+    </header>
+
+    <!-- Premium Pillars Grid (2x2) -->
+    <div class="pillars-grid">
+      {pillars.map((pillar, index) => {
+        const colors = pillarColorConfig[pillar.slug];
+        return (
+          <article
+            class="pillar-card group"
+            data-pillar={pillar.slug}
+            style={`--pillar-primary: ${colors.primary}; --pillar-glow: ${colors.glow}; --pillar-border: ${colors.border}; --animation-delay: ${index * 100}ms;`}
+          >
+            <!-- Ambient Glow (Behind Card) -->
+            <div class="pillar-glow" aria-hidden="true"></div>
+
+            <!-- Card Container -->
+            <div class="pillar-card-inner">
+              <!-- Mesh Background Pattern -->
+              <div class="pillar-mesh" aria-hidden="true"></div>
+
+              <!-- Content -->
+              <div class="pillar-content">
+                <!-- Icon Frame -->
+                <div class="pillar-icon-frame" style={`background: ${colors.iconBg};`}>
+                  {pillar.slug === 'basics' && (
+                    <svg class="pillar-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path d="M12 52h40M12 42h40M12 32h40M12 22h40M12 12h40" stroke="currentColor" stroke-width="1" stroke-opacity="0.2"/>
+                      <path d="M20 18v8M20 34v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      <rect x="16" y="26" width="8" height="8" rx="1" fill="currentColor"/>
+                      <path d="M32 14v6M32 36v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      <rect x="28" y="20" width="8" height="16" rx="1" stroke="currentColor" stroke-width="2"/>
+                      <path d="M44 12v10M44 38v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      <rect x="40" y="22" width="8" height="16" rx="1" fill="currentColor"/>
+                    </svg>
+                  )}
+                  {pillar.slug === 'indicators' && (
+                    <svg class="pillar-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path d="M8 20h48M8 44h48" stroke="currentColor" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="2 2"/>
+                      <path d="M8 32h48" stroke="currentColor" stroke-width="1" stroke-opacity="0.2"/>
+                      <path d="M8 32c4-12 8-12 12 0s8 12 12 0 8-12 12 0 8 12 12 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      <circle cx="20" cy="20" r="3" stroke="currentColor" stroke-width="2"/>
+                      <circle cx="44" cy="20" r="3" stroke="currentColor" stroke-width="2"/>
+                      <circle cx="32" cy="44" r="3" fill="currentColor"/>
+                    </svg>
+                  )}
+                  {pillar.slug === 'tools' && (
+                    <svg class="pillar-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <rect x="12" y="8" width="40" height="48" rx="4" stroke="currentColor" stroke-width="2"/>
+                      <rect x="18" y="14" width="28" height="12" rx="2" stroke="currentColor" stroke-width="2"/>
+                      <path d="M38 18h4M38 22h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      <rect x="18" y="32" width="8" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                      <rect x="28" y="32" width="8" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                      <rect x="38" y="32" width="8" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                      <rect x="18" y="42" width="8" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                      <rect x="28" y="42" width="8" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                      <rect x="38" y="42" width="8" height="14" rx="1" fill="currentColor"/>
+                    </svg>
+                  )}
+                  {pillar.slug === 'tactics' && (
+                    <svg class="pillar-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path d="M32 6L10 16v16c0 14 10 22 22 26 12-4 22-12 22-26V16L32 6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                      <path d="M32 14L18 21v10c0 9 6 14 14 17" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.4"/>
+                      <path d="M24 32l6 6 10-12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  )}
+                </div>
+
+                <!-- Title Block -->
+                <div class="pillar-title-block">
+                  <h3 class="pillar-title">{pillar.nameAr}</h3>
+                  <div class="pillar-accent-bar" style={`background: ${colors.primary};`}></div>
+                </div>
+
+                <!-- Subtitle -->
+                <p class="pillar-subtitle">{pillar.subtitle}</p>
+
+                <!-- Topics List -->
+                <ul class="pillar-topics" role="list">
+                  {pillar.topics.map((topic: string) => (
+                    <li>{topic}</li>
+                  ))}
+                </ul>
+
+                <!-- Footer Stats -->
+                <footer class="pillar-footer">
+                  <div class="pillar-stats">
+                    <span class="pillar-stat">
+                      <span class="stat-value">{pillar.lessonCount}</span>
+                      <span class="stat-label">درس</span>
+                    </span>
+                    <span class="pillar-stat-divider" aria-hidden="true"></span>
+                    <span class="pillar-stat">
+                      <span class="stat-label">مستوى</span>
+                      <span class="stat-value">{pillar.level}</span>
+                    </span>
+                  </div>
+                  <a
+                    href={pillar.href}
+                    class="pillar-cta"
+                    style={`--cta-color: ${colors.primary};`}
+                    aria-label={`${pillar.ctaLabel} - ${pillar.nameAr}`}
+                  >
+                    <span>{pillar.ctaLabel}</span>
+                    <svg class="cta-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                  </a>
+                </footer>
+              </div>
+
+              <!-- Full card clickable overlay -->
+              <a
+                href={pillar.href}
+                class="absolute inset-0 z-20"
+                aria-hidden="true"
+                tabindex="-1"
+              ></a>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+
+    <!-- Learning Path Indicator (Optional Visual Element) -->
+    <div class="learning-path-indicator" aria-hidden="true">
+      <div class="path-line"></div>
+      <div class="path-nodes">
+        <span class="path-node active"></span>
+        <span class="path-node"></span>
+        <span class="path-node"></span>
+        <span class="path-node"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     CSS CUSTOM PROPERTIES (Design Tokens)
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .educational-section {
+    /* Base Colors */
+    --ink-950: #030712;
+    --ink-900: #0C1222;
+    --ink-850: #0F172A;
+
+    /* Surface */
+    --slate-900: #111827;
+    --slate-800: #1E293B;
+    --slate-700: #334155;
+
+    /* Text */
+    --sand-50: #FAFAF9;
+    --sand-100: #F5F5F4;
+    --sand-200: #E7E5E4;
+    --sand-400: #A8A29E;
+    --sand-500: #78716C;
+
+    /* Accent */
+    --teal-500: #0891B2;
+    --teal-400: #22D3EE;
+
+    /* Spacing */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+
+    /* Radius */
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --radius-xl: 12px;
+    --radius-2xl: 16px;
+
+    /* Motion */
+    --duration-fast: 150ms;
+    --duration-normal: 220ms;
+    --duration-slow: 350ms;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     SECTION BACKGROUND
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .educational-section {
+    background: var(--ink-950);
+  }
+
+  .ambient-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .ambient-gradient {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(8, 145, 178, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 20% 100%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(139, 92, 246, 0.05) 0%, transparent 40%);
+  }
+
+  .ambient-noise {
+    position: absolute;
+    inset: 0;
+    opacity: 0.015;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     SECTION HEADER
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .section-header {
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .section-overline {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--teal-500);
+    margin-bottom: var(--space-4);
+  }
+
+  .section-title {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--sand-50);
+    margin-bottom: var(--space-2);
+  }
+
+  .title-word {
+    position: relative;
+    display: inline;
+  }
+
+  .title-word::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    right: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--teal-500);
+    border-radius: 2px;
+  }
+
+  .title-rest {
+    margin-right: var(--space-2);
+  }
+
+  .title-underline {
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(to left, transparent, var(--teal-500), transparent);
+    margin: var(--space-5) auto;
+    opacity: 0.5;
+  }
+
+  .section-subtitle {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.75;
+    color: var(--sand-400);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     PILLARS GRID
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 1023px) {
+    .pillars-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-5);
+      max-width: 720px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .pillars-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-5);
+      max-width: 100%;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     PILLAR CARD
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .pillar-card {
+    position: relative;
+    border-radius: var(--radius-xl);
+    transition: transform var(--duration-normal) var(--ease-out);
+    animation: pillar-card-enter 0.5s var(--ease-out) forwards;
+    animation-delay: var(--animation-delay);
+    opacity: 0;
+  }
+
+  @keyframes pillar-card-enter {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .pillar-card:hover {
+    transform: translateY(-6px);
+  }
+
+  .pillar-card:focus-within {
+    outline: none;
+  }
+
+  .pillar-card:focus-within .pillar-card-inner {
+    box-shadow: 0 0 0 2px var(--ink-950), 0 0 0 4px var(--teal-500);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     PILLAR GLOW
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .pillar-glow {
+    position: absolute;
+    inset: -20px;
+    border-radius: var(--radius-2xl);
+    background: radial-gradient(ellipse at center, var(--pillar-glow) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity var(--duration-slow) var(--ease-out);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .pillar-card:hover .pillar-glow {
+    opacity: 1;
+    animation: glow-pulse 2s var(--ease-in-out) infinite;
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     PILLAR CARD INNER
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .pillar-card-inner {
+    position: relative;
+    background: linear-gradient(145deg, var(--slate-800) 0%, var(--slate-900) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.3),
+      0 4px 8px rgba(0, 0, 0, 0.2),
+      0 8px 16px rgba(0, 0, 0, 0.1);
+    transition:
+      box-shadow var(--duration-normal) var(--ease-out),
+      border-color var(--duration-normal) var(--ease-out);
+  }
+
+  .pillar-card:hover .pillar-card-inner {
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.4),
+      0 8px 16px rgba(0, 0, 0, 0.3),
+      0 16px 32px rgba(0, 0, 0, 0.2),
+      0 24px 48px rgba(0, 0, 0, 0.1);
+    border-color: var(--pillar-border);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     MESH BACKGROUND
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .pillar-mesh {
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30z' fill='none' stroke='%23ffffff' stroke-width='0.5'/%3E%3C/svg%3E");
+    background-size: 30px 30px;
+    transition: opacity var(--duration-slow) var(--ease-out);
+  }
+
+  .pillar-card:hover .pillar-mesh {
+    opacity: 0.06;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     PILLAR CONTENT
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .pillar-content {
+    position: relative;
+    padding: var(--space-8);
+    z-index: 1;
+  }
+
+  @media (min-width: 1024px) {
+    .pillar-content {
+      padding: var(--space-10);
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     ICON FRAME
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .pillar-icon-frame {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-6);
+    box-shadow: 0 0 20px var(--pillar-glow);
+    transition: transform var(--duration-normal) var(--ease-out);
+  }
+
+  .pillar-card:hover .pillar-icon-frame {
+    transform: scale(1.05);
+    animation: icon-pulse 0.6s var(--ease-in-out);
+  }
+
+  @keyframes icon-pulse {
+    0%, 100% { transform: scale(1.05); }
+    50% { transform: scale(1.1); }
+  }
+
+  .pillar-icon {
+    width: 36px;
+    height: 36px;
+    color: var(--pillar-primary);
+  }
+
+  @media (min-width: 640px) {
+    .pillar-icon-frame {
+      width: 72px;
+      height: 72px;
+    }
+
+    .pillar-icon {
+      width: 40px;
+      height: 40px;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     TITLE BLOCK
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .pillar-title-block {
+    margin-bottom: var(--space-4);
+  }
+
+  .pillar-title {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 1.375rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--sand-50);
+    margin-bottom: var(--space-2);
+  }
+
+  @media (min-width: 1024px) {
+    .pillar-title {
+      font-size: 1.5rem;
+    }
+  }
+
+  .pillar-accent-bar {
+    width: 48px;
+    height: 3px;
+    border-radius: 2px;
+    transition: width var(--duration-normal) var(--ease-out);
+  }
+
+  .pillar-card:hover .pillar-accent-bar {
+    width: 72px;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     SUBTITLE
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .pillar-subtitle {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--sand-400);
+    margin-bottom: var(--space-5);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     TOPICS LIST
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .pillar-topics {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-6) 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .pillar-topics li {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--sand-400);
+    padding-right: var(--space-4);
+    position: relative;
+  }
+
+  .pillar-topics li::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--sand-500);
+  }
+
+  @media (min-width: 768px) {
+    .pillar-topics {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+    }
+
+    .pillar-topics li {
+      padding-right: var(--space-3);
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .pillar-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--space-5);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .pillar-stats {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .pillar-stat {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-1);
+  }
+
+  .stat-value {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--sand-100);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat-label {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.75rem;
+    color: var(--sand-500);
+  }
+
+  .pillar-stat-divider {
+    width: 1px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     CTA BUTTON
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .pillar-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--sand-200);
+    text-decoration: none;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+    z-index: 30;
+    transition:
+      background var(--duration-fast) var(--ease-out),
+      border-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+  }
+
+  .pillar-cta:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--cta-color);
+    color: var(--cta-color);
+  }
+
+  .pillar-cta:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--ink-950), 0 0 0 4px var(--teal-500);
+  }
+
+  .cta-arrow {
+    width: 16px;
+    height: 16px;
+    transform: rotate(180deg);
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+
+  .pillar-cta:hover .cta-arrow {
+    transform: rotate(180deg) translateX(3px);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     LEARNING PATH INDICATOR
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  .learning-path-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: var(--space-12);
+    opacity: 0.5;
+  }
+
+  .path-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--teal-500), transparent);
+    margin-bottom: var(--space-4);
+  }
+
+  .path-nodes {
+    display: flex;
+    gap: var(--space-4);
+  }
+
+  .path-node {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--slate-700);
+    transition: all var(--duration-normal) var(--ease-out);
+  }
+
+  .path-node.active {
+    background: var(--teal-500);
+    box-shadow: 0 0 8px var(--teal-500);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════════
+     REDUCED MOTION
+     ═══════════════════════════════════════════════════════════════════════════════ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .pillar-card,
+    .pillar-card-inner,
+    .pillar-glow,
+    .pillar-mesh,
+    .pillar-icon-frame,
+    .pillar-accent-bar,
+    .pillar-cta,
+    .cta-arrow {
+      animation: none;
+      transition: none;
+    }
+
+    .pillar-card {
+      opacity: 1;
+    }
+  }
+</style>

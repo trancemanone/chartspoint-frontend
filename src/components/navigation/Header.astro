@@ -2,25 +2,23 @@
 /**
  * Header Component - Premium Institutional Navigation
  *
- * ChartsPoint glassmorphism sticky header with:
+ * ChartsPoint terminal-grade sticky header with:
  * - Logo on the right (RTL)
- * - Full-width mega menu with 4 pillars: Basics, Indicators, Tools, Tactics
- * - Each pillar has its own color (basics=blue, indicators=orange, tools=green, tactics=purple)
+ * - Unified navigation triggers (no multi-color pills)
+ * - Full-width mega menu with 4 pillars
+ * - Custom trading iconography
  * - Mobile hamburger with slide-from-right drawer
- * - Educational CTA button
  *
  * Design Philosophy:
- * This navigation embodies the visual language of institutional fintech.
- * The full-width mega menu creates an immersive experience that showcases
- * all content pillars simultaneously, reinforcing the platform's comprehensive
- * approach to technical analysis education.
+ * This navigation embodies Bloomberg Terminal / Goldman Sachs aesthetic.
+ * Clean, data-driven interface with sophisticated monochromatic base
+ * and strategic teal accents. No colorful pills or template patterns.
  *
  * Optimized for Arabic readers ages 40-70 with WCAG AAA compliance.
  */
 
 import MegaMenu from './MegaMenu.astro';
 import type { PillarSlug } from '../../lib/types';
-import { PILLARS } from '../../lib/types';
 
 export interface Props {
   currentPillar?: PillarSlug;
@@ -29,47 +27,39 @@ export interface Props {
 
 const { currentPillar, variant = 'default' } = Astro.props;
 
-// Navigation structure for trigger buttons - 4 ChartsPoint pillars
+// Navigation structure - 4 ChartsPoint pillars with custom icons
 const navigation = [
   {
     id: 'basics' as PillarSlug,
     label: 'الأساسيات',
-    labelShort: 'أساسيات',
+    labelEn: 'Basics',
     href: '/basics',
-    colorClass: 'text-basics-600',
-    bgClass: 'bg-basics-50',
-    borderClass: 'border-basics-500',
-    hoverBg: 'hover:bg-basics-50',
+    // Custom candlestick foundation icon
+    iconPath: 'M12 3v4M12 17v4M8 7h8v10H8V7zM10 10v4M14 10v4M6 21h12',
   },
   {
     id: 'indicators' as PillarSlug,
     label: 'المؤشرات',
-    labelShort: 'مؤشرات',
+    labelEn: 'Indicators',
     href: '/indicators',
-    colorClass: 'text-indicators-600',
-    bgClass: 'bg-indicators-50',
-    borderClass: 'border-indicators-500',
-    hoverBg: 'hover:bg-indicators-50',
+    // Custom oscillator wave icon
+    iconPath: 'M3 12h2l2-6 3 12 3-8 2 4h6M3 6h18M3 18h18',
   },
   {
     id: 'tools' as PillarSlug,
     label: 'الأدوات',
-    labelShort: 'أدوات',
+    labelEn: 'Tools',
     href: '/tools',
-    colorClass: 'text-tools-600',
-    bgClass: 'bg-tools-50',
-    borderClass: 'border-tools-500',
-    hoverBg: 'hover:bg-tools-50',
+    // Custom chart grid with ruler icon
+    iconPath: 'M4 4v16h16M8 4v16M12 4v16M16 4v16M4 8h16M4 12h16M4 16h16M20 4v4h-3',
   },
   {
     id: 'tactics' as PillarSlug,
     label: 'الاستراتيجيات',
-    labelShort: 'استراتيجيات',
+    labelEn: 'Tactics',
     href: '/tactics',
-    colorClass: 'text-tactics-600',
-    bgClass: 'bg-tactics-50',
-    borderClass: 'border-tactics-500',
-    hoverBg: 'hover:bg-tactics-50',
+    // Custom target with trend lines icon
+    iconPath: 'M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0M12 12m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0M12 2v4M12 18v4M2 12h4M18 12h4M6 6l3 3M15 15l3 3',
   },
 ];
 ---
@@ -102,20 +92,20 @@ const navigation = [
         >
           <!-- Logo - Desktop -->
           <div class="hidden lg:flex items-center gap-3">
-            <div class="logo-mark w-12 h-12 rounded-xl bg-gradient-to-br from-navy-900 to-navy-800 flex items-center justify-center border border-navy-700/50">
+            <div class="logo-mark w-12 h-12 rounded-xl bg-gradient-to-br from-navy-900 to-navy-800 flex items-center justify-center border border-navy-700/50 shadow-lg shadow-navy-900/20">
               <svg class="w-7 h-7 text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M3 3v18h18" />
                 <path d="M7 16l4-8 4 4 5-9" />
               </svg>
             </div>
             <div class="flex flex-col">
-              <span class="font-heading text-xl font-bold text-navy-900 leading-tight">ChartsPoint</span>
-              <span class="text-xs text-teal-600 leading-tight">تشارتس بوينت</span>
+              <span class="font-heading text-xl font-bold text-navy-900 leading-tight tracking-tight">ChartsPoint</span>
+              <span class="text-xs text-teal-600 font-medium leading-tight">تشارتس بوينت</span>
             </div>
           </div>
 
           <!-- Logo - Mobile (icon only) -->
-          <div class="lg:hidden logo-mark w-12 h-12 rounded-xl bg-gradient-to-br from-navy-900 to-navy-800 flex items-center justify-center border border-navy-700/50">
+          <div class="lg:hidden logo-mark w-12 h-12 rounded-xl bg-gradient-to-br from-navy-900 to-navy-800 flex items-center justify-center border border-navy-700/50 shadow-lg shadow-navy-900/20">
             <svg class="w-7 h-7 text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M3 3v18h18" />
               <path d="M7 16l4-8 4 4 5-9" />
@@ -123,45 +113,70 @@ const navigation = [
           </div>
         </a>
 
-        <!-- Desktop Navigation (Center) - Mega Menu Triggers for 4 Pillars -->
-        <div class="hidden lg:flex items-center gap-1" role="menubar">
-          {navigation.map((item) => (
-            <button
-              type="button"
-              class:list={[
-                'nav-trigger flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-[0.9375rem] transition-all duration-200',
-                currentPillar === item.id
-                  ? `${item.colorClass} ${item.bgClass}`
-                  : `text-navy-700 ${item.hoverBg}`
-              ]}
-              aria-expanded="false"
-              aria-haspopup="true"
-              aria-controls="mega-menu-panel"
-              data-nav-trigger={item.id}
-            >
-              <span>{item.label}</span>
-              <svg
-                class="nav-chevron w-4 h-4 transition-transform duration-200"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
+        <!-- Desktop Navigation (Center) - Unified Terminal-Grade Triggers -->
+        <div class="hidden lg:flex items-center" role="menubar">
+          <div class="nav-container flex items-center gap-0.5 px-1 py-1 rounded-xl bg-slate-50/60 border border-slate-200/60">
+            {navigation.map((item, index) => (
+              <button
+                type="button"
+                class:list={[
+                  'nav-trigger group relative flex items-center gap-2.5 px-4 py-2.5 rounded-lg font-medium text-[0.9375rem] transition-all duration-200',
+                  currentPillar === item.id
+                    ? 'bg-white shadow-sm text-navy-900'
+                    : 'text-navy-600 hover:text-navy-900 hover:bg-white/80'
+                ]}
+                aria-expanded="false"
+                aria-haspopup="true"
+                aria-controls="mega-menu-panel"
+                data-nav-trigger={item.id}
+                data-nav-index={index}
               >
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-          ))}
+                <!-- Custom Pillar Icon -->
+                <span class="nav-icon-wrapper relative w-5 h-5 flex items-center justify-center">
+                  <span class="nav-icon-glow absolute inset-0 rounded-full bg-teal-500/0 group-hover:bg-teal-500/10 transition-all duration-300" aria-hidden="true"></span>
+                  <svg
+                    class="nav-icon relative w-[18px] h-[18px] text-slate-400 group-hover:text-teal-600 transition-colors duration-200"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d={item.iconPath} />
+                  </svg>
+                </span>
+
+                <span class="nav-label">{item.label}</span>
+
+                <!-- Chevron with rotation -->
+                <svg
+                  class="nav-chevron w-3.5 h-3.5 text-slate-400 group-hover:text-slate-500 transition-all duration-200"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+                </svg>
+
+                <!-- Active/Hover Indicator Line -->
+                <span class="nav-indicator absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-teal-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-right" aria-hidden="true"></span>
+              </button>
+            ))}
+          </div>
         </div>
 
         <!-- Right Actions (Left side in RTL) -->
         <div class="flex items-center gap-2 lg:gap-3">
-          <!-- CTA Button - Desktop only - EDUCATIONAL focus -->
+          <!-- CTA Button - Desktop only -->
           <a
             href="/basics"
             class="cta-btn hidden lg:inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-[0.875rem] transition-all duration-200"
             aria-label="ابدأ تعلم التحليل الفني"
           >
-            <span>ابدأ من الأساسيات</span>
+            <span>ابدأ التعلم</span>
             <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
@@ -209,7 +224,7 @@ const navigation = [
 
 <style>
   /* ═══════════════════════════════════════════════════════════════════════════
-     HEADER BASE STYLES
+     HEADER BASE STYLES - Terminal Grade
      ═══════════════════════════════════════════════════════════════════════════ */
 
   .header-wrapper {
@@ -225,7 +240,7 @@ const navigation = [
     box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 4px 24px rgba(15, 23, 42, 0.04);
   }
 
-  /* Premium teal accent line at bottom - institutional quality indicator */
+  /* Premium teal accent line at bottom */
   .header-light .header-inner::after {
     content: '';
     position: absolute;
@@ -242,15 +257,6 @@ const navigation = [
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  .header-dark .nav-trigger {
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  .header-dark .nav-trigger:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
   }
 
   /* Scrolled state */
@@ -284,103 +290,120 @@ const navigation = [
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     NAV TRIGGER STYLES - Premium Interaction Design
+     NAV CONTAINER - Unified Terminal Style
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  .nav-container {
+    background: linear-gradient(180deg, rgba(248, 250, 252, 0.6) 0%, rgba(241, 245, 249, 0.4) 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     NAV TRIGGER STYLES - Premium Unified Design
      ═══════════════════════════════════════════════════════════════════════════ */
 
   .nav-trigger {
     position: relative;
+    overflow: hidden;
   }
 
-  /* Underline indicator */
-  .nav-trigger::after {
+  .nav-trigger::before {
     content: '';
     position: absolute;
-    bottom: 0.375rem;
-    right: 1rem;
-    left: 1rem;
-    height: 2px;
-    background: transparent;
-    border-radius: 1px;
-    transform: scaleX(0);
-    transition: transform 0.2s ease, background 0.2s ease;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.7) 100%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    border-radius: 0.5rem;
   }
 
-  .nav-trigger:hover::after,
-  .nav-trigger[aria-expanded="true"]::after {
-    transform: scaleX(1);
+  .nav-trigger:hover::before {
+    opacity: 1;
   }
 
-  /* Pillar-specific underline colors */
-  .nav-trigger[data-nav-trigger="basics"]:hover::after,
-  .nav-trigger[data-nav-trigger="basics"][aria-expanded="true"]::after {
-    background: theme('colors.basics.500');
+  .nav-trigger[aria-expanded="true"]::before {
+    opacity: 1;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(248, 250, 252, 0.9) 100%);
   }
 
-  .nav-trigger[data-nav-trigger="indicators"]:hover::after,
-  .nav-trigger[data-nav-trigger="indicators"][aria-expanded="true"]::after {
-    background: theme('colors.indicators.500');
+  /* Icon styling */
+  .nav-icon-wrapper {
+    transition: transform 0.2s ease;
   }
 
-  .nav-trigger[data-nav-trigger="tools"]:hover::after,
-  .nav-trigger[data-nav-trigger="tools"][aria-expanded="true"]::after {
-    background: theme('colors.tools.500');
+  .nav-trigger:hover .nav-icon-wrapper {
+    transform: scale(1.1);
   }
 
-  .nav-trigger[data-nav-trigger="tactics"]:hover::after,
-  .nav-trigger[data-nav-trigger="tactics"][aria-expanded="true"]::after {
-    background: theme('colors.tactics.500');
+  .nav-trigger[aria-expanded="true"] .nav-icon {
+    color: theme('colors.teal.600');
+  }
+
+  .nav-trigger[aria-expanded="true"] .nav-icon-glow {
+    background: rgba(8, 145, 178, 0.15);
+    box-shadow: 0 0 12px rgba(8, 145, 178, 0.2);
+  }
+
+  /* Label styling */
+  .nav-label {
+    position: relative;
+    z-index: 1;
   }
 
   /* Chevron rotation */
   .nav-trigger[aria-expanded="true"] .nav-chevron {
     transform: rotate(180deg);
+    color: theme('colors.teal.600');
   }
 
+  /* Active indicator */
+  .nav-trigger[aria-expanded="true"] .nav-indicator {
+    transform: scaleX(1);
+  }
+
+  /* Focus state */
   .nav-trigger:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px white, 0 0 0 6px theme('colors.teal.500');
+    box-shadow: 0 0 0 2px white, 0 0 0 4px theme('colors.teal.500');
   }
 
-  /* Active/Expanded state background */
+  /* Active state styling */
   .nav-trigger[aria-expanded="true"] {
-    background: theme('colors.slate.100');
-  }
-
-  .nav-trigger[data-nav-trigger="basics"][aria-expanded="true"] {
-    background: theme('colors.basics.50');
-    color: theme('colors.basics.700');
-  }
-
-  .nav-trigger[data-nav-trigger="indicators"][aria-expanded="true"] {
-    background: theme('colors.indicators.50');
-    color: theme('colors.indicators.700');
-  }
-
-  .nav-trigger[data-nav-trigger="tools"][aria-expanded="true"] {
-    background: theme('colors.tools.50');
-    color: theme('colors.tools.700');
-  }
-
-  .nav-trigger[data-nav-trigger="tactics"][aria-expanded="true"] {
-    background: theme('colors.tactics.50');
-    color: theme('colors.tactics.700');
+    background: white;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+    color: theme('colors.navy.900');
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     CTA BUTTON STYLES - Teal Gradient (Educational Focus)
+     CTA BUTTON STYLES - Teal Gradient
      ═══════════════════════════════════════════════════════════════════════════ */
 
   .cta-btn {
+    position: relative;
     background: linear-gradient(135deg, #14B8A6 0%, #0891B2 100%);
     color: white;
     box-shadow: 0 4px 14px rgba(8, 145, 178, 0.25);
     border: 1px solid rgba(8, 145, 178, 0.3);
+    overflow: hidden;
+  }
+
+  .cta-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
   }
 
   .cta-btn:hover {
     background: linear-gradient(135deg, #0D9488 0%, #0E7490 100%);
     box-shadow: 0 6px 20px rgba(8, 145, 178, 0.4);
     transform: translateY(-1px);
+  }
+
+  .cta-btn:hover::before {
+    opacity: 1;
   }
 
   .cta-btn:active {
@@ -427,6 +450,36 @@ const navigation = [
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
+     MOBILE OPTIMIZATIONS
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  @media (max-width: 1023px) {
+    .header-inner {
+      overflow: hidden;
+    }
+
+    nav[role="navigation"] {
+      flex-wrap: nowrap;
+    }
+
+    .mobile-menu-toggle {
+      flex-shrink: 0;
+      touch-action: manipulation;
+    }
+
+    .logo-link {
+      min-width: 48px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .header-inner {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
      REDUCED MOTION
      ═══════════════════════════════════════════════════════════════════════════ */
 
@@ -434,6 +487,7 @@ const navigation = [
     .header-wrapper,
     .nav-trigger,
     .nav-chevron,
+    .nav-icon-wrapper,
     .cta-btn,
     .logo-mark {
       transition: none;
@@ -462,7 +516,6 @@ const navigation = [
     function handleScroll() {
       const currentScroll = window.scrollY;
 
-      // Add/remove scrolled class
       if (currentScroll > 20 && !isScrolled) {
         header?.classList.add('is-scrolled');
         isScrolled = true;
@@ -473,27 +526,24 @@ const navigation = [
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Check initial state
+    handleScroll();
 
     // ═══════════════════════════════════════════════════════════════════════════
-    // MEGA MENU CONTROL - Full Width Panel
+    // MEGA MENU CONTROL
     // ═══════════════════════════════════════════════════════════════════════════
 
     function openMegaMenu(trigger: HTMLButtonElement) {
       if (megaMenu && trigger) {
-        // Close any previously active trigger
         if (activeNavTrigger && activeNavTrigger !== trigger) {
           activeNavTrigger.setAttribute('aria-expanded', 'false');
         }
 
-        // Open the mega menu
         megaMenu.classList.add('is-open');
         megaMenu.removeAttribute('hidden');
         trigger.setAttribute('aria-expanded', 'true');
         activeNavTrigger = trigger;
         isMegaMenuOpen = true;
 
-        // Make all cluster links focusable
         const clusterLinks = megaMenu.querySelectorAll('[data-cluster-link]');
         clusterLinks.forEach((link) => {
           link.setAttribute('tabindex', '0');
@@ -505,12 +555,10 @@ const navigation = [
       if (megaMenu && isMegaMenuOpen) {
         megaMenu.classList.remove('is-open');
 
-        // Reset all nav triggers
         navTriggers.forEach((trigger) => {
           trigger.setAttribute('aria-expanded', 'false');
         });
 
-        // Reset tabindex on all cluster links
         const clusterLinks = megaMenu.querySelectorAll('[data-cluster-link]');
         clusterLinks.forEach((link) => {
           link.setAttribute('tabindex', '-1');
@@ -519,7 +567,6 @@ const navigation = [
         activeNavTrigger = null;
         isMegaMenuOpen = false;
 
-        // Hide after transition completes
         setTimeout(() => {
           if (!isMegaMenuOpen) {
             megaMenu.setAttribute('hidden', '');
@@ -544,7 +591,6 @@ const navigation = [
         toggleMegaMenu(trigger as HTMLButtonElement);
       });
 
-      // Keyboard support for nav triggers
       trigger.addEventListener('keydown', (e: Event) => {
         const keyEvent = e as KeyboardEvent;
 
@@ -556,7 +602,6 @@ const navigation = [
         if (keyEvent.key === 'ArrowDown') {
           keyEvent.preventDefault();
           openMegaMenu(trigger as HTMLButtonElement);
-          // Focus first link after animation
           setTimeout(() => {
             const firstLink = megaMenu?.querySelector('[data-cluster-link]') as HTMLElement;
             firstLink?.focus();
@@ -569,7 +614,7 @@ const navigation = [
         }
       });
 
-      // Hover to open (with slight delay for better UX)
+      // Hover to open
       let hoverTimeout: ReturnType<typeof setTimeout>;
 
       trigger.addEventListener('mouseenter', () => {
@@ -584,9 +629,8 @@ const navigation = [
       });
     });
 
-    // Close mega menu when mouse leaves the entire header area
+    // Close mega menu when mouse leaves header area
     header?.addEventListener('mouseleave', () => {
-      // Delay to allow moving between nav triggers and mega menu
       setTimeout(() => {
         if (!header?.matches(':hover') && !megaMenu?.matches(':hover')) {
           closeMegaMenu();
@@ -594,13 +638,11 @@ const navigation = [
       }, 100);
     });
 
-    // Keep mega menu open when hovering over it
     megaMenu?.addEventListener('mouseenter', () => {
-      // Menu is being hovered, keep it open
+      // Keep open
     });
 
     megaMenu?.addEventListener('mouseleave', () => {
-      // Close when leaving the mega menu
       setTimeout(() => {
         if (!header?.matches(':hover') && !megaMenu?.matches(':hover')) {
           closeMegaMenu();
@@ -616,7 +658,7 @@ const navigation = [
       }
     });
 
-    // Close on Escape key
+    // Close on Escape
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && isMegaMenuOpen) {
         closeMegaMenu();
@@ -624,10 +666,9 @@ const navigation = [
       }
     });
 
-    // Keyboard navigation within mega menu (Tab trapping)
+    // Tab trapping within mega menu
     megaMenu?.addEventListener('keydown', (e: KeyboardEvent) => {
       if (e.key === 'Tab' && !e.shiftKey) {
-        // Check if we're on the last focusable element
         const focusableElements = megaMenu.querySelectorAll(
           'a[href], button:not([disabled])'
         );
@@ -641,7 +682,6 @@ const navigation = [
       }
 
       if (e.key === 'Tab' && e.shiftKey) {
-        // Check if we're on the first focusable element
         const focusableElements = megaMenu.querySelectorAll(
           'a[href], button:not([disabled])'
         );
@@ -655,31 +695,7 @@ const navigation = [
       }
     });
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // MOBILE MENU TOGGLE
-    // ═══════════════════════════════════════════════════════════════════════════
-
-    mobileToggle?.addEventListener('click', () => {
-      const isExpanded = mobileToggle.getAttribute('aria-expanded') === 'true';
-
-      if (!isExpanded) {
-        // Open mobile menu
-        document.dispatchEvent(new CustomEvent('mobile-menu:open'));
-        hamburgerIcon?.classList.add('hidden');
-        closeIcon?.classList.remove('hidden');
-        mobileToggle.setAttribute('aria-expanded', 'true');
-        mobileToggle.setAttribute('aria-label', 'إغلاق القائمة');
-      } else {
-        // Close mobile menu
-        document.dispatchEvent(new CustomEvent('mobile-menu:close'));
-        hamburgerIcon?.classList.remove('hidden');
-        closeIcon?.classList.add('hidden');
-        mobileToggle.setAttribute('aria-expanded', 'false');
-        mobileToggle.setAttribute('aria-label', 'فتح القائمة');
-      }
-    });
-
-    // Listen for mobile menu close event to reset toggle state
+    // Mobile menu sync
     document.addEventListener('mobile-menu:closed', () => {
       hamburgerIcon?.classList.remove('hidden');
       closeIcon?.classList.add('hidden');

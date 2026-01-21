@@ -1,19 +1,19 @@
 ---
 /**
- * MegaMenu Component - ChartsPoint Premium Navigation Panel
+ * MegaMenu Component - ChartsPoint Terminal-Grade Navigation Panel
  *
- * Institutional-grade mega menu featuring 4 pillars:
- * - Basics (blue) - Technical analysis fundamentals
- * - Indicators (orange) - Technical indicators
- * - Tools (green) - Charting tools and calculators
- * - Tactics (purple) - Strategies and risk management
- *
- * Design: Bloomberg/Goldman Sachs-tier with:
- * - Sophisticated glassmorphism
- * - Gold accent system
- * - Staggered entrance animations
+ * Institutional-grade mega menu with unified design language:
+ * - Sophisticated glassmorphism (no multi-color pillar backgrounds)
+ * - Custom trading iconography for each pillar
+ * - Clean monochromatic palette with strategic teal accents
+ * - Bloomberg/Goldman Sachs-tier visual design
  * - Full RTL Arabic support
  * - WCAG AAA compliance
+ *
+ * Design Philosophy:
+ * Remove the colorful pills and pillar-specific backgrounds.
+ * Create a cohesive, professional appearance that feels like
+ * a high-end trading terminal, not a marketing website.
  */
 
 import { getPostsByPillar, transformToArticle } from '../../lib/wordpress';
@@ -27,10 +27,10 @@ const { currentPillar } = Astro.props;
 
 // Fetch articles for each pillar from WordPress
 const [basicsPosts, indicatorsPosts, toolsPosts, tacticsPosts] = await Promise.all([
-  getPostsByPillar('basics', 4).catch(() => ({ data: [] })),
-  getPostsByPillar('indicators', 4).catch(() => ({ data: [] })),
-  getPostsByPillar('tools', 4).catch(() => ({ data: [] })),
-  getPostsByPillar('tactics', 4).catch(() => ({ data: [] })),
+  getPostsByPillar('basics', 3).catch(() => ({ data: [] })),
+  getPostsByPillar('indicators', 3).catch(() => ({ data: [] })),
+  getPostsByPillar('tools', 3).catch(() => ({ data: [] })),
+  getPostsByPillar('tactics', 3).catch(() => ({ data: [] })),
 ]);
 
 // Transform posts to articles
@@ -48,35 +48,34 @@ const tacticsClusters = CLUSTERS.filter(c => c.pillar === 'tactics');
 // Cluster descriptions
 function getClusterDescription(slug: string): string {
   const descriptions: Record<string, string> = {
-    'intro': 'مقدمة شاملة للتحليل الفني',
-    'patterns': 'أنماط الشموع والرسوم البيانية',
-    'action': 'فهم حركة السعر',
-    'methods': 'طرق التحليل المختلفة',
-    'momentum': 'مؤشرات الزخم والقوة',
-    'trend': 'مؤشرات تحديد الاتجاه',
-    'volatility': 'قياس التذبذب والتقلبات',
-    'volume': 'تحليل حجم التداول',
-    'calc': 'حاسبات التداول المختلفة',
+    'intro': 'المفاهيم الأساسية للتحليل الفني',
+    'patterns': 'أنماط الشموع اليابانية',
+    'action': 'تحليل حركة السعر',
+    'methods': 'طرق التحليل المتقدمة',
+    'momentum': 'قياس قوة الزخم',
+    'trend': 'تحديد اتجاه السوق',
+    'volatility': 'قياس التذبذب',
+    'volume': 'تحليل أحجام التداول',
+    'calc': 'حاسبات التداول',
     'charts': 'أدوات الرسم البياني',
-    'data': 'مصادر البيانات المالية',
-    'trend-tactics': 'استراتيجيات تتبع الاتجاه',
+    'data': 'مصادر البيانات',
+    'trend-tactics': 'استراتيجيات الاتجاه',
     'reversion': 'استراتيجيات الارتداد',
-    'intraday': 'التداول خلال اليوم',
-    'risk': 'إدارة المخاطر والرأسمال',
+    'intraday': 'التداول اليومي',
+    'risk': 'إدارة رأس المال',
   };
   return descriptions[slug] || '';
 }
 
-// Icon paths
-const icons = {
-  book: 'M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25',
-  chart: 'M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605',
-  calculator: 'M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zm0 2.25h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V18zm2.504-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zm0 2.25h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V18zm2.498-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zM8.25 6h7.5v2.25h-7.5V6zM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 002.25 2.25h10.5a2.25 2.25 0 002.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0012 2.25z',
-  target: 'M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z',
-  sparkle: 'M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z',
+// Custom trading icons for each pillar
+const pillarIcons = {
+  basics: 'M12 3v4M12 17v4M8 7h8v10H8V7zM10 10v4M14 10v4M6 21h12',
+  indicators: 'M3 12h2l2-6 3 12 3-8 2 4h6M3 6h18M3 18h18',
+  tools: 'M4 4v16h16M8 4v16M12 4v16M16 4v16M4 8h16M4 12h16M4 16h16M20 4v4h-3',
+  tactics: 'M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0M12 12m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0M12 2v4M12 18v4M2 12h4M18 12h4M6 6l3 3M15 15l3 3',
 };
 
-// Build pillar data
+// Build pillar data with unified styling
 const pillars = [
   {
     id: 'basics' as PillarSlug,
@@ -84,11 +83,7 @@ const pillars = [
     labelEn: 'Basics',
     href: '/basics',
     description: PILLARS.basics.description,
-    icon: 'book',
-    colorHex: '#3B82F6',
-    gradientFrom: '#3B82F6',
-    gradientTo: '#1D4ED8',
-    glowColor: 'rgba(59, 130, 246, 0.15)',
+    icon: pillarIcons.basics,
     clusters: basicsClusters.map(cluster => ({
       label: cluster.nameAr,
       href: `/basics/${cluster.slug}`,
@@ -102,11 +97,7 @@ const pillars = [
     labelEn: 'Indicators',
     href: '/indicators',
     description: PILLARS.indicators.description,
-    icon: 'chart',
-    colorHex: '#F97316',
-    gradientFrom: '#F97316',
-    gradientTo: '#EA580C',
-    glowColor: 'rgba(249, 115, 22, 0.15)',
+    icon: pillarIcons.indicators,
     clusters: indicatorsClusters.map(cluster => ({
       label: cluster.nameAr,
       href: `/indicators/${cluster.slug}`,
@@ -120,11 +111,7 @@ const pillars = [
     labelEn: 'Tools',
     href: '/tools',
     description: PILLARS.tools.description,
-    icon: 'calculator',
-    colorHex: '#10B981',
-    gradientFrom: '#10B981',
-    gradientTo: '#059669',
-    glowColor: 'rgba(16, 185, 129, 0.15)',
+    icon: pillarIcons.tools,
     clusters: toolsClusters.map(cluster => ({
       label: cluster.nameAr,
       href: `/tools/${cluster.slug}`,
@@ -138,11 +125,7 @@ const pillars = [
     labelEn: 'Tactics',
     href: '/tactics',
     description: PILLARS.tactics.description,
-    icon: 'target',
-    colorHex: '#8B5CF6',
-    gradientFrom: '#8B5CF6',
-    gradientTo: '#7C3AED',
-    glowColor: 'rgba(139, 92, 246, 0.15)',
+    icon: pillarIcons.tactics,
     clusters: tacticsClusters.map(cluster => ({
       label: cluster.nameAr,
       href: `/tactics/${cluster.slug}`,
@@ -153,7 +136,7 @@ const pillars = [
 ];
 ---
 
-<!-- Premium Contained Mega Menu -->
+<!-- Premium Terminal-Grade Mega Menu -->
 <div
   id="mega-menu-panel"
   class="mega-menu-panel"
@@ -162,14 +145,11 @@ const pillars = [
   data-mega-menu-panel
   hidden
 >
-  <!-- Layered Background -->
+  <!-- Sophisticated Backdrop -->
   <div class="mega-menu-backdrop">
     <div class="backdrop-glass"></div>
-    <div class="backdrop-pattern"></div>
-    <div class="backdrop-glow glow-basics"></div>
-    <div class="backdrop-glow glow-indicators"></div>
-    <div class="backdrop-glow glow-tools"></div>
-    <div class="backdrop-glow glow-tactics"></div>
+    <div class="backdrop-grid"></div>
+    <div class="backdrop-gradient"></div>
     <div class="backdrop-teal-line"></div>
   </div>
 
@@ -182,79 +162,85 @@ const pillars = [
           <div
             class="pillar-column"
             data-pillar-column={pillar.id}
-            style={`--pillar-color: ${pillar.colorHex}; --pillar-gradient-from: ${pillar.gradientFrom}; --pillar-gradient-to: ${pillar.gradientTo}; --pillar-glow: ${pillar.glowColor}; --pillar-delay: ${pillarIndex * 60}ms`}
+            style={`--pillar-delay: ${pillarIndex * 50}ms`}
           >
-            <!-- Pillar Header -->
-            <div class="pillar-header">
-              <div class="pillar-accent-bar" aria-hidden="true"></div>
-
+            <!-- Pillar Header - Unified Design -->
+            <a
+              href={pillar.href}
+              class="pillar-header group"
+              aria-label={`استكشف قسم ${pillar.label}`}
+            >
+              <!-- Icon Container -->
               <div class="pillar-icon-container">
-                <div class="pillar-icon-glow" aria-hidden="true"></div>
-                <div class="pillar-icon-wrapper">
+                <div class="pillar-icon-bg"></div>
+                <svg
+                  class="pillar-icon"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d={pillar.icon} />
+                </svg>
+              </div>
+
+              <!-- Header Content -->
+              <div class="pillar-header-content">
+                <div class="pillar-title-row">
+                  <h3 class="pillar-title">{pillar.label}</h3>
+                  <span class="pillar-title-en">{pillar.labelEn}</span>
                   <svg
-                    class="pillar-icon"
+                    class="pillar-arrow"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
-                    stroke-width="1.5"
                     aria-hidden="true"
                   >
-                    <path stroke-linecap="round" stroke-linejoin="round" d={icons[pillar.icon as keyof typeof icons]} />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                   </svg>
-                </div>
-              </div>
-
-              <div class="pillar-header-content">
-                <div class="pillar-title-group">
-                  <h3 class="pillar-title">{pillar.label}</h3>
-                  <span class="pillar-title-en">{pillar.labelEn}</span>
                 </div>
                 <p class="pillar-description">{pillar.description}</p>
               </div>
-            </div>
+            </a>
 
-            <!-- Cluster Links -->
+            <!-- Cluster Links - Clean List -->
             <div class="pillar-clusters">
               {pillar.clusters.map((cluster, clusterIndex) => (
                 <a
                   href={cluster.href}
-                  class="cluster-link"
+                  class="cluster-link group"
                   role="menuitem"
                   tabindex="-1"
                   data-cluster-link
-                  style={`--cluster-delay: ${(pillarIndex * 60) + (clusterIndex * 30) + 80}ms`}
+                  style={`--cluster-delay: ${(pillarIndex * 50) + (clusterIndex * 25) + 100}ms`}
                 >
-                  <div class="cluster-indicator-wrapper">
-                    <span class="cluster-indicator" aria-hidden="true"></span>
-                    <span class="cluster-indicator-glow" aria-hidden="true"></span>
-                  </div>
+                  <span class="cluster-dot" aria-hidden="true"></span>
                   <div class="cluster-content">
                     <span class="cluster-label">{cluster.label}</span>
-                    {cluster.description && (
-                      <span class="cluster-desc">{cluster.description}</span>
-                    )}
+                    <span class="cluster-desc">{cluster.description}</span>
                   </div>
-                  <div class="cluster-arrow-wrapper">
-                    <svg
-                      class="cluster-arrow"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                  </div>
+                  <svg
+                    class="cluster-arrow"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                  </svg>
                 </a>
               ))}
             </div>
 
-            <!-- Featured Articles -->
+            <!-- Featured Articles Section -->
             {pillar.articles.length > 0 && (
               <div class="pillar-articles">
                 <div class="articles-header">
                   <svg class="articles-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d={icons.sparkle} />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                   </svg>
                   <span class="articles-heading">أحدث المقالات</span>
                 </div>
@@ -267,7 +253,7 @@ const pillars = [
                       tabindex="-1"
                       data-cluster-link
                     >
-                      <span class="article-bullet" aria-hidden="true"></span>
+                      <span class="article-indicator" aria-hidden="true"></span>
                       <span class="article-title">{article.title}</span>
                     </a>
                   ))}
@@ -275,36 +261,41 @@ const pillars = [
               </div>
             )}
 
-            <!-- CTA Button -->
+            <!-- View All CTA -->
             <a href={pillar.href} class="pillar-cta">
-              <span class="pillar-cta-text">استكشف {pillar.label}</span>
-              <div class="pillar-cta-icon">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-              </div>
-              <div class="pillar-cta-shimmer" aria-hidden="true"></div>
+              <span class="pillar-cta-text">عرض الكل</span>
+              <span class="pillar-cta-count">{pillar.clusters.length} مواضيع</span>
+              <svg class="pillar-cta-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
             </a>
           </div>
         ))}
       </div>
 
-      <!-- Footer Bar -->
+      <!-- Footer Bar - Trust Signals -->
       <div class="mega-menu-footer">
         <div class="footer-content">
           <div class="footer-trust">
-            <div class="trust-badge">
+            <div class="trust-item">
               <svg class="trust-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.746 3.746 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
               </svg>
               <span>محتوى تعليمي موثوق</span>
             </div>
             <div class="trust-divider"></div>
-            <div class="trust-badge">
+            <div class="trust-item">
               <svg class="trust-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
               </svg>
-              <span>4 محاور تعليمية</span>
+              <span>4 محاور تعليمية متكاملة</span>
+            </div>
+            <div class="trust-divider"></div>
+            <div class="trust-item">
+              <svg class="trust-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605" />
+              </svg>
+              <span>تحليل فني متقدم</span>
             </div>
           </div>
 
@@ -312,10 +303,10 @@ const pillars = [
             <a href="/about" class="footer-link">
               <span>من نحن</span>
             </a>
-            <span class="footer-link-divider"></span>
-            <a href="/faq" class="footer-link footer-link-teal">
+            <span class="footer-divider"></span>
+            <a href="/faq" class="footer-link footer-link-primary">
               <span>الأسئلة الشائعة</span>
-              <svg class="footer-link-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <svg class="footer-link-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
               </svg>
             </a>
@@ -328,7 +319,7 @@ const pillars = [
 
 <style>
   /* ═══════════════════════════════════════════════════════════════════════════════
-     MEGA MENU PANEL - 4 Pillars Layout
+     MEGA MENU PANEL - Terminal Grade Design
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   .mega-menu-panel {
@@ -361,7 +352,7 @@ const pillars = [
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════════
-     BACKDROP - Glassmorphism
+     BACKDROP - Sophisticated Glassmorphism
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   .mega-menu-backdrop {
@@ -375,9 +366,9 @@ const pillars = [
     position: absolute;
     inset: 0;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 251, 252, 0.97) 100%);
-    backdrop-filter: blur(24px) saturate(200%);
-    -webkit-backdrop-filter: blur(24px) saturate(200%);
-    border: 1px solid rgba(226, 232, 240, 0.7);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(226, 232, 240, 0.8);
     border-radius: 1rem;
     box-shadow:
       0 25px 80px rgba(15, 23, 42, 0.12),
@@ -386,66 +377,52 @@ const pillars = [
       inset 0 1px 0 rgba(255, 255, 255, 0.9);
   }
 
-  .backdrop-pattern {
+  .backdrop-grid {
     position: absolute;
     inset: 0;
-    background-image: radial-gradient(circle at 1px 1px, rgba(16, 41, 65, 0.03) 1px, transparent 0);
-    background-size: 24px 24px;
+    background-image:
+      linear-gradient(rgba(15, 23, 42, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15, 23, 42, 0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
     border-radius: 1rem;
     opacity: 0;
     transition: opacity 0.5s ease 0.1s;
   }
 
-  .mega-menu-panel.is-open .backdrop-pattern {
+  .mega-menu-panel.is-open .backdrop-grid {
     opacity: 1;
   }
 
-  .backdrop-glow {
+  .backdrop-gradient {
     position: absolute;
-    width: 200px;
-    height: 150px;
-    border-radius: 50%;
-    filter: blur(50px);
+    inset: 0;
+    background:
+      radial-gradient(ellipse 600px 300px at 10% 0%, rgba(8, 145, 178, 0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 600px 300px at 90% 100%, rgba(8, 145, 178, 0.03) 0%, transparent 70%);
+    border-radius: 1rem;
     opacity: 0;
-    transition: opacity 0.6s ease 0.15s;
-    pointer-events: none;
+    transition: opacity 0.5s ease 0.15s;
   }
 
-  .mega-menu-panel.is-open .backdrop-glow {
+  .mega-menu-panel.is-open .backdrop-gradient {
     opacity: 1;
-  }
-
-  .glow-basics {
-    top: -20px;
-    right: 10%;
-    background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
-  }
-
-  .glow-indicators {
-    top: 40%;
-    right: 35%;
-    background: radial-gradient(circle, rgba(249, 115, 22, 0.08) 0%, transparent 70%);
-  }
-
-  .glow-tools {
-    top: 30%;
-    left: 35%;
-    background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
-  }
-
-  .glow-tactics {
-    top: -20px;
-    left: 10%;
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
   }
 
   .backdrop-teal-line {
     position: absolute;
     top: 0;
-    left: 1rem;
-    right: 1rem;
+    left: 1.5rem;
+    right: 1.5rem;
     height: 3px;
-    background: linear-gradient(90deg, transparent 0%, rgba(8, 145, 178, 0.2) 15%, rgba(8, 145, 178, 0.5) 35%, #0891B2 50%, rgba(8, 145, 178, 0.5) 65%, rgba(8, 145, 178, 0.2) 85%, transparent 100%);
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(8, 145, 178, 0.15) 10%,
+      rgba(8, 145, 178, 0.4) 30%,
+      #0891B2 50%,
+      rgba(8, 145, 178, 0.4) 70%,
+      rgba(8, 145, 178, 0.15) 90%,
+      transparent 100%
+    );
     border-radius: 0 0 2px 2px;
     transform: scaleX(0);
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
@@ -462,7 +439,7 @@ const pillars = [
   .mega-menu-content {
     position: relative;
     z-index: 1;
-    padding: 1.75rem 0 1.25rem;
+    padding: 1.5rem 0 1rem;
     border-radius: 1rem;
   }
 
@@ -473,20 +450,20 @@ const pillars = [
   .mega-menu-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════════
-     PILLAR COLUMN
+     PILLAR COLUMN - Unified Design
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   .pillar-column {
     display: flex;
     flex-direction: column;
     opacity: 0;
-    transform: translateY(16px);
-    animation: pillarReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transform: translateY(12px);
+    animation: pillarReveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     animation-delay: var(--pillar-delay, 0ms);
     animation-play-state: paused;
   }
@@ -496,42 +473,37 @@ const pillars = [
   }
 
   @keyframes pillarReveal {
-    from { opacity: 0; transform: translateY(16px); }
+    from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════════
-     PILLAR HEADER
+     PILLAR HEADER - Clean Unified Style
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   .pillar-header {
-    position: relative;
     display: flex;
     align-items: flex-start;
-    gap: 1rem;
-    padding: 1.25rem;
-    background: linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(255, 255, 255, 0.6) 100%);
-    border-radius: 1rem;
-    margin-bottom: 0.75rem;
+    gap: 0.875rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, rgba(248, 250, 252, 0.8) 0%, rgba(255, 255, 255, 0.5) 100%);
+    border-radius: 0.875rem;
+    margin-bottom: 0.625rem;
     border: 1px solid rgba(226, 232, 240, 0.6);
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .pillar-header:hover {
-    background: linear-gradient(135deg, rgba(248, 250, 252, 1) 0%, rgba(255, 255, 255, 0.8) 100%);
-    border-color: rgba(226, 232, 240, 0.8);
-    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.8) 100%);
+    border-color: rgba(8, 145, 178, 0.2);
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04), 0 2px 8px rgba(8, 145, 178, 0.06);
+    transform: translateY(-1px);
   }
 
-  .pillar-accent-bar {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 3px;
-    background: linear-gradient(180deg, var(--pillar-gradient-from) 0%, var(--pillar-gradient-to) 100%);
-    border-radius: 0 1rem 1rem 0;
+  .pillar-header:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #0891B2;
   }
 
   .pillar-icon-container {
@@ -539,47 +511,35 @@ const pillars = [
     flex-shrink: 0;
   }
 
-  .pillar-icon-glow {
-    position: absolute;
-    inset: -6px;
-    background: var(--pillar-glow);
-    border-radius: 50%;
-    filter: blur(10px);
-    opacity: 0;
-    transition: opacity 0.3s ease;
+  .pillar-icon-bg {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.08) 0%, rgba(8, 145, 178, 0.04) 100%);
+    border-radius: 0.625rem;
+    border: 1px solid rgba(8, 145, 178, 0.12);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .pillar-header:hover .pillar-icon-glow {
-    opacity: 1;
-  }
-
-  .pillar-icon-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.75rem;
-    height: 2.75rem;
-    background: linear-gradient(135deg, color-mix(in srgb, var(--pillar-color) 10%, white) 0%, color-mix(in srgb, var(--pillar-color) 5%, white) 100%);
-    border-radius: 0.75rem;
-    border: 1px solid color-mix(in srgb, var(--pillar-color) 15%, transparent);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .pillar-header:hover .pillar-icon-wrapper {
+  .pillar-header:hover .pillar-icon-bg {
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.12) 0%, rgba(8, 145, 178, 0.06) 100%);
+    border-color: rgba(8, 145, 178, 0.2);
     transform: scale(1.05);
-    box-shadow: 0 4px 16px var(--pillar-glow);
   }
 
   .pillar-icon {
-    width: 1.375rem;
-    height: 1.375rem;
-    color: var(--pillar-color);
-    transition: transform 0.3s ease;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #0891B2;
+    transition: all 0.25s ease;
   }
 
   .pillar-header:hover .pillar-icon {
-    transform: scale(1.1);
+    transform: translate(-50%, -50%) scale(1.1);
+    color: #0E7490;
   }
 
   .pillar-header-content {
@@ -587,20 +547,26 @@ const pillars = [
     min-width: 0;
   }
 
-  .pillar-title-group {
+  .pillar-title-row {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 0.5rem;
     margin-bottom: 0.25rem;
   }
 
   .pillar-title {
     font-family: var(--font-heading, 'Noto Kufi Arabic', sans-serif);
-    font-size: 1.125rem;
+    font-size: 1rem;
     font-weight: 700;
-    color: var(--pillar-color);
+    color: #0F172A;
     letter-spacing: -0.01em;
     line-height: 1.3;
+    margin: 0;
+    transition: color 0.2s ease;
+  }
+
+  .pillar-header:hover .pillar-title {
+    color: #0891B2;
   }
 
   .pillar-title-en {
@@ -611,15 +577,31 @@ const pillars = [
     letter-spacing: 0.08em;
   }
 
+  .pillar-arrow {
+    width: 0.875rem;
+    height: 0.875rem;
+    color: #CBD5E1;
+    margin-right: auto;
+    opacity: 0;
+    transform: translateX(4px);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .pillar-header:hover .pillar-arrow {
+    opacity: 1;
+    transform: translateX(0);
+    color: #0891B2;
+  }
+
   .pillar-description {
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     color: #64748b;
     line-height: 1.5;
     margin: 0;
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════════
-     CLUSTER LINKS
+     CLUSTER LINKS - Clean Minimal Style
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   .pillar-clusters {
@@ -632,16 +614,16 @@ const pillars = [
   .cluster-link {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.625rem 0.875rem;
-    border-radius: 0.625rem;
+    gap: 0.625rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
     text-decoration: none;
     opacity: 0;
-    transform: translateX(12px);
-    animation: clusterReveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transform: translateX(8px);
+    animation: clusterReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     animation-delay: var(--cluster-delay, 0ms);
     animation-play-state: paused;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .mega-menu-panel.is-open .cluster-link {
@@ -649,53 +631,34 @@ const pillars = [
   }
 
   @keyframes clusterReveal {
-    from { opacity: 0; transform: translateX(12px); }
+    from { opacity: 0; transform: translateX(8px); }
     to { opacity: 1; transform: translateX(0); }
   }
 
   .cluster-link:hover {
-    background: linear-gradient(90deg, color-mix(in srgb, var(--pillar-color) 6%, white) 0%, color-mix(in srgb, var(--pillar-color) 3%, white) 100%);
-    transform: translateX(-4px);
+    background: linear-gradient(90deg, rgba(8, 145, 178, 0.06) 0%, rgba(8, 145, 178, 0.02) 100%);
+    transform: translateX(-2px);
   }
 
   .cluster-link:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--pillar-color);
-    background: color-mix(in srgb, var(--pillar-color) 5%, white);
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #0891B2;
+    background: rgba(8, 145, 178, 0.04);
   }
 
-  .cluster-indicator-wrapper {
-    position: relative;
+  .cluster-dot {
     flex-shrink: 0;
-  }
-
-  .cluster-indicator {
-    display: block;
-    width: 6px;
-    height: 6px;
-    background: linear-gradient(135deg, var(--pillar-gradient-from) 0%, var(--pillar-gradient-to) 100%);
+    width: 5px;
+    height: 5px;
+    background: #CBD5E1;
     border-radius: 50%;
-    opacity: 0.5;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .cluster-indicator-glow {
-    position: absolute;
-    inset: -3px;
-    background: var(--pillar-color);
-    border-radius: 50%;
-    filter: blur(4px);
-    opacity: 0;
-    transition: opacity 0.25s ease;
-  }
-
-  .cluster-link:hover .cluster-indicator {
-    opacity: 1;
-    transform: scale(1.25);
-  }
-
-  .cluster-link:hover .cluster-indicator-glow {
-    opacity: 0.3;
+  .cluster-link:hover .cluster-dot {
+    background: #0891B2;
+    transform: scale(1.3);
+    box-shadow: 0 0 8px rgba(8, 145, 178, 0.3);
   }
 
   .cluster-content {
@@ -703,94 +666,94 @@ const pillars = [
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.0625rem;
+    gap: 0;
   }
 
   .cluster-label {
     display: block;
     font-size: 0.8125rem;
     font-weight: 600;
-    color: #1e293b;
+    color: #1E293B;
+    line-height: 1.4;
     transition: color 0.2s ease;
   }
 
   .cluster-link:hover .cluster-label {
-    color: #0f172a;
+    color: #0F172A;
   }
 
   .cluster-desc {
     display: block;
     font-size: 0.6875rem;
     color: #94a3b8;
-    line-height: 1.4;
+    line-height: 1.3;
+    transition: color 0.2s ease;
   }
 
   .cluster-link:hover .cluster-desc {
     color: #64748b;
   }
 
-  .cluster-arrow-wrapper {
+  .cluster-arrow {
     flex-shrink: 0;
+    width: 0.75rem;
+    height: 0.75rem;
+    color: #CBD5E1;
     opacity: 0;
-    transform: translateX(8px);
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateX(4px);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .cluster-link:hover .cluster-arrow-wrapper {
+  .cluster-link:hover .cluster-arrow {
     opacity: 1;
     transform: translateX(0);
-  }
-
-  .cluster-arrow {
-    width: 0.875rem;
-    height: 0.875rem;
-    color: var(--pillar-color);
+    color: #0891B2;
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════════
-     FEATURED ARTICLES
+     FEATURED ARTICLES - Minimal Style
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   .pillar-articles {
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid rgba(226, 232, 240, 0.8);
+    margin-top: 0.625rem;
+    padding-top: 0.625rem;
+    border-top: 1px solid rgba(226, 232, 240, 0.6);
   }
 
   .articles-header {
     display: flex;
     align-items: center;
     gap: 0.375rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.375rem;
     padding-right: 0.25rem;
   }
 
   .articles-icon {
     width: 0.875rem;
     height: 0.875rem;
-    color: #0891B2;
+    color: #94a3b8;
   }
 
   .articles-heading {
     font-size: 0.625rem;
-    font-weight: 700;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--pillar-color);
+    letter-spacing: 0.05em;
+    color: #94a3b8;
   }
 
   .articles-list {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.125rem;
   }
 
   .article-link {
     display: flex;
     align-items: flex-start;
     gap: 0.5rem;
-    padding: 0.5rem 0.625rem;
-    border-radius: 0.5rem;
+    padding: 0.375rem 0.5rem;
+    border-radius: 0.375rem;
     text-decoration: none;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
@@ -803,22 +766,20 @@ const pillars = [
   .article-link:focus-visible {
     outline: none;
     box-shadow: 0 0 0 2px white, 0 0 0 4px #0891B2;
-    background: rgba(248, 250, 252, 0.8);
   }
 
-  .article-bullet {
+  .article-indicator {
     flex-shrink: 0;
-    width: 4px;
-    height: 4px;
-    margin-top: 0.375rem;
-    background: #0891B2;
+    width: 3px;
+    height: 3px;
+    margin-top: 0.4rem;
+    background: #CBD5E1;
     border-radius: 50%;
-    opacity: 0.6;
     transition: all 0.2s ease;
   }
 
-  .article-link:hover .article-bullet {
-    opacity: 1;
+  .article-link:hover .article-indicator {
+    background: #0891B2;
     transform: scale(1.3);
   }
 
@@ -835,88 +796,69 @@ const pillars = [
   }
 
   .article-link:hover .article-title {
-    color: #1e293b;
+    color: #1E293B;
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════════
-     CTA BUTTON
+     CTA BUTTON - Unified Teal Style
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   .pillar-cta {
-    position: relative;
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    margin-top: 0.75rem;
-    border-radius: 0.625rem;
-    font-size: 0.8125rem;
+    padding: 0.625rem 0.875rem;
+    margin-top: 0.625rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
     font-weight: 600;
     text-decoration: none;
-    color: var(--pillar-color);
-    background: linear-gradient(135deg, color-mix(in srgb, var(--pillar-color) 8%, white) 0%, color-mix(in srgb, var(--pillar-color) 4%, white) 100%);
-    border: 1px solid color-mix(in srgb, var(--pillar-color) 18%, transparent);
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    color: #0891B2;
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.06) 0%, rgba(8, 145, 178, 0.02) 100%);
+    border: 1px solid rgba(8, 145, 178, 0.12);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .pillar-cta:hover {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--pillar-color) 12%, white) 0%, color-mix(in srgb, var(--pillar-color) 8%, white) 100%);
-    border-color: color-mix(in srgb, var(--pillar-color) 30%, transparent);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px var(--pillar-glow);
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.1) 0%, rgba(8, 145, 178, 0.05) 100%);
+    border-color: rgba(8, 145, 178, 0.25);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(8, 145, 178, 0.12);
   }
 
   .pillar-cta:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--pillar-color), 0 8px 24px var(--pillar-glow);
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #0891B2;
   }
 
   .pillar-cta-text {
-    position: relative;
-    z-index: 1;
+    color: #0891B2;
   }
 
-  .pillar-cta-icon {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  .pillar-cta-count {
+    color: #94a3b8;
+    font-weight: 500;
+    margin-right: auto;
   }
 
-  .pillar-cta-icon svg {
-    width: 0.875rem;
-    height: 0.875rem;
+  .pillar-cta-arrow {
+    width: 0.75rem;
+    height: 0.75rem;
+    color: #0891B2;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .pillar-cta:hover .pillar-cta-icon {
-    transform: translateX(-4px);
-  }
-
-  .pillar-cta-shimmer {
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent 0%, rgba(8, 145, 178, 0.1) 50%, transparent 100%);
-    transition: left 0.5s ease;
-  }
-
-  .pillar-cta:hover .pillar-cta-shimmer {
-    left: 100%;
+  .pillar-cta:hover .pillar-cta-arrow {
+    transform: translateX(-3px);
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════════
-     FOOTER BAR
+     FOOTER BAR - Trust Signals
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   .mega-menu-footer {
-    border-top: 1px solid rgba(226, 232, 240, 0.7);
-    padding-top: 1.25rem;
+    border-top: 1px solid rgba(226, 232, 240, 0.6);
+    padding-top: 1rem;
   }
 
   .footer-content {
@@ -932,35 +874,35 @@ const pillars = [
     gap: 1.25rem;
   }
 
-  .trust-badge {
+  .trust-item {
     display: flex;
     align-items: center;
     gap: 0.375rem;
   }
 
   .trust-icon {
-    width: 1.125rem;
-    height: 1.125rem;
+    width: 1rem;
+    height: 1rem;
     color: #0891B2;
-    opacity: 0.9;
+    opacity: 0.8;
   }
 
-  .trust-badge span {
-    font-size: 0.75rem;
+  .trust-item span {
+    font-size: 0.6875rem;
     font-weight: 500;
     color: #64748b;
   }
 
   .trust-divider {
     width: 1px;
-    height: 1rem;
-    background: linear-gradient(180deg, transparent 0%, #e2e8f0 50%, transparent 100%);
+    height: 0.875rem;
+    background: linear-gradient(180deg, transparent 0%, #E2E8F0 50%, transparent 100%);
   }
 
   .footer-links {
     display: flex;
     align-items: center;
-    gap: 0.375rem;
+    gap: 0.25rem;
   }
 
   .footer-link {
@@ -969,15 +911,15 @@ const pillars = [
     gap: 0.25rem;
     padding: 0.375rem 0.625rem;
     border-radius: 0.375rem;
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
     font-weight: 500;
-    color: #475569;
+    color: #64748b;
     text-decoration: none;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .footer-link:hover {
-    color: #1e293b;
+    color: #1E293B;
     background: rgba(248, 250, 252, 0.8);
   }
 
@@ -986,36 +928,36 @@ const pillars = [
     box-shadow: 0 0 0 2px white, 0 0 0 4px #0891B2;
   }
 
-  .footer-link-teal {
+  .footer-link-primary {
     color: #0891B2;
-    background: rgba(8, 145, 178, 0.08);
-    border: 1px solid rgba(8, 145, 178, 0.15);
+    background: rgba(8, 145, 178, 0.06);
+    border: 1px solid rgba(8, 145, 178, 0.1);
   }
 
-  .footer-link-teal:hover {
+  .footer-link-primary:hover {
     color: #0E7490;
-    background: rgba(8, 145, 178, 0.12);
-    border-color: rgba(8, 145, 178, 0.25);
+    background: rgba(8, 145, 178, 0.1);
+    border-color: rgba(8, 145, 178, 0.2);
   }
 
-  .footer-link-icon {
-    width: 0.875rem;
-    height: 0.875rem;
+  .footer-link-arrow {
+    width: 0.75rem;
+    height: 0.75rem;
     transition: transform 0.2s ease;
   }
 
-  .footer-link-gold:hover .footer-link-icon {
-    transform: translateX(-3px);
+  .footer-link-primary:hover .footer-link-arrow {
+    transform: translateX(-2px);
   }
 
-  .footer-link-divider {
+  .footer-divider {
     width: 1px;
-    height: 0.875rem;
-    background: #e2e8f0;
+    height: 0.75rem;
+    background: #E2E8F0;
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════════
-     RESPONSIVE - Hide on mobile
+     RESPONSIVE
      ═══════════════════════════════════════════════════════════════════════════════ */
 
   @media (max-width: 1023px) {
@@ -1024,25 +966,23 @@ const pillars = [
     }
   }
 
-  /* Large screens */
   @media (min-width: 1280px) {
     .mega-menu-panel {
       max-width: 1320px;
     }
 
     .mega-menu-grid {
-      gap: 2rem;
+      gap: 1.5rem;
     }
   }
 
-  /* Extra large screens */
   @media (min-width: 1536px) {
     .mega-menu-panel {
       max-width: 1440px;
     }
 
     .mega-menu-grid {
-      gap: 2.5rem;
+      gap: 2rem;
     }
   }
 
@@ -1067,25 +1007,22 @@ const pillars = [
       transform: none;
     }
 
-    .backdrop-gold-line {
+    .backdrop-teal-line {
       transition: none;
       transform: scaleX(1);
     }
 
-    .backdrop-pattern,
-    .backdrop-glow {
+    .backdrop-grid,
+    .backdrop-gradient {
       transition: none;
       opacity: 1;
     }
 
     .cluster-link:hover,
     .article-link:hover,
-    .pillar-cta:hover {
+    .pillar-cta:hover,
+    .pillar-header:hover {
       transform: none;
-    }
-
-    .pillar-cta-shimmer {
-      display: none;
     }
   }
 </style>

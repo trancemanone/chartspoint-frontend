@@ -464,12 +464,19 @@ function formatDate(dateStr: string): string {
      DESKTOP GRID
      ═══════════════════════════════════════════════════════════════════════════════ */
 
+  /* Desktop grid - hidden on mobile, shown on lg+ */
   .desktop-grid {
-    display: grid;
+    display: none;
     grid-template-columns: 1fr 1fr;
     gap: var(--space-6);
     max-width: 1200px;
     margin: 0 auto;
+  }
+
+  @media (min-width: 1024px) {
+    .desktop-grid {
+      display: grid;
+    }
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════════
@@ -832,8 +839,16 @@ function formatDate(dateStr: string): string {
      MOBILE CAROUSEL
      ═══════════════════════════════════════════════════════════════════════════════ */
 
+  /* Mobile carousel - shown on mobile, hidden on lg+ */
   .mobile-carousel {
+    display: block;
     position: relative;
+  }
+
+  @media (min-width: 1024px) {
+    .mobile-carousel {
+      display: none;
+    }
   }
 
   .carousel-track {

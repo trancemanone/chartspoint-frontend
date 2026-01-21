@@ -399,7 +399,8 @@ const breadcrumbSchema = JSON.stringify({
 
           <!-- Article Title -->
           <h1
-            class="article-hero__title text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading font-extrabold text-white mb-6 leading-tight text-balance"
+            class="article-hero__title text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading font-extrabold text-white mb-6 text-balance"
+            style="line-height: 1.5;"
             itemprop="headline"
           >
             {article.title}
@@ -803,6 +804,7 @@ const breadcrumbSchema = JSON.stringify({
   .article-hero__title {
     text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
     letter-spacing: -0.01em;
+    line-height: 1.5 !important;
   }
 
   /* Author card hover effect */
@@ -841,7 +843,7 @@ const breadcrumbSchema = JSON.stringify({
 
     .article-hero__title {
       font-size: 1.5rem;
-      line-height: 1.3;
+      line-height: 1.5 !important;
     }
 
     .article-hero__author {
